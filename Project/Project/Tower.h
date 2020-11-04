@@ -12,6 +12,8 @@ public:
 	void Initialize(ID3D12Device* dev);
 	void Update();
 	void Draw(ID3D12GraphicsCommandList * cmdList);
+	XMFLOAT3 GetPosition();//11/4エネミー用に位置を送ります。byヤマナカ
+
 private:
 	
 	int hp;
