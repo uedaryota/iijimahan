@@ -25,6 +25,8 @@ Floor* floor1 = new Floor();
 Tower* tower = new Tower();
 Block* block = new Block();
 Stage* stage = new Stage();
+Enemy* enemy = new Enemy();
+EnemyAI* ai = new EnemyAI();
 
 LRESULT WindowProc1(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
@@ -51,6 +53,10 @@ void DirectXDevice::Initialize()
 	tower->Initialize(DirectXDevice::dev);
 	floor1->Initialize(DirectXDevice::dev);
 	stage->Initialize();
+	enemy->Initialize();
+	enemy->SetScale(XMFLOAT3(30, 30, 30));
+	enemy->SetPos(XMFLOAT3(30, 30, 30));
+	//enemy->Install(*ai);
 }
 void DirectXDevice::Update()
 {
@@ -100,6 +106,8 @@ void DirectXDevice::Update()
 	stage->Draw();
 	//‚±‚±‚Ü‚Å
 	DirectXDevice::cmdList->Close();
+	enemy->Update();
+	enemy->Draw();
 
 	ID3D12CommandList* cmdLists[] = { DirectXDevice::cmdList };
 	cmdQueue->ExecuteCommandLists(1, cmdLists);
