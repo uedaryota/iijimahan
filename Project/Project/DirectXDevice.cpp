@@ -1,4 +1,6 @@
+
 #include "DirectXDevice.h"
+
 ID3D12GraphicsCommandList* DirectXDevice::cmdList = nullptr;;
 ID3D12Device* DirectXDevice::dev = nullptr;
 IDXGIFactory6*  DirectXDevice::dxgifactory;
@@ -22,7 +24,7 @@ PMDClass* pmd = new PMDClass();
 Floor* floor1 = new Floor();
 Tower* tower = new Tower();
 Block* block = new Block();
-Enemy* enemy = new Enemy();
+Stage* stage = new Stage();
 
 LRESULT WindowProc1(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
@@ -48,7 +50,7 @@ void DirectXDevice::Initialize()
 	block->Initialize();
 	tower->Initialize(DirectXDevice::dev);
 	floor1->Initialize(DirectXDevice::dev);
-	enemy->Initialize();
+	stage->Initialize();
 }
 void DirectXDevice::Update()
 {
@@ -90,13 +92,12 @@ void DirectXDevice::Update()
 	//tex->Update();
 	block->Update();
 	tower->Update();
-	floor1->Update();
-	enemy->Update();
+	//floor1->Update();
 	block->Draw();
 	tower->Draw(DirectXDevice::cmdList);
-	floor1->Draw(DirectXDevice::cmdList,DirectXDevice::dev);
-	enemy->Draw();
-
+	//floor1->Draw(DirectXDevice::cmdList,DirectXDevice::dev);
+	stage->Update();
+	stage->Draw();
 	//‚±‚±‚Ü‚Å
 	DirectXDevice::cmdList->Close();
 

@@ -343,6 +343,84 @@ void Floor::CreateMainHeap(ID3D12Device * dev)
 	constBuff->Unmap(0, nullptr);
 }
 
+void Floor::ResetTex(const wchar_t* Texname,ID3D12Device * dev)
+{
+
+	HRESULT result;
+
+	TexMetadata metadate = {};
+	ScratchImage scratchImg = {};
+	result = LoadFromWICFile(
+		Texname,
+		WIC_FLAGS_NONE,
+		&metadate,
+		scratchImg
+	);
+
+	const Image* img = scratchImg.GetImage(0, 0, 0);
+
+
+	D3D12_HEAP_PROPERTIES texheapprop = {};
+	texheapprop.Type = D3D12_HEAP_TYPE_CUSTOM;
+	texheapprop.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_WRITE_BACK;
+	texheapprop.MemoryPoolPreference = D3D12_MEMORY_POOL_L0;
+	texheapprop.CreationNodeMask = 0;
+	texheapprop.VisibleNodeMask = 0;
+
+	D3D12_RESOURCE_DESC texresdes = {};
+
+	texresdes.Format = metadate.format;
+	texresdes.Width = img->width;
+	texresdes.Height = img->height;
+	texresdes.DepthOrArraySize = metadate.arraySize;
+	texresdes.SampleDesc.Count = 1;
+	texresdes.SampleDesc.Quality = 0;
+	texresdes.MipLevels = metadate.mipLevels;
+	texresdes.Dimension = static_cast<D3D12_RESOURCE_DIMENSION>(metadate.dimension);
+	texresdes.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
+	texresdes.Flags = D3D12_RESOURCE_FLAG_NONE;
+
+	ID3D12Resource* texBuff = nullptr;
+
+
+
+	result = dev->CreateCommittedResource(
+		&texheapprop,
+		D3D12_HEAP_FLAG_NONE,
+		&texresdes,
+		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+		nullptr,
+		IID_PPV_ARGS(&texBuff));
+
+	result = texBuff->WriteToSubresource(
+		0,
+		nullptr,
+		img->pixels,
+		img->rowPitch,
+		img->slicePitch
+	);
+	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+	srvDesc.Format = metadate.format;//resdesc‚Æ‡‚í‚¹‚é
+	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.Texture2D.MipLevels = 1;
+
+
+
+
+
+
+	D3D12_CPU_DESCRIPTOR_HANDLE HeapHandle = mainDescHeap->GetCPUDescriptorHandleForHeapStart();
+
+	dev->CreateShaderResourceView(
+		texBuff,
+		&srvDesc,
+		HeapHandle);
+
+
+
+}
+
 void Floor::SetDepth(ID3D12Device * dev)
 {
 	D3D12_RESOURCE_DESC depthresdesc = {};
