@@ -11,6 +11,9 @@ void Stage::Initialize()
 	floor2->Initialize(DirectXDevice::dev);
 	floor3->Initialize(DirectXDevice::dev);
 
+	floor2->ResetTex(L"img/tex1.png", DirectXDevice::dev);
+	floor3->ResetTex(L"img/tex1.png", DirectXDevice::dev);
+
 	floor2->rotation = XMFLOAT3(0, XM_PIDIV2, 0);
 	floor3->rotation = XMFLOAT3(0, 0, XM_PIDIV2);
 
