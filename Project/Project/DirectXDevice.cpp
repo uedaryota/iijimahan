@@ -54,7 +54,7 @@ void DirectXDevice::Initialize()
 	floor1->Initialize(DirectXDevice::dev);
 	stage->Initialize();
 	enemy->Initialize();
-	enemy->SetScale(XMFLOAT3(30, 30, 30));
+	//enemy->SetScale(XMFLOAT3(, 30, 30));
 	enemy->SetPos(XMFLOAT3(30, 30, 30));
 	//enemy->Install(*ai);
 }
@@ -96,18 +96,19 @@ void DirectXDevice::Update()
 	DirectXDevice::cmdList->RSSetScissorRects(1, &scissorrect);
 	//‚±‚±‚©‚çUpdate
 	//tex->Update();
-	block->Update();
 	tower->Update();
 	//floor1->Update();
-	block->Draw();
 	tower->Draw(DirectXDevice::cmdList);
 	//floor1->Draw(DirectXDevice::cmdList,DirectXDevice::dev);
 	stage->Update();
 	stage->Draw();
-	//‚±‚±‚Ü‚Å
-	DirectXDevice::cmdList->Close();
+
 	enemy->Update();
 	enemy->Draw();
+
+
+	//‚±‚±‚Ü‚Å
+	DirectXDevice::cmdList->Close();
 
 	ID3D12CommandList* cmdLists[] = { DirectXDevice::cmdList };
 	cmdQueue->ExecuteCommandLists(1, cmdLists);

@@ -13,7 +13,7 @@ Tower::~Tower()
 void Tower::Initialize(ID3D12Device* dev)
 {
 	obj->Initialize(dev);
-	obj->LoadObj("triangle_mat");
+	obj->LoadObj("20255_Triangular_Prism_V1");
 }
 
 void Tower::Update()
