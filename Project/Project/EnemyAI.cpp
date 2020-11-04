@@ -18,7 +18,9 @@ void EnemyAI::Initialize()
 void EnemyAI::Update()
 {
 	XMFLOAT3 velocity;
-	velocity= pol->position - tower.GetPosition;
+	velocity.x = pol->position.x - tower.GetPosition().x;
+	velocity.y = pol->position.y - tower.GetPosition().y;
+	velocity.z = pol->position.z - tower.GetPosition().z;
 	pol->position.x += velocity.x;
 	pol->position.y += velocity.y;
 	pol->position.z += velocity.z;

@@ -42,8 +42,8 @@ void Enemy::Install(EnemyAI Ai)
 
 void Enemy::SetState()
 {
-	Hp = ai.GetHp;
-	Speed = ai.GetSpeed;
-	Power = ai.GetPower;
+	Hp = ai.GetHp();
+	Speed = ai.GetSpeed();
+	Power = ai.GetPower();
 }
 
