@@ -156,6 +156,7 @@
     <ClCompile Include="PMDClass.cpp" />
     <ClCompile Include="Poly.cpp" />
     <ClCompile Include="Sprite.cpp" />
+    <ClCompile Include="Stage.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Title.cpp" />
     <ClCompile Include="Tower.cpp" />
@@ -222,6 +223,7 @@
     <ClInclude Include="PMDClass.h" />
     <ClInclude Include="Poly.h" />
     <ClInclude Include="Sprite.h" />
+    <ClInclude Include="Stage.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Title.h" />
     <ClInclude Include="Tower.h" />
