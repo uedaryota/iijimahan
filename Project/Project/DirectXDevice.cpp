@@ -54,10 +54,11 @@ void DirectXDevice::Initialize()
 	floor1->Initialize(DirectXDevice::dev);
 	stage->Initialize();
 	enemy->Initialize();
-	enemy->SetScale(XMFLOAT3(30, 30, 30));
-	enemy->SetPos(XMFLOAT3(30, 30, 30));
-	//enemy->Install(*ai);
+	enemy->Install(*ai);
+	enemy->SetScale(XMFLOAT3(2, 2, 2));
+	enemy->SetPos(XMFLOAT3(60, 60, 60));
 }
+	
 void DirectXDevice::Update()
 {
 	HRESULT result;
@@ -104,10 +105,12 @@ void DirectXDevice::Update()
 	//floor1->Draw(DirectXDevice::cmdList,DirectXDevice::dev);
 	stage->Update();
 	stage->Draw();
+	enemy->Update();
+	
+	enemy->Draw();
 	//‚±‚±‚Ü‚Å
 	DirectXDevice::cmdList->Close();
-	enemy->Update();
-	enemy->Draw();
+	
 
 	ID3D12CommandList* cmdLists[] = { DirectXDevice::cmdList };
 	cmdQueue->ExecuteCommandLists(1, cmdLists);

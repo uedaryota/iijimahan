@@ -12,13 +12,18 @@ Enemy::~Enemy()
 void Enemy::Initialize()
 {
 	pol->Initialize(DirectXDevice::dev);
+	ai.Initialize();
 	SetState();
 }
 
 void Enemy::Update()
 {
 	pol->Update();
+	//vel = //ai.UpdateAI();
+	PositionUpdate();
 }
+
+
 
 void Enemy::Draw()
 {
@@ -45,5 +50,17 @@ void Enemy::SetState()
 	Hp = ai.GetHp();
 	Speed = ai.GetSpeed();
 	Power = ai.GetPower();
+}
+
+void Enemy::PositionUpdate()
+{
+	if (pol->position.x > 0) {
+		pol->position.x = pol->position.x + vel.x;
+	}
+	pol->position.y = pol->position.y + vel.y;
+	if (pol->position.z > 0)
+	{
+		pol->position.z = pol->position.z + vel.z;
+	}
 }
 
