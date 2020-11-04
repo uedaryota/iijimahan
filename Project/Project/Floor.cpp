@@ -6,9 +6,8 @@ Floor::Floor()
 {
 }
 
-void Floor::Initialize(ID3D12Device * dev, Camera* camera)
+void Floor::Initialize(ID3D12Device * dev)
 {
-	c = camera;
 	CreateMainHeap(dev);
 	CreatePipeline(dev);
 	SetVert(dev);
@@ -498,12 +497,12 @@ void Floor::Update()
 	//
 	if (input->PushKey(DIK_B))
 	{
-		c->SetTarget(XMFLOAT3(10, 0, 0));
+		Camera::SetTarget(XMFLOAT3(10, 0, 0));
 	}
 	//c.SetEye(position);
 
 	matView = XMMatrixLookAtLH(
-		XMLoadFloat3(&c->CameraPos()), XMLoadFloat3(&c->Target()), XMLoadFloat3(&c->Up())
+		XMLoadFloat3(&Camera::CameraPos()), XMLoadFloat3(&Camera::Target()), XMLoadFloat3(&Camera::Up())
 	);
 
 	HRESULT result;

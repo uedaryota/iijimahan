@@ -32,7 +32,7 @@ class Floor
 public:
 	Floor(); 
 
-	void Initialize(ID3D12Device* dev, Camera* camera);
+	void Initialize(ID3D12Device* dev);
 	void CreatePipeline(ID3D12Device* dev);
 	void CreateMainHeap(ID3D12Device* dev);
 	void SetDepth(ID3D12Device* dev);
