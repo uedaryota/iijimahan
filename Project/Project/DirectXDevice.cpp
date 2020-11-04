@@ -22,6 +22,7 @@ PMDClass* pmd = new PMDClass();
 Floor* floor1 = new Floor();
 Tower* tower = new Tower();
 Block* block = new Block();
+Sound* sound = new Sound();
 
 LRESULT WindowProc1(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
@@ -47,6 +48,7 @@ void DirectXDevice::Initialize()
 	block->Initialize();
 	tower->Initialize(DirectXDevice::dev);
 	floor1->Initialize(DirectXDevice::dev);
+	sound->Initialize();
 }
 void DirectXDevice::Update()
 {
@@ -89,6 +91,7 @@ void DirectXDevice::Update()
 	block->Update();
 	tower->Update();
 	floor1->Update();
+	sound->Update();
 	block->Draw();
 	tower->Draw(DirectXDevice::cmdList);
 	floor1->Draw(DirectXDevice::cmdList,DirectXDevice::dev);
