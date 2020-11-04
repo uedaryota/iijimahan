@@ -158,6 +158,7 @@
     <ClCompile Include="ObjFile.cpp" />
     <ClCompile Include="PMDClass.cpp" />
     <ClCompile Include="Poly.cpp" />
+    <ClCompile Include="Sound.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Stage.cpp" />
     <ClCompile Include="Texture.cpp" />
@@ -228,6 +229,7 @@
     <ClInclude Include="ObjFile.h" />
     <ClInclude Include="PMDClass.h" />
     <ClInclude Include="Poly.h" />
+    <ClInclude Include="Sound.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="Stage.h" />
     <ClInclude Include="Texture.h" />

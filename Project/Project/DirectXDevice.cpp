@@ -24,6 +24,7 @@ PMDClass* pmd = new PMDClass();
 Floor* floor1 = new Floor();
 Tower* tower = new Tower();
 Block* block = new Block();
+Sound* sound = new Sound();
 Stage* stage = new Stage();
 Enemy* enemy = new Enemy();
 EnemyAI* ai = new EnemyAI();
@@ -52,12 +53,14 @@ void DirectXDevice::Initialize()
 	block->Initialize();
 	tower->Initialize(DirectXDevice::dev);
 	floor1->Initialize(DirectXDevice::dev);
+	sound->Initialize();
 	stage->Initialize();
 	enemy->Initialize();
-	//enemy->SetScale(XMFLOAT3(, 30, 30));
-	enemy->SetPos(XMFLOAT3(30, 30, 30));
-	//enemy->Install(*ai);
+	enemy->Install(*ai);
+	enemy->SetScale(XMFLOAT3(2, 2, 2));
+	enemy->SetPos(XMFLOAT3(60, 60, 60));
 }
+	
 void DirectXDevice::Update()
 {
 	HRESULT result;
@@ -96,19 +99,21 @@ void DirectXDevice::Update()
 	DirectXDevice::cmdList->RSSetScissorRects(1, &scissorrect);
 	//‚±‚±‚©‚çUpdate
 	//tex->Update();
+	block->Update();
 	tower->Update();
+	sound->Update();
 	//floor1->Update();
+	block->Draw();
 	tower->Draw(DirectXDevice::cmdList);
 	//floor1->Draw(DirectXDevice::cmdList,DirectXDevice::dev);
 	stage->Update();
 	stage->Draw();
-
 	enemy->Update();
+	
 	enemy->Draw();
-
-
 	//‚±‚±‚Ü‚Å
 	DirectXDevice::cmdList->Close();
+	
 
 	ID3D12CommandList* cmdLists[] = { DirectXDevice::cmdList };
 	cmdQueue->ExecuteCommandLists(1, cmdLists);
