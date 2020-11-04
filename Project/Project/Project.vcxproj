@@ -148,6 +148,8 @@
     <ClCompile Include="Block.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="DirectXDevice.cpp" />
+    <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="EnemyAI.cpp" />
     <ClCompile Include="Floor.cpp" />
     <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="Input.cpp" />
@@ -157,6 +159,7 @@
     <ClCompile Include="Poly.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="Sprite.cpp" />
+    <ClCompile Include="Stage.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Title.cpp" />
     <ClCompile Include="Tower.cpp" />
@@ -216,6 +219,8 @@
     <ClInclude Include="Block.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="DirectXDevice.h" />
+    <ClInclude Include="Enemy.h" />
+    <ClInclude Include="EnemyAI.h" />
     <ClInclude Include="Floor.h" />
     <ClInclude Include="GameScene.h" />
     <ClInclude Include="Input.h" />
@@ -224,6 +229,7 @@
     <ClInclude Include="Poly.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="Sprite.h" />
+    <ClInclude Include="Stage.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Title.h" />
     <ClInclude Include="Tower.h" />

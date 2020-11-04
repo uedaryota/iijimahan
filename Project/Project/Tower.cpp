@@ -60,3 +60,11 @@ void Tower::Draw(ID3D12GraphicsCommandList * cmdList)
 {
 	obj->Draw(cmdList);
 }
+
+
+XMFLOAT3 Tower::GetPosition()
+{
+	XMFLOAT3 position;
+	position = obj->position;
+	return position;
+}

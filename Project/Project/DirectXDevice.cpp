@@ -1,4 +1,6 @@
+
 #include "DirectXDevice.h"
+
 ID3D12GraphicsCommandList* DirectXDevice::cmdList = nullptr;;
 ID3D12Device* DirectXDevice::dev = nullptr;
 IDXGIFactory6*  DirectXDevice::dxgifactory;
@@ -23,6 +25,9 @@ Floor* floor1 = new Floor();
 Tower* tower = new Tower();
 Block* block = new Block();
 Sound* sound = new Sound();
+Stage* stage = new Stage();
+Enemy* enemy = new Enemy();
+EnemyAI* ai = new EnemyAI();
 
 LRESULT WindowProc1(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
@@ -49,7 +54,13 @@ void DirectXDevice::Initialize()
 	tower->Initialize(DirectXDevice::dev);
 	floor1->Initialize(DirectXDevice::dev);
 	sound->Initialize();
+	stage->Initialize();
+	enemy->Initialize();
+	enemy->Install(*ai);
+	enemy->SetScale(XMFLOAT3(2, 2, 2));
+	enemy->SetPos(XMFLOAT3(60, 60, 60));
 }
+	
 void DirectXDevice::Update()
 {
 	HRESULT result;
@@ -90,14 +101,19 @@ void DirectXDevice::Update()
 	//tex->Update();
 	block->Update();
 	tower->Update();
-	floor1->Update();
 	sound->Update();
+	//floor1->Update();
 	block->Draw();
 	tower->Draw(DirectXDevice::cmdList);
-	floor1->Draw(DirectXDevice::cmdList,DirectXDevice::dev);
-
+	//floor1->Draw(DirectXDevice::cmdList,DirectXDevice::dev);
+	stage->Update();
+	stage->Draw();
+	enemy->Update();
+	
+	enemy->Draw();
 	//‚±‚±‚Ü‚Å
 	DirectXDevice::cmdList->Close();
+	
 
 	ID3D12CommandList* cmdLists[] = { DirectXDevice::cmdList };
 	cmdQueue->ExecuteCommandLists(1, cmdLists);
