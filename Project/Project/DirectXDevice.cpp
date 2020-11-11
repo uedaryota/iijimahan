@@ -27,6 +27,7 @@ Block* block = new Block();
 Stage* stage = new Stage();
 Enemy* enemy = new Enemy();
 EnemyAI* ai = new EnemyAI();
+EnemyManeger* manager = new EnemyManeger();
 
 LRESULT WindowProc1(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
@@ -52,11 +53,9 @@ void DirectXDevice::Initialize()
 	block->Initialize();
 	tower->Initialize(DirectXDevice::dev);
 	floor1->Initialize(DirectXDevice::dev);
+	manager->Initialize();
 	stage->Initialize();
-	enemy->Initialize();
-	enemy->Install(*ai);
-	enemy->SetScale(XMFLOAT3(2, 2, 2));
-	enemy->SetPos(XMFLOAT3(60, 60, 60));
+	manager->Add(enemy);
 }
 	
 void DirectXDevice::Update()
@@ -105,9 +104,10 @@ void DirectXDevice::Update()
 	//floor1->Draw(DirectXDevice::cmdList,DirectXDevice::dev);
 	stage->Update();
 	stage->Draw();
-	enemy->Update();
-	
-	enemy->Draw();
+	manager->Update();
+	manager->Draw();
+	//enemy->Draw();
+	//manager->Draw();
 	//‚±‚±‚Ü‚Å
 	DirectXDevice::cmdList->Close();
 	

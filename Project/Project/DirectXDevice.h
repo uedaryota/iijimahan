@@ -20,6 +20,7 @@
 #pragma comment(lib,"dxgi.lib")
 #pragma comment(lib,"d3dcompiler.lib")
 #include"Enemy.h"
+#include"EnemyManeger.h"
 
 using namespace std;
 using namespace DirectX;
