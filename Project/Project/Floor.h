@@ -28,6 +28,7 @@ class Floor
 	{
 		XMMATRIX world;
 		XMMATRIX viewproj;
+		float alpha;
 	};
 public:
 	Floor(); 
@@ -53,7 +54,7 @@ public:
 	XMFLOAT3 position = { 0,0,0 };
 	XMFLOAT3 rotation = { XM_PIDIV2,0,0 };
 	XMFLOAT3 scale = { 100.0f,100.0f,100.0f };
-
+	float constalpha = 1;
 private:
 	Camera* c;
 	XMMATRIX matWorld = XMMatrixIdentity();
@@ -61,7 +62,6 @@ private:
 	ID3D12Resource* constBuff = nullptr;
 	XMMATRIX matProjection;
 	MatrocesDate* constMap;
-	 
 	Vertex vertices[4] =
 	{
 		{{-1.0f,-1.0f,0},{0.0f,10.0f}},
@@ -81,5 +81,6 @@ private:
 	XMMATRIX matScale ;
 	XMMATRIX matRot ;
 	XMMATRIX matTrans;
+
 };
 

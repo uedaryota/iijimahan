@@ -10,9 +10,9 @@ CircleCollision::~CircleCollision()
 
 bool CircleCollision::CollisionUpdate(CircleCollision other)
 {
-	if (abs(position.x - other.position.x) < length + other.length&&
-		abs(position.y - other.position.y) < length + other.length&&
-		abs(position.z - other.position.z) < length + other.length)
+	if (fabsf(position.x - other.position.x) < length + other.length&&
+		fabsf(position.y - other.position.y) < length + other.length&&
+		fabsf(position.z - other.position.z) < length + other.length)
 	{
 		return true;
 	}

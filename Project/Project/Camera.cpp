@@ -10,7 +10,7 @@ float Camera::eyeangleZ = 0;
 
 Camera::Camera()
 {
-		cameraPos = XMFLOAT3(0, 45, -75);
+		cameraPos = XMFLOAT3(0, 65, -175);
 		target =  XMFLOAT3(0, 0, 0);
 		up = XMFLOAT3(0, 1, 0);
 	
