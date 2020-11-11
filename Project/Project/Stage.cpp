@@ -68,7 +68,7 @@ void Stage::Update()
 	input->Initialize();
 	input->Update();
 
-	if (input->PushKey(DIK_UP) || input->PushKey(DIK_W) && floorCount == 1 && !push)
+	if (input->PushKey(DIK_UP) && floorCount == 1 && !push || input->PushKey(DIK_W) && floorCount == 1 && !push)
 	{
 		//ƒJƒƒ‰ˆÚ“®
 		push = true;
@@ -84,7 +84,7 @@ void Stage::Update()
 		Camera::cameraPos = XMFLOAT3(Camera::cameraPos.x - vec.x, Camera::cameraPos.y - vec.y, Camera::cameraPos.z - vec.z);*/
 
 	}
-	else if (input->PushKey(DIK_UP) || input->PushKey(DIK_W) && floorCount == 2 && !push)
+	else if (input->PushKey(DIK_UP) && floorCount == 2 && !push || input->PushKey(DIK_W) && floorCount == 2 && !push)
 	{
 		//ƒJƒƒ‰ˆÚ“®
 		push = true;
@@ -101,7 +101,7 @@ void Stage::Update()
 
 	}
 
-	else if (input->PushKey(DIK_DOWN) || input->PushKey(DIK_S) && floorCount == 2 && !push)
+	else if (input->PushKey(DIK_DOWN) && floorCount == 2 && !push || input->PushKey(DIK_S) && floorCount == 2 && !push)
 	{
 
 		push = true;
@@ -118,7 +118,7 @@ void Stage::Update()
 		Camera::cameraPos = XMFLOAT3(Camera::cameraPos.x + vec.x, Camera::cameraPos.y + vec.y, Camera::cameraPos.z + vec.z);*/
 
 	}
-	else if(input->PushKey(DIK_DOWN) || input->PushKey(DIK_S) && floorCount == 3 && !push)
+	else if (input->PushKey(DIK_DOWN) && floorCount == 3 && !push || input->PushKey(DIK_S) && floorCount == 3 && !push)
 	{
 
 		push = true;
