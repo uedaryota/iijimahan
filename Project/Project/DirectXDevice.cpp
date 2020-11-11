@@ -24,6 +24,7 @@ PMDClass* pmd = new PMDClass();
 Floor* floor1 = new Floor();
 Tower* tower = new Tower();
 Block* block = new Block();
+Sound* sound = new Sound();
 Stage* stage = new Stage();
 Enemy* enemy = new Enemy();
 EnemyAI* ai = new EnemyAI();
@@ -54,6 +55,7 @@ void DirectXDevice::Initialize()
 	tower->Initialize(DirectXDevice::dev);
 	floor1->Initialize(DirectXDevice::dev);
 	manager->Initialize();
+	sound->Initialize();
 	stage->Initialize();
 	manager->Add(enemy);
 }
@@ -98,6 +100,7 @@ void DirectXDevice::Update()
 	//tex->Update();
 	block->Update();
 	tower->Update();
+	sound->Update();
 	//floor1->Update();
 	block->Draw();
 	tower->Draw(DirectXDevice::cmdList);

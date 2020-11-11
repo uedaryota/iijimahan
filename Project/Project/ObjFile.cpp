@@ -74,7 +74,7 @@ void ObjFile::Draw(ID3D12GraphicsCommandList * cmdList)
 	cmdList->SetGraphicsRootDescriptorTable(1, GcbvHandle0);
 	cmdList->SetGraphicsRootDescriptorTable(2, GcbvHandle1);
 
-	cmdList->DrawIndexedInstanced((UINT)indices.size(), 1, 0, 0, 0);
+	cmdList->DrawInstanced((UINT)vertices.size(), 1, 0, 0);
 
 
 }
@@ -338,8 +338,11 @@ void ObjFile::LoadObj(std::string name)
 		if (key == "f")
 		{
 			string index_string;
+			int count = 0;
 			while (getline(line_stream, index_string, ' '))
 			{
+				++count;
+				line_stream;
 				std::istringstream index_stream(index_string);
 				unsigned short indexPosition, indexTexcoord, indexNormal;
 				index_stream >> indexPosition;
@@ -354,6 +357,22 @@ void ObjFile::LoadObj(std::string name)
 				vertex.uv = texcoords[indexTexcoord - 1];
 				vertices.emplace_back(vertex);
 				indices.emplace_back(indices.size());
+			
+				if (count == 4)
+				{
+					vertex.pos = vertices[vertices.size() - 2].pos;
+					vertex.normal = vertices[vertices.size() - 2].normal;
+					vertex.uv = vertices[vertices.size() - 2].uv;
+					vertices.emplace_back(vertex);
+					indices.emplace_back(indices.size());
+
+					//直前にインデックスが増えているのでー５
+					vertex.pos = vertices[vertices.size() - 5].pos;
+					vertex.normal = vertices[vertices.size() - 5].normal;
+					vertex.uv = vertices[vertices.size() - 5].uv;
+					vertices.emplace_back(vertex);
+					indices.emplace_back(indices.size());
+				}
 			}
 
 

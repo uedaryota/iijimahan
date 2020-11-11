@@ -72,7 +72,7 @@ public:
 
 	XMFLOAT3 position = { 0,0,0 };
 	XMFLOAT3 rotation = { 0,0,0 };
-	XMFLOAT3 scale = { 100.0f,100.0f,100.0f };
+	XMFLOAT3 scale = { 10.0f,10.0f,10.0f };
 
 private:
 

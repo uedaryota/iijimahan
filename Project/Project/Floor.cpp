@@ -22,7 +22,7 @@ void Floor::CreatePipeline(ID3D12Device * dev)
 	ID3DBlob* errorBlob = nullptr;
 	HRESULT result;
 	result = D3DCompileFromFile(
-		L"BasicVertexShader.hlsl", // シェーダファイル名
+		L"FloorVertexShader.hlsl", // シェーダファイル名
 		nullptr,
 		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
 		"main", "vs_5_0", // エントリーポイント名、シェーダーモデル指定
@@ -31,7 +31,7 @@ void Floor::CreatePipeline(ID3D12Device * dev)
 		&vsBlob, &errorBlob);
 	// ピクセルシェーダの読み込みとコンパイル
 	result = D3DCompileFromFile(
-		L"BasicPixelShader.hlsl", // シェーダファイル名
+		L"FloorPixelShader.hlsl", // シェーダファイル名
 		nullptr,
 		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
 		"main", "ps_5_0", // エントリーポイント名、シェーダーモデル指定
@@ -143,12 +143,12 @@ void Floor::CreatePipeline(ID3D12Device * dev)
 	D3D12_ROOT_PARAMETER rootparam[2] = {};
 
 	rootparam[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-	rootparam[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;//ALL
+	rootparam[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//ALL
 	rootparam[0].DescriptorTable.pDescriptorRanges = &descTblRange[0];
 	rootparam[0].DescriptorTable.NumDescriptorRanges = 1;
 
 	rootparam[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-	rootparam[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;//ALL
+	rootparam[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//ALL
 	rootparam[1].DescriptorTable.pDescriptorRanges = &descTblRange[1];
 	rootparam[1].DescriptorTable.NumDescriptorRanges = 1;
 
@@ -587,6 +587,7 @@ void Floor::Update()
 	result = constBuff->Map(0, nullptr, (void**)&constMap);
 	constMap->world = matWorld;
 	constMap->viewproj = matView * matProjection;
+	constMap->alpha = constalpha;
 	constBuff->Unmap(0, nullptr);
 	delete input;
 }
