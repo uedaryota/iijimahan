@@ -187,12 +187,29 @@ State Enemy::GetState()
 
 void Enemy::Avoid()
 {
+			//接触判定がなくなった時点
 	//switch(CodeOfConduct)//行動理念によって行動が変化します。
+	//case 0:
+	//#pragma region
+	//break;
+	//#pragma endregion
+	//case 1:
+	//#pragma region
+	//break;
+	//#pragma endregion
+	//case 2:
+	//#pragma region
+	//break;
+	//#pragma endregion
+	//case 3:
+	//#pragma region
+	//break;
+	//#pragma endregion
 	//if(/*あたり判定を書きます*/)
 		//右方向への迂回を
 		//if(/*再び判定がTRUEの場合*/)
-			//左方向への迂回をします
-			//接触判定がなくなった時点でAvoidの行動を終了させます。
+			//左方向への迂回をしますでAvoidの行動を終了させます。
+
 
 }
 
