@@ -23,6 +23,8 @@ Camera* c = new Camera();
 PMDClass* pmd = new PMDClass();
 Floor* floor1 = new Floor();
 Tower* tower = new Tower();
+XMFLOAT3 pointA = { 15,15,15 };
+XMFLOAT3 pointB = { -15,-15,-15 };
 Block* block = new Block();
 Sound* sound = new Sound();
 Stage* stage = new Stage();
@@ -58,6 +60,7 @@ void DirectXDevice::Initialize()
 	sound->Initialize();
 	stage->Initialize();
 	manager->Add(enemy);
+	enemy->state = move1;
 }
 	
 void DirectXDevice::Update()
