@@ -92,20 +92,19 @@ void DirectXDevice::Update()
 	float clearColor[] = { 1.0f,1.0f,1.0f,0.0f };
 
 	DirectXDevice::cmdList->ClearRenderTargetView(rtvH, clearColor, 0, nullptr);
-
+	
 	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
 	DirectXDevice::cmdList->ResourceBarrier(1, &barrierDesc);
 
-	viewport2.Width = Camera::window_width;
-	viewport2.Height = Camera::window_height/2;
-	viewport2.TopLeftX = 0;
+	viewport2.Width = Camera::window_width/3;
+	viewport2.Height = Camera::window_height/3;
+	viewport2.TopLeftX = Camera::window_width / 3 * 2;
 	viewport2.TopLeftY = 0;
-	viewport2.MaxDepth = 1.0f;
+	viewport2.MaxDepth = 0.5f;
 	viewport2.MinDepth = 0.0f;
 
-	D3D12_VIEWPORT view[] = { viewport,viewport2 };
-	DirectXDevice::cmdList->RSSetViewports(3, view);
+	DirectXDevice::cmdList->RSSetViewports(1, &viewport);
 	//DirectXDevice::cmdList->RSSetViewports(2, &viewport2);
 
 	DirectXDevice::cmdList->RSSetScissorRects(1, &scissorrect);
@@ -124,6 +123,23 @@ void DirectXDevice::Update()
 	manager->Draw();
 	//enemy->Draw();
 	//manager->Draw();
+	DirectXDevice::cmdList->RSSetViewports(1, &viewport2);
+	float clearColor2[] = { 0.0f,1.0f,0.0f,0.0f };
+
+//	DirectXDevice::cmdList->ClearRenderTargetView(rtvH, clearColor2, 0, nullptr);
+
+	block->Update();
+	tower->Update();
+	sound->Update();
+	//floor1->Update();
+	block->Draw();
+	tower->Draw(DirectXDevice::cmdList);
+	//floor1->Draw(DirectXDevice::cmdList,DirectXDevice::dev);
+	stage->Update();
+	stage->Draw();
+	manager->Update();
+	manager->Draw();
+
 	//Ç±Ç±Ç‹Ç≈
 	DirectXDevice::cmdList->Close();
 	
@@ -377,7 +393,6 @@ void DirectXDevice::SetView_Scissor()
 	DirectXDevice::viewport.TopLeftY = 0;
 	DirectXDevice::viewport.MaxDepth = 1.0f;
 	DirectXDevice::viewport.MinDepth = 0.0f;
-
 
 	//D3D12_RECT scissorrect{};
 	DirectXDevice::scissorrect.left = 0; // êÿÇËî≤Ç´ç¿ïWç∂

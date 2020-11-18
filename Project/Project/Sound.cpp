@@ -1,6 +1,12 @@
 #include "Sound.h"
 #include <fstream>
 #include <cassert>
+#include <tchar.h>
+#include <comutil.h>
+
+#pragma comment(lib, "strmiids.lib")
+
+#define FILENAME L".\\Resources\\01.mp3"
 
 void Sound::Initialize()
 {
@@ -19,6 +25,9 @@ void Sound::Initialize()
 	{
 		assert(0);
 	}
+	Sound sound;
+	BSTR Titlemp3 = ::SysAllocString(L".\\Resources\\01.mp3");
+	sound.LoadFile(Titlemp3);
 }
 
 void Sound::Update()
@@ -30,8 +39,13 @@ void Sound::Update()
 	{
 		PlayWave("Resources/Alarm01.wav");
 	}
+	if (input->PushKey(DIK_P))
+	{
+		//PlayRoop();
+	}
 }
 
+//Wave再生
 void Sound::PlayWave(const char* filename)
 {
 	HRESULT result;
@@ -106,4 +120,96 @@ void Sound::PlayWave(const char* filename)
 	result = pSourceVoice->Start();
 
 #pragma endregion
+}
+
+//ファイルの読み込み
+void Sound::LoadFile(BSTR file)
+{
+	CoInitialize(NULL);
+	CoCreateInstance(CLSID_FilterGraph, NULL, CLSCTX_INPROC, IID_IGraphBuilder, (LPVOID *)&pGraphBuilder);
+
+	pGraphBuilder->QueryInterface(IID_IMediaControl, (LPVOID *)&pMediaControl);
+	pGraphBuilder->QueryInterface(IID_IMediaPosition, (LPVOID *)&pMediaPosition);
+
+	pMediaControl->RenderFile(file);
+}
+
+// 通常再生
+void Sound::Play()
+{
+	pMediaControl->Run();
+	isPlay = true;
+	isRoopMode = false;
+}
+
+// ループ再生
+void Sound::PlayRoop()
+{
+	pMediaControl->Run();
+	isPlay = true;
+	isRoopMode = true;
+}
+
+void Sound::ChkRoop()
+{
+	if (!isPlay || !isRoopMode) { return; }
+
+	REFTIME pos, end;
+	pMediaPosition->get_CurrentPosition(&pos);
+	pMediaPosition->get_StopTime(&end);
+	if (pos >= end)
+	{
+		Stop();
+		PlayRoop();
+	}
+}
+
+// 先頭に戻して再生し直し
+void Sound::PlayStart()
+{
+	pMediaPosition->put_CurrentPosition(0);
+	pMediaControl->Run();
+
+	isPlay = true;
+}
+
+// 一時停止
+void Sound::Pause()
+{
+	pMediaControl->Pause();
+
+	isPlay = false;
+}
+
+// 停止
+void Sound::Stop()
+{
+	pMediaControl->Stop();
+	pMediaPosition->put_CurrentPosition(0);
+
+	isPlay = false;
+}
+
+// リソース解放
+void Sound::Release()
+{
+	if (pMediaPosition)
+	{
+		pMediaPosition->Release();
+		pMediaPosition = NULL;
+	}
+
+	if (pMediaControl)
+	{
+		pMediaControl->Release();
+		pMediaControl = NULL;
+	}
+
+	if (pGraphBuilder)
+	{
+		pGraphBuilder->Release();
+		pGraphBuilder = NULL;
+
+		CoUninitialize();
+	}
 }

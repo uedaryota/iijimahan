@@ -32,12 +32,13 @@ class Sprite
 
 public:
 	Sprite();
-	void Initialize(ID3D12Device* dev);
-	void CreatePipeline(ID3D12Device* dev);
-	void CreateMainHeap(ID3D12Device* dev);
-	void SetDepth(ID3D12Device* dev);
-	void SetVert(ID3D12Device* dev);
-	void Draw(ID3D12GraphicsCommandList* cmdList, ID3D12Device* dev);
+	void Initialize();
+	void CreatePipeline();
+	void CreateMainHeap();
+	void ResetTex(const wchar_t* Texname);
+	void SetDepth();
+	void SetVert();
+	void Draw();
 	void Update();
 	void SetPos(XMFLOAT3 pos);
 	void SetScale(XMFLOAT3 Scale);
