@@ -185,4 +185,15 @@ State Enemy::GetState()
 	return State();
 }
 
+void Enemy::Avoid()
+{
+	//switch(CodeOfConduct)//行動理念によって行動が変化します。
+	//if(/*あたり判定を書きます*/)
+		//右方向への迂回を
+		//if(/*再び判定がTRUEの場合*/)
+			//左方向への迂回をします
+			//接触判定がなくなった時点でAvoidの行動を終了させます。
+
+}
+
 

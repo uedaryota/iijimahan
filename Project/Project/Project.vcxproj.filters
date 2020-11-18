@@ -1,64 +1,181 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <FxCompile Include="BasicPixelShader.hlsl" />
-    <FxCompile Include="BasicVertexShader.hlsl" />
-    <FxCompile Include="ObjPixelShader.hlsl" />
-    <FxCompile Include="ObjVertexShader.hlsl" />
-    <FxCompile Include="PMDPixelShader.hlsl" />
-    <FxCompile Include="PMDVertexShader.hlsl" />
-    <FxCompile Include="FloorPixelShader.hlsl" />
-    <FxCompile Include="FloorVertexShader.hlsl" />
+    <FxCompile Include="BasicPixelShader.hlsl">
+      <Filter>シェーダファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="BasicVertexShader.hlsl">
+      <Filter>シェーダファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="FloorPixelShader.hlsl">
+      <Filter>シェーダファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="FloorVertexShader.hlsl">
+      <Filter>シェーダファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="ObjPixelShader.hlsl">
+      <Filter>シェーダファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="ObjVertexShader.hlsl">
+      <Filter>シェーダファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="PMDPixelShader.hlsl">
+      <Filter>シェーダファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="PMDVertexShader.hlsl">
+      <Filter>シェーダファイル</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Block.cpp" />
-    <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="CircleCollision.cpp" />
-    <ClCompile Include="DirectXDevice.cpp" />
-    <ClCompile Include="Enemy.cpp" />
-    <ClCompile Include="EnemyAI.cpp" />
-    <ClCompile Include="Floor.cpp" />
-    <ClCompile Include="GameScene.cpp" />
-    <ClCompile Include="Input.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="ObjFile.cpp" />
-    <ClCompile Include="PMDClass.cpp" />
-    <ClCompile Include="Poly.cpp" />
-    <ClCompile Include="Sound.cpp" />
-    <ClCompile Include="Sprite.cpp" />
-    <ClCompile Include="Stage.cpp" />
-    <ClCompile Include="Texture.cpp" />
-    <ClCompile Include="Title.cpp" />
-    <ClCompile Include="Tower.cpp" />
-    <ClCompile Include="EnemyManeger.cpp" />
-    <ClCompile Include="Point.cpp" />
+    <ClCompile Include="Block.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="CircleCollision.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectXDevice.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyAI.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyManeger.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Floor.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="GameScene.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Input.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjFile.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="PMDClass.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Poly.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Point.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Stage.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Sprite.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Sound.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Title.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Tower.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Block.h" />
-    <ClInclude Include="Camera.h" />
-    <ClInclude Include="CircleCollision.h" />
-    <ClInclude Include="DirectXDevice.h" />
-    <ClInclude Include="Enemy.h" />
-    <ClInclude Include="EnemyAI.h" />
-    <ClInclude Include="Floor.h" />
-    <ClInclude Include="GameScene.h" />
-    <ClInclude Include="Input.h" />
-    <ClInclude Include="ObjFile.h" />
-    <ClInclude Include="PMDClass.h" />
-    <ClInclude Include="Poly.h" />
-    <ClInclude Include="Sound.h" />
-    <ClInclude Include="Sprite.h" />
-    <ClInclude Include="Stage.h" />
-    <ClInclude Include="Texture.h" />
-    <ClInclude Include="Title.h" />
-    <ClInclude Include="Tower.h" />
-    <ClInclude Include="EnemyManeger.h" />
-    <ClInclude Include="Point.h" />
+    <ClInclude Include="Block.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="CircleCollision.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectXDevice.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyAI.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyManeger.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Floor.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="GameScene.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Input.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjFile.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="PMDClass.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Point.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Poly.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprite.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Stage.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Title.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Tower.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="BasicShaderHeader.hlsli" />
-    <None Include="ObjShaderHeader.hlsli" />
-    <None Include="PMDShaderHeader.hlsli" />
-    <None Include="FloorShaderHeader.hlsli" />
+    <None Include="BasicShaderHeader.hlsli">
+      <Filter>シェーダファイル</Filter>
+    </None>
+    <None Include="FloorShaderHeader.hlsli">
+      <Filter>シェーダファイル</Filter>
+    </None>
+    <None Include="ObjShaderHeader.hlsli">
+      <Filter>シェーダファイル</Filter>
+    </None>
+    <None Include="PMDShaderHeader.hlsli">
+      <Filter>シェーダファイル</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="ソースファイル">
+      <UniqueIdentifier>{cc93b2ec-ef0b-4747-81be-c46808fc816e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダーファイル">
+      <UniqueIdentifier>{20f90e56-93ef-40a3-8331-446b427b50d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="シェーダファイル">
+      <UniqueIdentifier>{c9fa953b-e057-43db-865e-bd37d795fd7e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>
