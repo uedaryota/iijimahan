@@ -1,9 +1,18 @@
 #include "Floor.h"
 #include"Camera.h"
-#include"Input.h"
+
 
 Floor::Floor()
 {
+}
+
+Floor::~Floor()
+{
+	delete(pipelinestate);
+	delete(rootsignature);
+	delete(mainDescHeap);
+	delete(dsvHeap);
+
 }
 
 void Floor::Initialize(ID3D12Device * dev)
@@ -12,7 +21,8 @@ void Floor::Initialize(ID3D12Device * dev)
 	CreatePipeline(dev);
 	SetVert(dev);
 	SetDepth(dev);
-
+	input = new Input();
+	input->Initialize();
 }
 
 void Floor::CreatePipeline(ID3D12Device * dev)
@@ -80,6 +90,182 @@ void Floor::CreatePipeline(ID3D12Device * dev)
 	gpipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK; // 標準設定
 	gpipeline.RasterizerState.MultisampleEnable = false;
 	gpipeline.RasterizerState.CullMode = D3D12_CULL_MODE_NONE; // カリングしない
+	gpipeline.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID; // ポリゴン内塗りつぶし
+	gpipeline.RasterizerState.DepthClipEnable = true; // 深度クリッピングを有効に
+
+	gpipeline.BlendState.AlphaToCoverageEnable = false;
+	gpipeline.BlendState.IndependentBlendEnable = false;
+	// レンダーターゲットのブレンド設定(8 個あるがいまは一つしか使わない) 
+	D3D12_RENDER_TARGET_BLEND_DESC blenddesc{};
+	blenddesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL; // 標準設定
+	blenddesc.BlendEnable = true;
+	blenddesc.BlendOpAlpha = D3D12_BLEND_OP_ADD;
+	blenddesc.SrcBlendAlpha = D3D12_BLEND_ONE;
+	blenddesc.DestBlendAlpha = D3D12_BLEND_ZERO;
+
+	blenddesc.BlendOp = D3D12_BLEND_OP_ADD;  // 加算
+	blenddesc.SrcBlend = D3D12_BLEND_SRC_ALPHA;  // ソースのアルファ値
+	blenddesc.DestBlend = D3D12_BLEND_INV_SRC_ALPHA; // 1.0f-ソースのアルファ値 
+
+	// ブレンドステートに設定する
+	gpipeline.BlendState.RenderTarget[0] = blenddesc;
+
+	gpipeline.InputLayout.pInputElementDescs = inputLayout;
+	gpipeline.InputLayout.NumElements = _countof(inputLayout);
+
+	gpipeline.IBStripCutValue = D3D12_INDEX_BUFFER_STRIP_CUT_VALUE_DISABLED;
+	gpipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+
+	gpipeline.NumRenderTargets = 1; // 描画対象は 1 つ
+	gpipeline.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM; // 0~255 指定の RGBA
+	gpipeline.SampleDesc.Count = 1; // 1 ピクセルにつき 1 回サンプリング
+	gpipeline.SampleDesc.Quality = 0;
+	
+	gpipeline.DepthStencilState.DepthEnable = true;
+	gpipeline.DepthStencilState.StencilEnable = false;
+	gpipeline.DepthStencilState.StencilEnable = false;
+
+	gpipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+	gpipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
+
+	gpipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;
+
+
+
+	D3D12_ROOT_SIGNATURE_DESC rootSigunatureDesc = {};
+	rootSigunatureDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
+	///////////////////////////////
+
+
+
+
+	D3D12_DESCRIPTOR_RANGE descTblRange[2] = {};
+	descTblRange[0].NumDescriptors = 1;
+	descTblRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+	descTblRange[0].BaseShaderRegister = 0;
+	descTblRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+	descTblRange[1].NumDescriptors = 1;
+	descTblRange[1].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
+	descTblRange[1].BaseShaderRegister = 0;
+	descTblRange[1].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+	D3D12_ROOT_PARAMETER rootparam[2] = {};
+
+	rootparam[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	rootparam[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//ALL
+	rootparam[0].DescriptorTable.pDescriptorRanges = &descTblRange[0];
+	rootparam[0].DescriptorTable.NumDescriptorRanges = 1;
+
+	rootparam[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	rootparam[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//ALL
+	rootparam[1].DescriptorTable.pDescriptorRanges = &descTblRange[1];
+	rootparam[1].DescriptorTable.NumDescriptorRanges = 1;
+
+	rootSigunatureDesc.pParameters = rootparam;
+	rootSigunatureDesc.NumParameters = 2;
+
+	D3D12_STATIC_SAMPLER_DESC samplerDesc = {};
+
+	samplerDesc.AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+	samplerDesc.AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+	samplerDesc.AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+	samplerDesc.BorderColor = D3D12_STATIC_BORDER_COLOR_TRANSPARENT_BLACK;
+	samplerDesc.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
+	samplerDesc.MaxLOD = D3D12_FLOAT32_MAX;
+	samplerDesc.MinLOD = 0;
+	samplerDesc.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+	samplerDesc.ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
+
+	rootSigunatureDesc.pStaticSamplers = &samplerDesc;
+	rootSigunatureDesc.NumStaticSamplers = 1;
+	///////////////////////////////
+	ID3DBlob* rootSigBlob = nullptr;
+	result = D3D12SerializeRootSignature(
+		&rootSigunatureDesc,
+		D3D_ROOT_SIGNATURE_VERSION_1_0,
+		&rootSigBlob,
+		&errorBlob);
+
+	result = dev->CreateRootSignature(
+		0,
+		rootSigBlob->GetBufferPointer(),
+		rootSigBlob->GetBufferSize(),
+		IID_PPV_ARGS(&rootsignature)
+	);
+	gpipeline.pRootSignature = rootsignature;
+	result = dev->CreateGraphicsPipelineState(&gpipeline, IID_PPV_ARGS(&pipelinestate));
+
+
+
+}
+
+void Floor::CreateWallPipeline(ID3D12Device * dev)
+{
+
+	ID3DBlob* vsBlob = nullptr;
+	ID3DBlob* psBlob = nullptr;
+	ID3DBlob* errorBlob = nullptr;
+	HRESULT result;
+	result = D3DCompileFromFile(
+		L"FloorVertexShader.hlsl", // シェーダファイル名
+		nullptr,
+		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
+		"main", "vs_5_0", // エントリーポイント名、シェーダーモデル指定
+		D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, // デバッグ用設定
+		0,
+		&vsBlob, &errorBlob);
+	// ピクセルシェーダの読み込みとコンパイル
+	result = D3DCompileFromFile(
+		L"FloorPixelShader.hlsl", // シェーダファイル名
+		nullptr,
+		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
+		"main", "ps_5_0", // エントリーポイント名、シェーダーモデル指定
+		D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, // デバッグ用設定
+		0,
+		&psBlob, &errorBlob);
+
+
+	D3D12_INPUT_ELEMENT_DESC inputLayout[] = {
+		{
+		"POSITION",
+		0,
+		DXGI_FORMAT_R32G32B32_FLOAT,
+		0,
+		D3D12_APPEND_ALIGNED_ELEMENT,
+		D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,
+		0
+		},
+{
+		"TEXCOORD",
+		0,
+		DXGI_FORMAT_R32G32_FLOAT,
+		0,
+		D3D12_APPEND_ALIGNED_ELEMENT,
+		D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,
+		0
+		},
+	};
+
+
+
+
+
+
+
+
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC gpipeline{};
+
+
+	gpipeline.pRootSignature = nullptr;
+	gpipeline.VS.pShaderBytecode = vsBlob->GetBufferPointer();
+	gpipeline.VS.BytecodeLength = vsBlob->GetBufferSize();
+	gpipeline.PS.pShaderBytecode = psBlob->GetBufferPointer();
+	gpipeline.PS.BytecodeLength = psBlob->GetBufferSize();
+
+	gpipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK; // 標準設定
+	gpipeline.RasterizerState.MultisampleEnable = false;
+	gpipeline.RasterizerState.CullMode = D3D12_CULL_MODE_BACK; // カリングしない
 	gpipeline.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID; // ポリゴン内塗りつぶし
 	gpipeline.RasterizerState.DepthClipEnable = true; // 深度クリッピングを有効に
 
@@ -556,8 +742,7 @@ void Floor::Draw(ID3D12GraphicsCommandList * cmdList, ID3D12Device * dev)
 
 void Floor::Update()
 {
-	Input* input = new Input();
-	input->Initialize();
+	
 	input->Update();
 	matScale = XMMatrixScaling(scale.x, scale.y, scale.z);
 	matRot = XMMatrixIdentity();
@@ -589,7 +774,7 @@ void Floor::Update()
 	constMap->viewproj = matView * matProjection;
 	constMap->alpha = constalpha;
 	constBuff->Unmap(0, nullptr);
-	delete input;
+
 }
 
 void Floor::SetPos(XMFLOAT3 pos)

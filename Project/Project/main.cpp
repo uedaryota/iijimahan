@@ -8,15 +8,7 @@
 #include<vector>
 #include<DirectXMath.h>
 #include<d3dcompiler.h>
-#include"Texture.h"
-#include"PMDClass.h"
-#include"Floor.h"
-#include"Camera.h"
-#include"Poly.h"
-#include"Sprite.h"
-#include"ObjFile.h"
-#include"Tower.h"
-#include"Block.h"
+
 #include"DirectXDevice.h"
 #pragma comment(lib,"d3d12.lib")
 #pragma comment(lib,"dxgi.lib")

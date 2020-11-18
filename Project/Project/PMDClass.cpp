@@ -1,13 +1,13 @@
 ﻿#include "PMDClass.h"
 
-#include"Input.h"
 PMDClass::PMDClass()
 {
 }
 ID3D12Resource* CreateWhiteTexture(ID3D12Device* dev);
 void PMDClass::Initialize(ID3D12Device* dev, Camera* camera)
 {
-	c = camera;
+	input = new Input();
+	input->Initialize();
 	CreateMainHeap(dev);
 	CreatePipeline(dev);
 	SetDepth(dev);
@@ -427,7 +427,7 @@ void PMDClass::CreateMainHeap(ID3D12Device * dev)
 
 
 	matView = XMMatrixLookAtLH(
-		XMLoadFloat3(&c->CameraPos()), XMLoadFloat3(&c->Target()), XMLoadFloat3(&c->Up())
+		XMLoadFloat3(&Camera::CameraPos()), XMLoadFloat3(&Camera::Target()), XMLoadFloat3(&Camera::Up())
 	);
 
 
@@ -536,13 +536,12 @@ void PMDClass::Draw(ID3D12GraphicsCommandList * cmdList, ID3D12Device* dev)
 
 void PMDClass::Update()
 {
-	Input* input = new Input();
-	input->Initialize();
+
 	input->Update();
 
 	if (input->PushKey(DIK_UP))
 	{
-		XMFLOAT3 flontVec = c->NormalizeXZ(XMFLOAT3(c->CameraPos().x - position.x, c->CameraPos().y - position.y, c->CameraPos().z - position.z));
+		XMFLOAT3 flontVec = Camera::NormalizeXZ(XMFLOAT3(Camera::CameraPos().x - position.x, Camera::CameraPos().y - position.y, Camera::CameraPos().z - position.z));
 		position = XMFLOAT3(position.x - flontVec.x, position.y - flontVec.y, position.z - flontVec.z);
 	}
 	if (input->PushKey(DIK_DOWN))
@@ -565,11 +564,11 @@ void PMDClass::Update()
 
 	if (input->PushKey(DIK_A))
 	{
-		c->eyeangleY += 0.03f;
+		Camera::eyeangleY += 0.03f;
 	}
 	if (input->PushKey(DIK_D))
 	{
-		c->eyeangleY -= 0.03f;
+		Camera::eyeangleY -= 0.03f;
 	}
 
 	
@@ -593,8 +592,8 @@ void PMDClass::Update()
 
 	//
 
-	c->SetEye(position);
-	c->SetTarget(position);
+	Camera::SetEye(position);
+	Camera::SetTarget(position);
 
 	matView = XMMatrixLookAtLH(
 		XMLoadFloat3(&Camera::CameraPos()), XMLoadFloat3(&Camera::Target()), XMLoadFloat3(&Camera::Up())
@@ -605,7 +604,6 @@ void PMDClass::Update()
 	constMap->world = matWorld;
 	constMap->viewproj = matView * matProjection;
 	constBuff->Unmap(0, nullptr);
-	delete input;
 	
 }
 
