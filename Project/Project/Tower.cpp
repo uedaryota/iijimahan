@@ -69,3 +69,8 @@ XMFLOAT3 Tower::GetPosition()
 	position = obj->position;
 	return position;
 }
+
+void Tower::SetPoisition(XMFLOAT3 position)
+{
+	obj->position = position;
+}

@@ -20,7 +20,8 @@ void Enemy::Update()
 {
 	pol->Update();
 	//vel = //ai.UpdateAI();
-	PositionUpdate();
+	PositionUpdate(XMFLOAT3{ 15,15,15 }, XMFLOAT3{ -15,-15,-15 }, XMFLOAT3{ 0,0,0 });
+	//UpdateAI(XMFLOAT3{ 15,15,15 }, XMFLOAT3{ -15,-15,-15 }, XMFLOAT3{ 0,0,0 });
 }
 
 
@@ -52,15 +53,136 @@ void Enemy::SetState()
 	Power = ai.GetPower();
 }
 
-void Enemy::PositionUpdate()
+void Enemy::PositionUpdate(XMFLOAT3 pointA, XMFLOAT3 pointB, XMFLOAT3 tower)
 {
-	if (pol->position.x > 0) {
-		pol->position.x = pol->position.x + vel.x;
-	}
-	pol->position.y = pol->position.y + vel.y;
-	if (pol->position.z > 0)
+	switch (state)
 	{
-		pol->position.z = pol->position.z + vel.z;
+	case move1://1ŠK‘wˆÚ“®
+#pragma region
+		if (pol->position.x - pointA.x > 0.5f) {
+			pol->position.x = pol->position.x + vel.x;
+		}
+		else if (pol->position.x - pointA.x < -0.5f)
+		{
+			pol->position.x = pol->position.x + vel.z;
+		}
+		else
+		{
+			NextX = true;
+		}
+		pol->position.y = pol->position.y + vel.y;
+		if (pol->position.z - pointA.z > 0.5f)
+		{
+			pol->position.z = pol->position.z + vel.x;
+		}
+		else if (pol->position.z - pointA.z < -0.5)
+		{
+			pol->position.x = pol->position.x + vel.z;
+			NextZ = true;
+		}
+		else
+		{
+			NextZ = true;
+		}
+		if (NextX == true, NextZ == true)
+		{
+			state = move2;
+			pol->position.y = pol->position.y + Floar2;
+			NextX = false;
+			NextZ = false;
+		}
+		break;
+#pragma endregion
+	case move2://2ŠK‘wˆÚ“®
+#pragma region
+		if (!NextX) {
+			if (pol->position.x > tower.x) {
+				pol->position.x = pol->position.x + vel.x;
+			}
+			else if (pol->position.x < tower.x)
+			{
+				pol->position.x = pol->position.x + vel.z;
+			}
+			else
+			{
+				NextX = true;
+			}
+		}
+		pol->position.y = pol->position.y + vel.y;
+		if (!NextZ) {
+			if (pol->position.z > tower.z)
+			{
+				pol->position.z = pol->position.z + vel.x;
+			}
+			else if (pol->position.z < tower.z)
+			{
+				pol->position.x = pol->position.x + vel.z;
+			}
+			else
+			{
+				NextZ = true;
+			}
+		}
+		if (NextX == true, NextZ == true)
+		{
+			state = atack1;
+			NextX = false;
+			NextZ = false;
+		}
+		break;
+#pragma endregion
+	case move3://3ŠK‘wˆÚ“®
+#pragma region
+		if (pol->position.x > pointB.x) {
+			pol->position.x = pol->position.x + vel.x;
+		}
+		else if (pol->position.x < pointB.x)
+		{
+			pol->position.x = pol->position.x + vel.z;
+		}
+		else
+		{
+			NextX = true;
+		}
+		pol->position.y = pol->position.y + vel.y;
+		if (pol->position.z >  pointB.z)
+		{
+			pol->position.z = pol->position.z + vel.x;
+		}
+		else if (pol->position.z < pointB.z)
+		{
+			pol->position.x = pol->position.x + vel.z;
+		}
+		else
+		{
+			NextZ = true;
+		}
+		if (NextX == true, NextZ == true)
+		{
+			state = move2;
+			NextX = false;
+			NextZ = false;
+		}
+		break;
+#pragma endregion
+	case atack1:
+#pragma region
+		break;
+#pragma endregion
+	case atack2:
+#pragma region
+		break;
+#pragma endregion
+	case Destory:
+#pragma region
+		break;
+#pragma endregion
 	}
+	pol->position;
 }
+State Enemy::GetState()
+{
+	return State();
+}
+
 
