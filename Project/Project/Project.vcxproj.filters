@@ -7,10 +7,13 @@
     <FxCompile Include="ObjVertexShader.hlsl" />
     <FxCompile Include="PMDPixelShader.hlsl" />
     <FxCompile Include="PMDVertexShader.hlsl" />
+    <FxCompile Include="FloorPixelShader.hlsl" />
+    <FxCompile Include="FloorVertexShader.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Block.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CircleCollision.cpp" />
     <ClCompile Include="DirectXDevice.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="EnemyAI.cpp" />
@@ -27,10 +30,13 @@
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Title.cpp" />
     <ClCompile Include="Tower.cpp" />
+    <ClCompile Include="EnemyManeger.cpp" />
+    <ClCompile Include="Point.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Block.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="CircleCollision.h" />
     <ClInclude Include="DirectXDevice.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="EnemyAI.h" />
@@ -46,10 +52,13 @@
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Title.h" />
     <ClInclude Include="Tower.h" />
+    <ClInclude Include="EnemyManeger.h" />
+    <ClInclude Include="Point.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="BasicShaderHeader.hlsli" />
     <None Include="ObjShaderHeader.hlsli" />
     <None Include="PMDShaderHeader.hlsli" />
+    <None Include="FloorShaderHeader.hlsli" />
   </ItemGroup>
 </Project>

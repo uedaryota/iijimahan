@@ -1,16 +1,22 @@
 #pragma once
 #include"Floor.h"
+#include"Input.h"
 class Stage
 {
 public:
 	Stage();
 	void Initialize();
+	void CreateStage(int count);
 	void Update();
 	void Draw();
 
 private:
-	Floor* floor1 = new Floor();
-	Floor* floor2 = new Floor();
-	Floor* floor3 = new Floor();
+	
+	std::vector<Floor*>stageList;
+	int floorCount = 1;
+	int allFloor = 5;
+	float speed = 0.3;
+	bool push = false;
+	Input* input;
 };
 

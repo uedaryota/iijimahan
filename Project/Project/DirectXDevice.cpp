@@ -6,6 +6,7 @@ ID3D12Device* DirectXDevice::dev = nullptr;
 IDXGIFactory6*  DirectXDevice::dxgifactory;
 IDXGISwapChain4*  DirectXDevice::swapchain{};
 D3D12_VIEWPORT  DirectXDevice::viewport;
+D3D12_VIEWPORT viewport2;
 D3D12_RECT  DirectXDevice::scissorrect;
 ID3D12CommandAllocator*  DirectXDevice::cmdAllocator;
 ID3D12CommandQueue* DirectXDevice::cmdQueue = nullptr;
@@ -23,11 +24,14 @@ Camera* c = new Camera();
 PMDClass* pmd = new PMDClass();
 Floor* floor1 = new Floor();
 Tower* tower = new Tower();
+XMFLOAT3 pointA = { 15,15,15 };
+XMFLOAT3 pointB = { -15,-15,-15 };
 Block* block = new Block();
 Sound* sound = new Sound();
 Stage* stage = new Stage();
 Enemy* enemy = new Enemy();
 EnemyAI* ai = new EnemyAI();
+EnemyManeger* manager = new EnemyManeger();
 
 LRESULT WindowProc1(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
@@ -53,12 +57,11 @@ void DirectXDevice::Initialize()
 	block->Initialize();
 	tower->Initialize(DirectXDevice::dev);
 	floor1->Initialize(DirectXDevice::dev);
+	manager->Initialize();
 	sound->Initialize();
 	stage->Initialize();
-	enemy->Initialize();
-	enemy->Install(*ai);
-	enemy->SetScale(XMFLOAT3(2, 2, 2));
-	enemy->SetPos(XMFLOAT3(60, 60, 60));
+	manager->Add(enemy);
+	enemy->state = move1;
 }
 	
 void DirectXDevice::Update()
@@ -94,7 +97,16 @@ void DirectXDevice::Update()
 	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
 	DirectXDevice::cmdList->ResourceBarrier(1, &barrierDesc);
 
-	DirectXDevice::cmdList->RSSetViewports(1, &viewport);
+	viewport2.Width = Camera::window_width;
+	viewport2.Height = Camera::window_height/2;
+	viewport2.TopLeftX = 0;
+	viewport2.TopLeftY = 0;
+	viewport2.MaxDepth = 1.0f;
+	viewport2.MinDepth = 0.0f;
+
+	D3D12_VIEWPORT view[] = { viewport,viewport2 };
+	DirectXDevice::cmdList->RSSetViewports(3, view);
+	//DirectXDevice::cmdList->RSSetViewports(2, &viewport2);
 
 	DirectXDevice::cmdList->RSSetScissorRects(1, &scissorrect);
 	//‚±‚±‚©‚çUpdate
@@ -108,9 +120,10 @@ void DirectXDevice::Update()
 	//floor1->Draw(DirectXDevice::cmdList,DirectXDevice::dev);
 	stage->Update();
 	stage->Draw();
-	enemy->Update();
-	
-	enemy->Draw();
+	manager->Update();
+	manager->Draw();
+	//enemy->Draw();
+	//manager->Draw();
 	//‚±‚±‚Ü‚Å
 	DirectXDevice::cmdList->Close();
 	

@@ -13,6 +13,7 @@ public:
 	void Update();
 	void Draw(ID3D12GraphicsCommandList * cmdList);
 	XMFLOAT3 GetPosition();//11/4エネミー用に位置を送ります。byヤマナカ
+	void SetPoisition(XMFLOAT3 position);//11/11アンカーように位置変更をできるようにします。
 
 private:
 	

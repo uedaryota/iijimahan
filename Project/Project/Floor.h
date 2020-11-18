@@ -11,6 +11,7 @@
 #define DIRECTINPUT_VERSION     0x0800   // DirectInput のバージョン指定
 #include <dinput.h> 
 #include"Camera.h"
+#include"Input.h"
 #pragma comment(lib, "dinput8.lib")
 #pragma comment(lib, "dxguid.lib") 
 #pragma comment(lib, "d3dcompiler.lib")
@@ -28,12 +29,15 @@ class Floor
 	{
 		XMMATRIX world;
 		XMMATRIX viewproj;
+		float alpha;
 	};
 public:
 	Floor(); 
-
+	~Floor();
 	void Initialize(ID3D12Device* dev);
 	void CreatePipeline(ID3D12Device* dev);
+	void CreateWallPipeline(ID3D12Device* dev);
+
 	void CreateMainHeap(ID3D12Device* dev);
 	void ResetTex(const wchar_t* Texname, ID3D12Device * dev);
 	void SetDepth(ID3D12Device* dev);
@@ -53,7 +57,7 @@ public:
 	XMFLOAT3 position = { 0,0,0 };
 	XMFLOAT3 rotation = { XM_PIDIV2,0,0 };
 	XMFLOAT3 scale = { 100.0f,100.0f,100.0f };
-
+	float constalpha = 1;
 private:
 	Camera* c;
 	XMMATRIX matWorld = XMMatrixIdentity();
@@ -61,7 +65,6 @@ private:
 	ID3D12Resource* constBuff = nullptr;
 	XMMATRIX matProjection;
 	MatrocesDate* constMap;
-	 
 	Vertex vertices[4] =
 	{
 		{{-1.0f,-1.0f,0},{0.0f,10.0f}},
@@ -81,5 +84,6 @@ private:
 	XMMATRIX matScale ;
 	XMMATRIX matRot ;
 	XMMATRIX matTrans;
+	Input* input;
 };
 

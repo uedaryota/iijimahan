@@ -15,14 +15,7 @@ void EnemyAI::Initialize()
 	pol->Initialize(DirectXDevice::dev);
 }
 
-XMFLOAT3 EnemyAI::UpdateAI()
-{
-	
-	velocity.x = tower.GetPosition().x - pol->position.x*0.01f;
-	velocity.y = tower.GetPosition().y - pol->position.y*0.01f;
-	velocity.z = tower.GetPosition().z - pol->position.z*0.01f;
-	return velocity;
-}
+
 
 void EnemyAI::SetPos(XMFLOAT3 position)
 {
@@ -53,3 +46,6 @@ EnemyAI EnemyAI::GetAI(EnemyAI ai)
 {
 	return ai;
 }
+
+
+

@@ -1,10 +1,20 @@
 #include "Poly.h"
 #include"Camera.h"
-#include"Input.h"
 
 
 Poly::Poly()
 {
+}
+
+Poly::~Poly()
+{
+	delete(pipelinestate);
+	delete(rootsignature);
+	delete(mainDescHeap);
+	delete(dsvHeap);
+	delete(constBuff);
+	delete(constMap);
+	delete(input);
 }
 
 void Poly::Initialize(ID3D12Device * dev)
@@ -14,7 +24,8 @@ void Poly::Initialize(ID3D12Device * dev)
 	CreatePipeline(dev);
 	SetVert(dev);
 	SetDepth(dev);
-
+	input = new Input();
+	input->Initialize();
 }
 
 void Poly::CreatePipeline(ID3D12Device * dev)
@@ -537,8 +548,7 @@ void Poly::Draw(ID3D12GraphicsCommandList * cmdList, ID3D12Device * dev)
 
 void Poly::Update()
 {
-	Input* input = new Input();
-	input->Initialize();
+
 	input->Update();
 	matScale = XMMatrixScaling(scale.x, scale.y, scale.z);
 	matRot = XMMatrixIdentity();
@@ -563,7 +573,6 @@ void Poly::Update()
 	constMap->world = matWorld;
 	constMap->viewproj = matView * matProjection;
 	constBuff->Unmap(0, nullptr);
-	delete input;
 }
 
 void Poly::SetPos(XMFLOAT3 pos)

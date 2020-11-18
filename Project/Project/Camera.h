@@ -36,7 +36,7 @@ public:
 	static  void SetUp(XMFLOAT3 up);
 	static  void SetCameraPos(XMFLOAT3 cameraPos);
 
-	XMFLOAT3 NormalizeXZ(XMFLOAT3 vec);
+	static XMFLOAT3 NormalizeXZ(XMFLOAT3 vec);
 	static float eyeangleX;
 	static float eyeangleY;
 	static float eyeangleZ;
