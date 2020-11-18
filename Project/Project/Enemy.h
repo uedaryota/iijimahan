@@ -6,6 +6,9 @@ enum State {
 	move1, move2, move3, atack1, atack2, Destory
 };
 
+enum CodeOfConduct {
+	Lazy/*面倒臭がり*/,Pride/*うぬぼれ*/,Coward/*こしぬけ*/,Sage/*知恵者*/,
+};
 class Enemy :EnemyAI
 {
 public:
@@ -29,6 +32,8 @@ public:
 	float Floar2 = 110.0f;
 	State state;
 	State GetState();
+	void Avoid();//避ける行動です。
+	bool AvoidAct = false;//接触判定があった場合はこのフラグをTRUEに変更して、障害物から離れる行動をさせます。
 private:
 	Poly * pol = new Poly();
 };

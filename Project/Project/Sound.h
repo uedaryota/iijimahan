@@ -3,6 +3,7 @@
 #include <Windows.h>
 #include <xaudio2.h>
 #include <wrl.h>
+#include <dshow.h>
 #include "Input.h"
 
 #pragma comment(lib, "xaudio2.lib")
@@ -34,8 +35,15 @@ public:
 
 class Sound
 {
+	IGraphBuilder	*pGraphBuilder;
+	IMediaControl	*pMediaControl;		//ファイルの読み込み、再生停止などを行う。
+	IMediaPosition	*pMediaPosition;	//再生位置を指定するのに使う。
+
+	bool isPlay;
+	bool isRoopMode;
+
 public:
-	//チャンクヘッダ
+	// チャンクヘッダ
 	struct Chunk
 	{
 		char id[4];  //チャンク毎のID
@@ -56,7 +64,7 @@ public:
 		WAVEFORMAT fmt; //波形フォーマット
 	};
 
-	//初期化
+	// 初期化
 	void Initialize();
 
 	void Update();
@@ -66,4 +74,38 @@ public:
 	ComPtr<IXAudio2> xAudio2;
 	IXAudio2MasteringVoice* masterVoice;
 	XAudio2VoiceCallBack voicecallback;
+
+public:
+	Sound()
+	{
+		pGraphBuilder = NULL;
+		pMediaControl = NULL;
+		pMediaPosition = NULL;
+	
+		isPlay = false;
+		isRoopMode = false;
+	}
+	~Sound() { Release(); }
+
+	// ファイルの読み込み
+	void LoadFile(BSTR file);
+
+	// 再生
+	void Play();
+
+	// ループ再生
+	void PlayRoop();
+	void ChkRoop();
+
+	// 先頭に戻して再生し直し
+	void PlayStart();
+
+	// 一時停止
+	void Pause();
+
+	// 停止
+	void Stop();
+
+	// リソース解放
+	void Release();
 };
