@@ -13,5 +13,6 @@ public:
 private:
 	IDirectInputDevice8* devkeyboard = nullptr;
 	BYTE key[256] = {};
+	IDirectInput8* dinput = nullptr;
 };
 

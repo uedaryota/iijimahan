@@ -11,6 +11,8 @@
 #define DIRECTINPUT_VERSION     0x0800   // DirectInput のバージョン指定
 #include <dinput.h> 
 #include"Camera.h"
+#include"Input.h"
+
 #pragma comment(lib, "dinput8.lib")
 #pragma comment(lib, "dxguid.lib") 
 #pragma comment(lib, "d3dcompiler.lib")
@@ -31,7 +33,7 @@ class Poly
 	};
 public:
 	Poly();
-
+	~Poly();
 	void Initialize(ID3D12Device* dev);
 	void CreatePipeline(ID3D12Device* dev);
 	void CreateMainHeap(ID3D12Device* dev);
@@ -71,5 +73,6 @@ private:
 	XMMATRIX matScale;
 	XMMATRIX matRot;
 	XMMATRIX matTrans;
+	Input* input;
 };
 

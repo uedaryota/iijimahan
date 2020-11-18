@@ -6,18 +6,20 @@ Input::Input()
 
 Input::~Input()
 {
+	delete(devkeyboard);
+	delete(dinput);
 }
 
 void Input::Initialize()
 {
 	HRESULT result;
-	IDirectInput8* dinput = nullptr;
 	result = DirectInput8Create(GetModuleHandle(nullptr), DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&dinput, nullptr);
 
 	devkeyboard = nullptr;
 	result = dinput->CreateDevice(GUID_SysKeyboard, &devkeyboard, NULL);
 
 	result = devkeyboard->SetDataFormat(&c_dfDIKeyboard); // •W€Œ`®
+
 }
 
 void Input::Update()

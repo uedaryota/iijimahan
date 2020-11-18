@@ -6,6 +6,7 @@ ID3D12Device* DirectXDevice::dev = nullptr;
 IDXGIFactory6*  DirectXDevice::dxgifactory;
 IDXGISwapChain4*  DirectXDevice::swapchain{};
 D3D12_VIEWPORT  DirectXDevice::viewport;
+D3D12_VIEWPORT viewport2;
 D3D12_RECT  DirectXDevice::scissorrect;
 ID3D12CommandAllocator*  DirectXDevice::cmdAllocator;
 ID3D12CommandQueue* DirectXDevice::cmdQueue = nullptr;
@@ -94,7 +95,16 @@ void DirectXDevice::Update()
 	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
 	DirectXDevice::cmdList->ResourceBarrier(1, &barrierDesc);
 
-	DirectXDevice::cmdList->RSSetViewports(1, &viewport);
+	viewport2.Width = Camera::window_width;
+	viewport2.Height = Camera::window_height/2;
+	viewport2.TopLeftX = 0;
+	viewport2.TopLeftY = 0;
+	viewport2.MaxDepth = 1.0f;
+	viewport2.MinDepth = 0.0f;
+
+	D3D12_VIEWPORT view[] = { viewport,viewport2 };
+	DirectXDevice::cmdList->RSSetViewports(3, view);
+	//DirectXDevice::cmdList->RSSetViewports(2, &viewport2);
 
 	DirectXDevice::cmdList->RSSetScissorRects(1, &scissorrect);
 	//Ç±Ç±Ç©ÇÁUpdate

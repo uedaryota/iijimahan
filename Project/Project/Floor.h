@@ -11,6 +11,7 @@
 #define DIRECTINPUT_VERSION     0x0800   // DirectInput のバージョン指定
 #include <dinput.h> 
 #include"Camera.h"
+#include"Input.h"
 #pragma comment(lib, "dinput8.lib")
 #pragma comment(lib, "dxguid.lib") 
 #pragma comment(lib, "d3dcompiler.lib")
@@ -32,9 +33,11 @@ class Floor
 	};
 public:
 	Floor(); 
-
+	~Floor();
 	void Initialize(ID3D12Device* dev);
 	void CreatePipeline(ID3D12Device* dev);
+	void CreateWallPipeline(ID3D12Device* dev);
+
 	void CreateMainHeap(ID3D12Device* dev);
 	void ResetTex(const wchar_t* Texname, ID3D12Device * dev);
 	void SetDepth(ID3D12Device* dev);
@@ -81,6 +84,6 @@ private:
 	XMMATRIX matScale ;
 	XMMATRIX matRot ;
 	XMMATRIX matTrans;
-
+	Input* input;
 };
 

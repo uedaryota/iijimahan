@@ -12,6 +12,8 @@
 #include <dinput.h> 
 #include"Camera.h"
 #include"Floor.h"
+
+#include"Input.h"
 #pragma comment(lib, "dinput8.lib")
 #pragma comment(lib, "dxguid.lib") 
 #pragma comment(lib, "d3dcompiler.lib")
@@ -112,7 +114,6 @@ private:
 		XMMATRIX world;
 		XMMATRIX viewproj;
 	};
-	Camera* c;
 	XMMATRIX matWorld = XMMatrixIdentity();
 
 
@@ -138,5 +139,6 @@ private:
 	XMFLOAT3 grav = XMFLOAT3(0, -0.1, 0);
 	XMFLOAT3 velocity = XMFLOAT3(0, 0, 0);
 	bool rideFlag = false;
+	Input* input;
 };
 
