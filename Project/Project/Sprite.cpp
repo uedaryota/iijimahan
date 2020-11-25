@@ -1,18 +1,18 @@
 #include "Sprite.h"
-
+#include"DirectXDevice.h"
 Sprite::Sprite()
 {
 
 }
-void Sprite::Initialize(ID3D12Device * dev)
+void Sprite::Initialize()
 {
-	CreateMainHeap(dev);
-	CreatePipeline(dev);
-	SetVert(dev);
-	SetDepth(dev);
+	CreateMainHeap();
+	CreatePipeline();
+	SetVert();
+	SetDepth();
 }
 
-void Sprite::CreatePipeline(ID3D12Device * dev)
+void Sprite::CreatePipeline()
 {
 	ID3DBlob* vsBlob = nullptr;
 	ID3DBlob* psBlob = nullptr;
@@ -172,19 +172,19 @@ void Sprite::CreatePipeline(ID3D12Device * dev)
 		&rootSigBlob,
 		&errorBlob);
 
-	result = dev->CreateRootSignature(
+	result = DirectXDevice::dev->CreateRootSignature(
 		0,
 		rootSigBlob->GetBufferPointer(),
 		rootSigBlob->GetBufferSize(),
 		IID_PPV_ARGS(&rootsignature)
 	);
 	gpipeline.pRootSignature = rootsignature;
-	result = dev->CreateGraphicsPipelineState(&gpipeline, IID_PPV_ARGS(&pipelinestate));
+	result = DirectXDevice::dev->CreateGraphicsPipelineState(&gpipeline, IID_PPV_ARGS(&pipelinestate));
 
 
 }
 
-void Sprite::CreateMainHeap(ID3D12Device * dev)
+void Sprite::CreateMainHeap()
 {
 	HRESULT result;
 
@@ -224,7 +224,7 @@ void Sprite::CreateMainHeap(ID3D12Device * dev)
 
 
 
-	result = dev->CreateCommittedResource(
+	result = DirectXDevice::dev->CreateCommittedResource(
 		&texheapprop,
 		D3D12_HEAP_FLAG_NONE,
 		&texresdes,
@@ -256,23 +256,23 @@ void Sprite::CreateMainHeap(ID3D12Device * dev)
 	descHeapDesc.NumDescriptors = 2;
 	descHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 
-	result = dev->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(&mainDescHeap));
+	result = DirectXDevice::dev->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(&mainDescHeap));
 
 
 	D3D12_CPU_DESCRIPTOR_HANDLE HeapHandle = mainDescHeap->GetCPUDescriptorHandleForHeapStart();
 
-	dev->CreateShaderResourceView(
+	DirectXDevice::dev->CreateShaderResourceView(
 		texBuff,
 		&srvDesc,
 		HeapHandle);
 
-	HeapHandle.ptr += dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	HeapHandle.ptr += DirectXDevice::dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
 
 
 
 
-	//HeapHandle.ptr += dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	//HeapHandle.ptr += DirectXDevice::dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
 	matWorld.r[0].m128_f32[0] = 2.0f / Camera::window_width;
 	matWorld.r[1].m128_f32[1] = -2.0f / Camera::window_height;
@@ -293,7 +293,7 @@ void Sprite::CreateMainHeap(ID3D12Device * dev)
 		1000.0f
 	);
 
-	result = dev->CreateCommittedResource(
+	result = DirectXDevice::dev->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
 		D3D12_HEAP_FLAG_NONE,
 		&CD3DX12_RESOURCE_DESC::Buffer((sizeof(MatrocesDate) + 0xff)&~0xff),
@@ -322,11 +322,86 @@ void Sprite::CreateMainHeap(ID3D12Device * dev)
 	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc = {};
 	cbvDesc.BufferLocation = constBuff->GetGPUVirtualAddress();
 	cbvDesc.SizeInBytes = constBuff->GetDesc().Width;
-	dev->CreateConstantBufferView(&cbvDesc, HeapHandle);
+	DirectXDevice::dev->CreateConstantBufferView(&cbvDesc, HeapHandle);
 	constBuff->Unmap(0, nullptr);
 }
 
-void Sprite::SetDepth(ID3D12Device * dev)
+void Sprite::ResetTex(const wchar_t* Texname)
+{
+	HRESULT result;
+
+	TexMetadata metadate = {};
+	ScratchImage scratchImg = {};
+	result = LoadFromWICFile(
+		Texname,
+		WIC_FLAGS_NONE,
+		&metadate,
+		scratchImg
+	);
+
+	const Image* img = scratchImg.GetImage(0, 0, 0);
+
+
+	D3D12_HEAP_PROPERTIES texheapprop = {};
+	texheapprop.Type = D3D12_HEAP_TYPE_CUSTOM;
+	texheapprop.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_WRITE_BACK;
+	texheapprop.MemoryPoolPreference = D3D12_MEMORY_POOL_L0;
+	texheapprop.CreationNodeMask = 0;
+	texheapprop.VisibleNodeMask = 0;
+
+	D3D12_RESOURCE_DESC texresdes = {};
+
+	texresdes.Format = metadate.format;
+	texresdes.Width = img->width;
+	texresdes.Height = img->height;
+	texresdes.DepthOrArraySize = metadate.arraySize;
+	texresdes.SampleDesc.Count = 1;
+	texresdes.SampleDesc.Quality = 0;
+	texresdes.MipLevels = metadate.mipLevels;
+	texresdes.Dimension = static_cast<D3D12_RESOURCE_DIMENSION>(metadate.dimension);
+	texresdes.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
+	texresdes.Flags = D3D12_RESOURCE_FLAG_NONE;
+
+	ID3D12Resource* texBuff = nullptr;
+
+
+
+	result = DirectXDevice::dev->CreateCommittedResource(
+		&texheapprop,
+		D3D12_HEAP_FLAG_NONE,
+		&texresdes,
+		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+		nullptr,
+		IID_PPV_ARGS(&texBuff));
+
+	result = texBuff->WriteToSubresource(
+		0,
+		nullptr,
+		img->pixels,
+		img->rowPitch,
+		img->slicePitch
+	);
+	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+	srvDesc.Format = metadate.format;//resdescと合わせる
+	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.Texture2D.MipLevels = 1;
+
+
+
+
+
+
+	D3D12_CPU_DESCRIPTOR_HANDLE HeapHandle = mainDescHeap->GetCPUDescriptorHandleForHeapStart();
+
+	DirectXDevice::dev->CreateShaderResourceView(
+		texBuff,
+		&srvDesc,
+		HeapHandle);
+
+}
+
+void Sprite::SetDepth()
 {
 
 	D3D12_RESOURCE_DESC depthresdesc = {};
@@ -350,7 +425,7 @@ void Sprite::SetDepth(ID3D12Device * dev)
 
 	ID3D12Resource* depthBuff = nullptr;
 	HRESULT result;
-	result = dev->CreateCommittedResource(
+	result = DirectXDevice::dev->CreateCommittedResource(
 		&depthHeapProp,
 		D3D12_HEAP_FLAG_NONE,
 		&depthresdesc,
@@ -363,21 +438,21 @@ void Sprite::SetDepth(ID3D12Device * dev)
 	dsvHeapDesc.NumDescriptors = 1;
 	dsvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
 
-	result = dev->CreateDescriptorHeap(&dsvHeapDesc, IID_PPV_ARGS(&dsvHeap));
+	result = DirectXDevice::dev->CreateDescriptorHeap(&dsvHeapDesc, IID_PPV_ARGS(&dsvHeap));
 
 	D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc = {};
 	dsvDesc.Format = DXGI_FORMAT_D32_FLOAT;
 	dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
 	dsvDesc.Flags = D3D12_DSV_FLAG_NONE;
 
-	dev->CreateDepthStencilView(
+	DirectXDevice::dev->CreateDepthStencilView(
 		depthBuff,
 		&dsvDesc,
 		dsvHeap->GetCPUDescriptorHandleForHeapStart());
 
 }
 
-void Sprite::SetVert(ID3D12Device * dev)
+void Sprite::SetVert()
 {
 
 	D3D12_HEAP_PROPERTIES vertheapprop = {};
@@ -399,7 +474,7 @@ void Sprite::SetVert(ID3D12Device * dev)
 	ID3D12Resource* vertBuff;
 	vertBuff = nullptr;
 	HRESULT result;
-	result = dev->CreateCommittedResource(
+	result = DirectXDevice::dev->CreateCommittedResource(
 		&vertheapprop, // ヒープ設定
 		D3D12_HEAP_FLAG_NONE,
 		&vertresdesc, // リソース設定
@@ -421,7 +496,7 @@ void Sprite::SetVert(ID3D12Device * dev)
 	ID3D12Resource* indexBuff = nullptr;
 	vertresdesc.Width = sizeof(indices); // インデックス情報が入る分のサイズ
 	  // GPU リソースの生成 	
-	result = dev->CreateCommittedResource(&vertheapprop, // ヒープ設定
+	result = DirectXDevice::dev->CreateCommittedResource(&vertheapprop, // ヒープ設定
 		D3D12_HEAP_FLAG_NONE, &vertresdesc, // リソース設定 
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
@@ -444,20 +519,20 @@ void Sprite::SetVert(ID3D12Device * dev)
 
 }
 
-void Sprite::Draw(ID3D12GraphicsCommandList * cmdList, ID3D12Device * dev)
+void Sprite::Draw()
 {
-	cmdList->SetPipelineState(pipelinestate);
-	cmdList->SetComputeRootSignature(rootsignature);
-	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	cmdList->IASetVertexBuffers(0, 1, &vbView);
-	cmdList->IASetIndexBuffer(&ibView);
-	cmdList->SetDescriptorHeaps(1, &mainDescHeap);
+	DirectXDevice::cmdList->SetPipelineState(pipelinestate);
+	DirectXDevice::cmdList->SetGraphicsRootSignature(rootsignature);
+	DirectXDevice::cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	DirectXDevice::cmdList->IASetVertexBuffers(0, 1, &vbView);
+	DirectXDevice::cmdList->IASetIndexBuffer(&ibView);
+	DirectXDevice::cmdList->SetDescriptorHeaps(1, &mainDescHeap);
 	D3D12_GPU_DESCRIPTOR_HANDLE handle = mainDescHeap->GetGPUDescriptorHandleForHeapStart();
-	cmdList->SetGraphicsRootDescriptorTable(0, handle);
-	handle.ptr += dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	cmdList->SetGraphicsRootDescriptorTable(1, handle);
+	DirectXDevice::cmdList->SetGraphicsRootDescriptorTable(0, handle);
+	handle.ptr += DirectXDevice::dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	DirectXDevice::cmdList->SetGraphicsRootDescriptorTable(1, handle);
 
-	cmdList->DrawIndexedInstanced(_countof(indices), 1, 0, 0, 0);
+	DirectXDevice::cmdList->DrawIndexedInstanced(_countof(indices), 1, 0, 0, 0);
 }
 
 void Sprite::Update()
