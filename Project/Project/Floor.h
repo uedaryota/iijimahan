@@ -61,9 +61,7 @@ public:
 private:
 	Camera* c;
 	XMMATRIX matWorld = XMMatrixIdentity();
-	XMMATRIX matView;
 	ID3D12Resource* constBuff = nullptr;
-	XMMATRIX matProjection;
 	MatrocesDate* constMap;
 	Vertex vertices[4] =
 	{

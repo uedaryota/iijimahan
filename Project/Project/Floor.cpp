@@ -1,6 +1,6 @@
 #include "Floor.h"
 #include"Camera.h"
-
+#include"DirectXDevice.h"
 
 Floor::Floor()
 {
@@ -484,18 +484,6 @@ void Floor::CreateMainHeap(ID3D12Device * dev)
 	matWorld *= matTrans;
 
 
-	matView = XMMatrixLookAtLH(
-		XMLoadFloat3(&Camera::CameraPos()), XMLoadFloat3(&Camera::Target()), XMLoadFloat3(&Camera::Up())
-	);
-
-
-
-	matProjection = XMMatrixPerspectiveFovLH(
-		XM_PIDIV2,
-		static_cast<float>(Camera::window_width) / static_cast<float>(Camera::window_height),
-		1.0f,
-		1000.0f
-	);
 
 	result = dev->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
@@ -520,8 +508,7 @@ void Floor::CreateMainHeap(ID3D12Device * dev)
 	matWorld *= matRot;
 	matWorld *= matTrans;
 
-	constMap->world = matWorld;
-	constMap->viewproj = matView * matProjection;
+
 	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc = {};
 	cbvDesc.BufferLocation = constBuff->GetGPUVirtualAddress();
 	cbvDesc.SizeInBytes = constBuff->GetDesc().Width;
@@ -725,6 +712,15 @@ void Floor::SetVert(ID3D12Device * dev)
 
 void Floor::Draw(ID3D12GraphicsCommandList * cmdList, ID3D12Device * dev)
 {
+	DirectXDevice::cmdList->RSSetViewports(1, &DirectXDevice::viewport);
+
+	HRESULT result = constBuff->Map(0, nullptr, (void**)&constMap);
+
+	constMap->world = matWorld;
+	constMap->viewproj = Camera::ReturnCameraState()->matView *  Camera::ReturnCameraState()->matProjection;
+	constMap->alpha = constalpha;
+	constBuff->Unmap(0, nullptr);
+
 	cmdList->SetPipelineState(pipelinestate);
 	cmdList->SetGraphicsRootSignature(rootsignature);
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -737,7 +733,26 @@ void Floor::Draw(ID3D12GraphicsCommandList * cmdList, ID3D12Device * dev)
 	handle.ptr += dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 	cmdList->SetGraphicsRootDescriptorTable(1, handle);
 	cmdList->DrawIndexedInstanced(_countof(indices), 1, 0, 0, 0);
-	
+	//
+
+	//DirectXDevice::cmdList->ClearRenderTargetView(DirectXDevice::rtvH, DirectXDevice::clearColor, 0, nullptr);
+
+	Floor& f = *this;
+
+	DirectXDevice::cmdList->RSSetViewports(1, &DirectXDevice::viewport2);
+
+	//result = f.constBuff->Map(0, nullptr, (void**)&f.constMap);
+	//
+
+	//f.constMap->world = f.matWorld;
+	//f.constMap->viewproj = Camera::ReturnSubCameraState()->matView *  Camera::ReturnSubCameraState()->matProjection;
+	//f.constMap->alpha = constalpha;
+	//f.constBuff->Unmap(0, nullptr);
+
+	cmdList->DrawIndexedInstanced(_countof(f.indices), 1, 0, 0, 0);
+
+
+
 }
 
 void Floor::Update()
@@ -764,16 +779,9 @@ void Floor::Update()
 	}
 	//c.SetEye(position);
 
-	matView = XMMatrixLookAtLH(
-		XMLoadFloat3(&Camera::CameraPos()), XMLoadFloat3(&Camera::Target()), XMLoadFloat3(&Camera::Up())
-	);
+	
 
-	HRESULT result;
-	result = constBuff->Map(0, nullptr, (void**)&constMap);
-	constMap->world = matWorld;
-	constMap->viewproj = matView * matProjection;
-	constMap->alpha = constalpha;
-	constBuff->Unmap(0, nullptr);
+
 
 }
 

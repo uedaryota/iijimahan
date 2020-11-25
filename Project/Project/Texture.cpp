@@ -100,7 +100,7 @@ void Texture::Initialize(ID3D12Device* dev, Camera* camera)
 	matWorld = XMMatrixRotationY(angle);
 
 		matView = XMMatrixLookAtLH(
-		XMLoadFloat3(&c->CameraPos()), XMLoadFloat3(&c->Target()), XMLoadFloat3(&c->Up())
+		XMLoadFloat3(&c->MainCameraPos()), XMLoadFloat3(&c->Target()), XMLoadFloat3(&c->Up())
 	);
 
 	
@@ -471,7 +471,7 @@ void Texture::Update()
 
 
 	matView = XMMatrixLookAtLH(
-		XMLoadFloat3(&c->CameraPos()), XMLoadFloat3(&c->Target()), XMLoadFloat3(&c->Up())
+		XMLoadFloat3(&c->MainCameraPos()), XMLoadFloat3(&c->Target()), XMLoadFloat3(&c->Up())
 	);
 
 	HRESULT result;

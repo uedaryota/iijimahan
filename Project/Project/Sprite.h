@@ -28,6 +28,7 @@ class Sprite
 	{
 		XMMATRIX world;
 		XMMATRIX viewproj;
+		float alpha;
 	};
 
 public:
@@ -60,7 +61,7 @@ private:
 	ID3D12Resource* constBuff = nullptr;
 	XMMATRIX matProjection;
 	MatrocesDate* constMap;
-
+	XMMATRIX matBillboard;
 	static const int n = 10;
 	Vertex vertices[4] =
 	{
@@ -79,5 +80,6 @@ private:
 	XMMATRIX matScale;
 	XMMATRIX matRot;
 	XMMATRIX matTrans;
+	float alpha = 1;
 };
 
