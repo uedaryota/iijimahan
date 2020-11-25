@@ -1,5 +1,7 @@
 
 #include "DirectXDevice.h"
+#include <comutil.h>
+#include "Input.h"
 
 ID3D12GraphicsCommandList* DirectXDevice::cmdList = nullptr;;
 ID3D12Device* DirectXDevice::dev = nullptr;
@@ -33,6 +35,7 @@ Enemy* enemy = new Enemy();
 Enemy* enemy2 = new Enemy();
 EnemyAI* ai = new EnemyAI();
 EnemyManeger* manager = new EnemyManeger();
+Input* input = new Input();
 
 LRESULT WindowProc1(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
@@ -67,6 +70,8 @@ void DirectXDevice::Initialize()
 	//enemy->SetTarget(&tower->GetPosition);
 	//enemy2->state = move3;
 	//enemy2->SetPos(XMFLOAT3{ 0.0f,240.0f,0.0f });
+	sound->LoadFile(L".\\Resources\\01.mp3");
+	input->Initialize();
 }
 	
 void DirectXDevice::Update()
@@ -147,6 +152,12 @@ void DirectXDevice::Update()
 
 	//‚±‚±‚Ü‚Å
 	DirectXDevice::cmdList->Close();
+	input->Update();
+
+	if (input->PushKey(DIK_P))
+	{
+		sound->PlayRoop();
+	}
 	
 
 	ID3D12CommandList* cmdLists[] = { DirectXDevice::cmdList };
