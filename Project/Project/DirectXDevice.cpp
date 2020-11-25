@@ -30,6 +30,7 @@ Block* block = new Block();
 Sound* sound = new Sound();
 Stage* stage = new Stage();
 Enemy* enemy = new Enemy();
+Enemy* enemy2 = new Enemy();
 EnemyAI* ai = new EnemyAI();
 EnemyManeger* manager = new EnemyManeger();
 
@@ -61,7 +62,11 @@ void DirectXDevice::Initialize()
 	sound->Initialize();
 	stage->Initialize();
 	manager->Add(enemy);
+	//manager->Add(enemy2);
 	enemy->state = move1;
+	//enemy->SetTarget(&tower->GetPosition);
+	//enemy2->state = move3;
+	//enemy2->SetPos(XMFLOAT3{ 0.0f,240.0f,0.0f });
 }
 	
 void DirectXDevice::Update()

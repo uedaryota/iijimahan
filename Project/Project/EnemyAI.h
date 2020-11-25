@@ -22,9 +22,6 @@ public:
 	float Hp;
 	float Speed;
 	float Power;
-	
-	//XMFLOAT3 UpdateAI(Point pointA, Point pointB, Tower tower);
-	XMFLOAT3 UpdateAI(XMFLOAT3 pointA, XMFLOAT3 pointB, XMFLOAT3 tower);
 private:
 	Poly* pol = new Poly();
 	XMFLOAT3 vel = { -1, 0, 1 };

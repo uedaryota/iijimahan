@@ -13,6 +13,6 @@ public:
 	void Update();//XVˆ—
 
 private:
-	Enemy* enemybox[100];
+	Enemy* enemybox[999];
 	int boxcount = 0;
 };

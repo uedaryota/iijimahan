@@ -19,9 +19,8 @@ void Enemy::Initialize()
 void Enemy::Update()
 {
 	pol->Update();
-	//vel = //ai.UpdateAI();
-	PositionUpdate(XMFLOAT3{ 15,15,15 }, XMFLOAT3{ -15,-15,-15 }, XMFLOAT3{ 0,0,0 });
-	//UpdateAI(XMFLOAT3{ 15,15,15 }, XMFLOAT3{ -15,-15,-15 }, XMFLOAT3{ 0,0,0 });
+	PositionUpdate(XMFLOAT3{ 15,15,15 }, XMFLOAT3{ 15,15,15 }, TargetTower);
+	//	↑一階の移動ポイント、3階の移動ポイント、目標の順番に座標指定しています。数は後々対応させます。
 }
 
 
@@ -53,8 +52,9 @@ void Enemy::SetState()
 	Power = ai.GetPower();
 }
 
-void Enemy::PositionUpdate(XMFLOAT3 pointA, XMFLOAT3 pointB, XMFLOAT3 tower)
+void Enemy::PositionUpdate(XMFLOAT3 pointA, XMFLOAT3 pointB, XMFLOAT3 tower)//エネミーの行動です。
 {
+
 	switch (state)
 	{
 	case move1://1階層移動
@@ -71,18 +71,20 @@ void Enemy::PositionUpdate(XMFLOAT3 pointA, XMFLOAT3 pointB, XMFLOAT3 tower)
 			NextX = true;
 		}
 		pol->position.y = pol->position.y + vel.y;
-		if (pol->position.z - pointA.z > 0.5f)
-		{
-			pol->position.z = pol->position.z + vel.x;
-		}
-		else if (pol->position.z - pointA.z < -0.5)
-		{
-			pol->position.x = pol->position.x + vel.z;
-			NextZ = true;
-		}
-		else
-		{
-			NextZ = true;
+		if (NextX) {
+			if (pol->position.z - pointA.z > 0.5f)
+			{
+				pol->position.z = pol->position.z + vel.x;
+			}
+			else if (pol->position.z - pointA.z < -0.5)
+			{
+				pol->position.x = pol->position.x + vel.z;
+				NextZ = true;
+			}
+			else
+			{
+				NextZ = true;
+			}
 		}
 		if (NextX == true, NextZ == true)
 		{
@@ -96,10 +98,10 @@ void Enemy::PositionUpdate(XMFLOAT3 pointA, XMFLOAT3 pointB, XMFLOAT3 tower)
 	case move2://2階層移動
 #pragma region
 		if (!NextX) {
-			if (pol->position.x > tower.x) {
+			if (pol->position.x - tower.x > 0.5f) {
 				pol->position.x = pol->position.x + vel.x;
 			}
-			else if (pol->position.x < tower.x)
+			else if (pol->position.x - tower.x<-0.5f)
 			{
 				pol->position.x = pol->position.x + vel.z;
 			}
@@ -110,11 +112,11 @@ void Enemy::PositionUpdate(XMFLOAT3 pointA, XMFLOAT3 pointB, XMFLOAT3 tower)
 		}
 		pol->position.y = pol->position.y + vel.y;
 		if (!NextZ) {
-			if (pol->position.z > tower.z)
+			if (pol->position.z - tower.z > 0.5f)
 			{
 				pol->position.z = pol->position.z + vel.x;
 			}
-			else if (pol->position.z < tower.z)
+			else if (pol->position.z - tower.z < -0.5f)
 			{
 				pol->position.x = pol->position.x + vel.z;
 			}
@@ -133,25 +135,28 @@ void Enemy::PositionUpdate(XMFLOAT3 pointA, XMFLOAT3 pointB, XMFLOAT3 tower)
 #pragma endregion
 	case move3://3階層移動
 #pragma region
-		if (pol->position.x > pointB.x) {
-			pol->position.x = pol->position.x + vel.x;
-		}
-		else if (pol->position.x < pointB.x)
-		{
-			pol->position.x = pol->position.x + vel.z;
-		}
-		else
-		{
-			NextX = true;
+		if (NextZ) {
+			if (pol->position.x - pointA.x > 0.5f) {
+				pol->position.x = pol->position.x + vel.x;
+			}
+			else if (pol->position.x - pointA.x < -0.5f)
+			{
+				pol->position.x = pol->position.x + vel.z;
+			}
+			else
+			{
+				NextX = true;
+			}
 		}
 		pol->position.y = pol->position.y + vel.y;
-		if (pol->position.z >  pointB.z)
+		if (pol->position.z - pointA.z > 0.5f)
 		{
 			pol->position.z = pol->position.z + vel.x;
 		}
-		else if (pol->position.z < pointB.z)
+		else if (pol->position.z - pointA.z < -0.5)
 		{
 			pol->position.x = pol->position.x + vel.z;
+			NextZ = true;
 		}
 		else
 		{
@@ -160,6 +165,7 @@ void Enemy::PositionUpdate(XMFLOAT3 pointA, XMFLOAT3 pointB, XMFLOAT3 tower)
 		if (NextX == true, NextZ == true)
 		{
 			state = move2;
+			pol->position.y = pol->position.y - Floar2;
 			NextX = false;
 			NextZ = false;
 		}
@@ -167,6 +173,21 @@ void Enemy::PositionUpdate(XMFLOAT3 pointA, XMFLOAT3 pointB, XMFLOAT3 tower)
 #pragma endregion
 	case atack1:
 #pragma region
+			
+		if (Cnt < 120.0f)
+		{
+			Cnt++;
+			pol->position.y = pol->position.y + vel.z;
+		}
+		else if(Cnt > 240.0f)
+		{
+			Cnt = 0;
+		}
+		else if(Cnt<=240.0f &Cnt>=120.0f)
+		{
+			Cnt++;
+			pol->position.y = pol->position.y - vel.z;
+		}
 		break;
 #pragma endregion
 	case atack2:
@@ -185,7 +206,7 @@ State Enemy::GetState()
 	return State();
 }
 
-void Enemy::Avoid()
+void Enemy::Avoid()//障害物を避けます
 {
 			//接触判定がなくなった時点
 	//switch(CodeOfConduct)//行動理念によって行動が変化します。
@@ -211,6 +232,11 @@ void Enemy::Avoid()
 			//左方向への迂回をしますでAvoidの行動を終了させます。
 
 
+}
+
+void Enemy::SetTarget(XMFLOAT3* x)
+{
+	TargetTower = *x;
 }
 
 
