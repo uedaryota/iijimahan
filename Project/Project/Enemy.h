@@ -37,6 +37,9 @@ public:
 	float Cnt = 0;
 	void SetTarget(XMFLOAT3* x);
 	XMFLOAT3 TargetTower{ 15,15,15 };
+	void SetTower(Tower* tow);
+	Tower* mokuhyou;
+	void TowerAtack();
 private:
 	Poly * pol = new Poly();
 };

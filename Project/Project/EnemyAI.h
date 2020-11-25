@@ -19,9 +19,9 @@ public:
 	XMFLOAT3 velocity;
 	EnemyAI GetAI(EnemyAI ai);
 	Tower tower,pointA,pointB;
-	float Hp;
-	float Speed;
-	float Power;
+	float Hp=1;
+	float Speed=1;
+	float Power=1;
 private:
 	Poly* pol = new Poly();
 	XMFLOAT3 vel = { -1, 0, 1 };
@@ -29,4 +29,3 @@ private:
 	bool NextZ = false;
 	float Floar2 = 110.0f;
 };
-

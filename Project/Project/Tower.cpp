@@ -15,6 +15,7 @@ void Tower::Initialize(ID3D12Device* dev)
 	obj->Initialize(dev);
 	obj->LoadObj("triangle_mat");
 	obj->position.y = 110;
+	hp = 100;
 }
 
 void Tower::Update()
@@ -73,4 +74,14 @@ XMFLOAT3 Tower::GetPosition()
 void Tower::SetPoisition(XMFLOAT3 position)
 {
 	obj->position = position;
+}
+
+float Tower::GetHp()
+{
+	return hp;
+}
+
+void Tower::SetHp(float x)
+{
+	hp = hp - x;
 }

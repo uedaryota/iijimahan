@@ -67,6 +67,7 @@ void DirectXDevice::Initialize()
 	manager->Add(enemy);
 	//manager->Add(enemy2);
 	enemy->state = move1;
+	enemy->SetTower(tower);
 	//enemy->SetTarget(&tower->GetPosition);
 	//enemy2->state = move3;
 	//enemy2->SetPos(XMFLOAT3{ 0.0f,240.0f,0.0f });

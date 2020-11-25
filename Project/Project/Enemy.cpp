@@ -182,6 +182,7 @@ void Enemy::PositionUpdate(XMFLOAT3 pointA, XMFLOAT3 pointB, XMFLOAT3 tower)//ƒG
 		else if(Cnt > 240.0f)
 		{
 			Cnt = 0;
+			TowerAtack();
 		}
 		else if(Cnt<=240.0f &Cnt>=120.0f)
 		{
@@ -237,6 +238,17 @@ void Enemy::Avoid()//áŠQ•¨‚ð”ð‚¯‚Ü‚·
 void Enemy::SetTarget(XMFLOAT3* x)
 {
 	TargetTower = *x;
+}
+
+void Enemy::SetTower(Tower* tow)
+{
+	mokuhyou = tow;
+}
+
+void Enemy::TowerAtack()
+{
+	//mokuhyou->SetHp(GetPower());
+	mokuhyou->hp = mokuhyou->hp - GetPower();
 }
 
 
