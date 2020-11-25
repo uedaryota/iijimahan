@@ -36,11 +36,8 @@ Enemy* enemy = new Enemy();
 Enemy* enemy2 = new Enemy();
 EnemyAI* ai = new EnemyAI();
 EnemyManeger* manager = new EnemyManeger();
-<<<<<<< HEAD
 Sprite* back = new Sprite();
-=======
 Input* input = new Input();
->>>>>>> origin/ãƒ¤ãƒãƒŠä¼¯çˆµã®ä½œæ¥­å ´
 
 LRESULT WindowProc1(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
@@ -72,18 +69,18 @@ void DirectXDevice::Initialize()
 	manager->Add(enemy);
 	//manager->Add(enemy2);
 	enemy->state = move1;
-<<<<<<< HEAD
+
 	back->Initialize();
 	back->ResetTex(L"img/Blueback.png");
 	back->SetScale(XMFLOAT3(Camera::window_width, Camera::window_height, 1));
-=======
+
 	enemy->SetTower(tower);
 	//enemy->SetTarget(&tower->GetPosition);
 	//enemy2->state = move3;
 	//enemy2->SetPos(XMFLOAT3{ 0.0f,240.0f,0.0f });
 	sound->LoadFile(L".\\Resources\\01.mp3");
 	input->Initialize();
->>>>>>> origin/ãƒ¤ãƒãƒŠä¼¯çˆµã®ä½œæ¥­å ´
+
 }
 	
 void DirectXDevice::Update()
@@ -126,17 +123,15 @@ void DirectXDevice::Update()
 	viewport2.MinDepth = 0.0f;
 
 	DirectXDevice::cmdList->RSSetViewports(1, &viewport);
-	//DirectXDevice::cmdList->RSSetViewports(2, &viewport2);
 
 	DirectXDevice::cmdList->RSSetScissorRects(1, &scissorrect);
 	//‚±‚±‚©‚çUpdate
 
 	Camera::Update();
-	block->Update();
 	tower->Update();
 	sound->Update();
 
-	block->Draw();
+
 	tower->Draw(DirectXDevice::cmdList);
 
 	stage->Update();
@@ -145,6 +140,14 @@ void DirectXDevice::Update()
 	manager->Draw();
 	//back->Update();
 	//back->Draw();
+
+	DirectXDevice::cmdList->RSSetViewports(1, &viewport2);
+
+	tower->Draw(DirectXDevice::cmdList);
+
+//	stage->Update();
+	stage->Draw();
+	manager->Draw();
 
 	//‚±‚±‚Ü‚Å
 	DirectXDevice::cmdList->Close();

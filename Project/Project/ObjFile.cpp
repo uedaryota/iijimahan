@@ -57,6 +57,13 @@ void ObjFile::Update()
 
 void ObjFile::Draw(ID3D12GraphicsCommandList * cmdList)
 {
+	HRESULT result = constBuffB0->Map(0, nullptr, (void**)&constMap0);
+
+	constMap0->world = matWorld;
+	constMap0->viewproj = Camera::ReturnCameraState()->matView *  Camera::ReturnCameraState()->matProjection;
+	
+	constBuffB0->Unmap(0, nullptr);
+
 
 	D3D12_GPU_DESCRIPTOR_HANDLE handle = mainDescHeap->GetGPUDescriptorHandleForHeapStart();
 	GsrvHandle = handle;

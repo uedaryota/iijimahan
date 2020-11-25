@@ -712,7 +712,7 @@ void Floor::SetVert(ID3D12Device * dev)
 
 void Floor::Draw(ID3D12GraphicsCommandList * cmdList, ID3D12Device * dev)
 {
-	DirectXDevice::cmdList->RSSetViewports(1, &DirectXDevice::viewport);
+//	DirectXDevice::cmdList->RSSetViewports(1, &DirectXDevice::viewport);
 
 	HRESULT result = constBuff->Map(0, nullptr, (void**)&constMap);
 
@@ -737,9 +737,9 @@ void Floor::Draw(ID3D12GraphicsCommandList * cmdList, ID3D12Device * dev)
 
 	//DirectXDevice::cmdList->ClearRenderTargetView(DirectXDevice::rtvH, DirectXDevice::clearColor, 0, nullptr);
 
-	Floor& f = *this;
+//	Floor& f = *this;
 
-	DirectXDevice::cmdList->RSSetViewports(1, &DirectXDevice::viewport2);
+	//DirectXDevice::cmdList->RSSetViewports(1, &DirectXDevice::viewport2);
 
 	//result = f.constBuff->Map(0, nullptr, (void**)&f.constMap);
 	//
@@ -749,7 +749,7 @@ void Floor::Draw(ID3D12GraphicsCommandList * cmdList, ID3D12Device * dev)
 	//f.constMap->alpha = constalpha;
 	//f.constBuff->Unmap(0, nullptr);
 
-	cmdList->DrawIndexedInstanced(_countof(f.indices), 1, 0, 0, 0);
+//	cmdList->DrawIndexedInstanced(_countof(f.indices), 1, 0, 0, 0);
 
 
 
