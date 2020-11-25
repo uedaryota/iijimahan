@@ -6,8 +6,6 @@
 
 #pragma comment(lib, "strmiids.lib")
 
-#define FILENAME L".\\Resources\\01.mp3"
-
 void Sound::Initialize()
 {
 	HRESULT result;
@@ -25,9 +23,6 @@ void Sound::Initialize()
 	{
 		assert(0);
 	}
-	Sound sound;
-	BSTR Titlemp3 = ::SysAllocString(L".\\Resources\\01.mp3");
-	sound.LoadFile(Titlemp3);
 }
 
 void Sound::Update()
@@ -39,10 +34,11 @@ void Sound::Update()
 	{
 		PlayWave("Resources/Alarm01.wav");
 	}
-	if (input->PushKey(DIK_P))
-	{
-		//PlayRoop();
-	}
+	//if (input->PushKey(DIK_P))
+	//{
+	//	PlayRoop();
+	//}
+	
 }
 
 //WaveÄ¶
@@ -123,7 +119,7 @@ void Sound::PlayWave(const char* filename)
 }
 
 //ƒtƒ@ƒCƒ‹‚Ì“Ç‚İ‚İ
-void Sound::LoadFile(BSTR file)
+void Sound::LoadFile(const wchar_t* filename)
 {
 	CoInitialize(NULL);
 	CoCreateInstance(CLSID_FilterGraph, NULL, CLSCTX_INPROC, IID_IGraphBuilder, (LPVOID *)&pGraphBuilder);
@@ -131,7 +127,8 @@ void Sound::LoadFile(BSTR file)
 	pGraphBuilder->QueryInterface(IID_IMediaControl, (LPVOID *)&pMediaControl);
 	pGraphBuilder->QueryInterface(IID_IMediaPosition, (LPVOID *)&pMediaPosition);
 
-	pMediaControl->RenderFile(file);
+	BSTR soundfile = ::SysAllocString(filename);
+	pMediaControl->RenderFile(soundfile);
 }
 
 // ’ÊíÄ¶

@@ -88,7 +88,7 @@ public:
 	~Sound() { Release(); }
 
 	// ƒtƒ@ƒCƒ‹‚Ì“Ç‚İ‚İ
-	void LoadFile(BSTR file);
+	void LoadFile(const wchar_t* filename);
 
 	// Ä¶
 	void Play();

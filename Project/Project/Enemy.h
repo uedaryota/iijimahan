@@ -26,7 +26,7 @@ public:
 	float Hp;
 	float Speed;
 	float Power;
-	XMFLOAT3 vel = {-1, 0, -1};
+	XMFLOAT3 vel = {-0.1, 0, -0.1};
 	bool NextX = false;
 	bool NextZ = false;
 	float Floar2 = 110.0f;
@@ -34,6 +34,12 @@ public:
 	State GetState();
 	void Avoid();//避ける行動です。
 	bool AvoidAct = false;//接触判定があった場合はこのフラグをTRUEに変更して、障害物から離れる行動をさせます。
+	float Cnt = 0;
+	void SetTarget(XMFLOAT3* x);
+	XMFLOAT3 TargetTower{ 15,15,15 };
+	void SetTower(Tower* tow);
+	Tower* mokuhyou;
+	void TowerAtack();
 private:
 	Poly * pol = new Poly();
 };

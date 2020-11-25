@@ -19,9 +19,8 @@ void Enemy::Initialize()
 void Enemy::Update()
 {
 	pol->Update();
-	//vel = //ai.UpdateAI();
-	PositionUpdate(XMFLOAT3{ 15,15,15 }, XMFLOAT3{ -15,-15,-15 }, XMFLOAT3{ 0,0,0 });
-	//UpdateAI(XMFLOAT3{ 15,15,15 }, XMFLOAT3{ -15,-15,-15 }, XMFLOAT3{ 0,0,0 });
+	PositionUpdate(XMFLOAT3{ 15,15,15 }, XMFLOAT3{ 15,15,15 }, TargetTower);
+	//	ªˆêŠK‚ÌˆÚ“®ƒ|ƒCƒ“ƒgA3ŠK‚ÌˆÚ“®ƒ|ƒCƒ“ƒgA–Ú•W‚Ì‡”Ô‚ÉÀ•WŽw’è‚µ‚Ä‚¢‚Ü‚·B”‚ÍŒãX‘Î‰ž‚³‚¹‚Ü‚·B
 }
 
 
@@ -53,8 +52,9 @@ void Enemy::SetState()
 	Power = ai.GetPower();
 }
 
-void Enemy::PositionUpdate(XMFLOAT3 pointA, XMFLOAT3 pointB, XMFLOAT3 tower)
+void Enemy::PositionUpdate(XMFLOAT3 pointA, XMFLOAT3 pointB, XMFLOAT3 tower)//ƒGƒlƒ~[‚Ìs“®‚Å‚·B
 {
+
 	switch (state)
 	{
 	case move1://1ŠK‘wˆÚ“®
@@ -71,18 +71,20 @@ void Enemy::PositionUpdate(XMFLOAT3 pointA, XMFLOAT3 pointB, XMFLOAT3 tower)
 			NextX = true;
 		}
 		pol->position.y = pol->position.y + vel.y;
-		if (pol->position.z - pointA.z > 0.5f)
-		{
-			pol->position.z = pol->position.z + vel.x;
-		}
-		else if (pol->position.z - pointA.z < -0.5)
-		{
-			pol->position.x = pol->position.x + vel.z;
-			NextZ = true;
-		}
-		else
-		{
-			NextZ = true;
+		if (NextX) {
+			if (pol->position.z - pointA.z > 0.5f)
+			{
+				pol->position.z = pol->position.z + vel.x;
+			}
+			else if (pol->position.z - pointA.z < -0.5)
+			{
+				pol->position.x = pol->position.x + vel.z;
+				NextZ = true;
+			}
+			else
+			{
+				NextZ = true;
+			}
 		}
 		if (NextX == true, NextZ == true)
 		{
@@ -96,10 +98,10 @@ void Enemy::PositionUpdate(XMFLOAT3 pointA, XMFLOAT3 pointB, XMFLOAT3 tower)
 	case move2://2ŠK‘wˆÚ“®
 #pragma region
 		if (!NextX) {
-			if (pol->position.x > tower.x) {
+			if (pol->position.x - tower.x > 0.5f) {
 				pol->position.x = pol->position.x + vel.x;
 			}
-			else if (pol->position.x < tower.x)
+			else if (pol->position.x - tower.x<-0.5f)
 			{
 				pol->position.x = pol->position.x + vel.z;
 			}
@@ -110,11 +112,11 @@ void Enemy::PositionUpdate(XMFLOAT3 pointA, XMFLOAT3 pointB, XMFLOAT3 tower)
 		}
 		pol->position.y = pol->position.y + vel.y;
 		if (!NextZ) {
-			if (pol->position.z > tower.z)
+			if (pol->position.z - tower.z > 0.5f)
 			{
 				pol->position.z = pol->position.z + vel.x;
 			}
-			else if (pol->position.z < tower.z)
+			else if (pol->position.z - tower.z < -0.5f)
 			{
 				pol->position.x = pol->position.x + vel.z;
 			}
@@ -133,25 +135,28 @@ void Enemy::PositionUpdate(XMFLOAT3 pointA, XMFLOAT3 pointB, XMFLOAT3 tower)
 #pragma endregion
 	case move3://3ŠK‘wˆÚ“®
 #pragma region
-		if (pol->position.x > pointB.x) {
-			pol->position.x = pol->position.x + vel.x;
-		}
-		else if (pol->position.x < pointB.x)
-		{
-			pol->position.x = pol->position.x + vel.z;
-		}
-		else
-		{
-			NextX = true;
+		if (NextZ) {
+			if (pol->position.x - pointA.x > 0.5f) {
+				pol->position.x = pol->position.x + vel.x;
+			}
+			else if (pol->position.x - pointA.x < -0.5f)
+			{
+				pol->position.x = pol->position.x + vel.z;
+			}
+			else
+			{
+				NextX = true;
+			}
 		}
 		pol->position.y = pol->position.y + vel.y;
-		if (pol->position.z >  pointB.z)
+		if (pol->position.z - pointA.z > 0.5f)
 		{
 			pol->position.z = pol->position.z + vel.x;
 		}
-		else if (pol->position.z < pointB.z)
+		else if (pol->position.z - pointA.z < -0.5)
 		{
 			pol->position.x = pol->position.x + vel.z;
+			NextZ = true;
 		}
 		else
 		{
@@ -160,6 +165,7 @@ void Enemy::PositionUpdate(XMFLOAT3 pointA, XMFLOAT3 pointB, XMFLOAT3 tower)
 		if (NextX == true, NextZ == true)
 		{
 			state = move2;
+			pol->position.y = pol->position.y - Floar2;
 			NextX = false;
 			NextZ = false;
 		}
@@ -167,6 +173,22 @@ void Enemy::PositionUpdate(XMFLOAT3 pointA, XMFLOAT3 pointB, XMFLOAT3 tower)
 #pragma endregion
 	case atack1:
 #pragma region
+			
+		if (Cnt < 120.0f)
+		{
+			Cnt++;
+			pol->position.y = pol->position.y + vel.z;
+		}
+		else if(Cnt > 240.0f)
+		{
+			Cnt = 0;
+			TowerAtack();
+		}
+		else if(Cnt<=240.0f &Cnt>=120.0f)
+		{
+			Cnt++;
+			pol->position.y = pol->position.y - vel.z;
+		}
 		break;
 #pragma endregion
 	case atack2:
@@ -185,15 +207,48 @@ State Enemy::GetState()
 	return State();
 }
 
-void Enemy::Avoid()
+void Enemy::Avoid()//áŠQ•¨‚ð”ð‚¯‚Ü‚·
 {
+			//ÚG”»’è‚ª‚È‚­‚È‚Á‚½Žž“_
 	//switch(CodeOfConduct)//s“®—”O‚É‚æ‚Á‚Äs“®‚ª•Ï‰»‚µ‚Ü‚·B
+	//case 0:
+	//#pragma region
+	//break;
+	//#pragma endregion
+	//case 1:
+	//#pragma region
+	//break;
+	//#pragma endregion
+	//case 2:
+	//#pragma region
+	//break;
+	//#pragma endregion
+	//case 3:
+	//#pragma region
+	//break;
+	//#pragma endregion
 	//if(/*‚ ‚½‚è”»’è‚ð‘‚«‚Ü‚·*/)
 		//‰E•ûŒü‚Ö‚Ì‰I‰ñ‚ð
 		//if(/*Ä‚Ñ”»’è‚ªTRUE‚Ìê‡*/)
-			//¶•ûŒü‚Ö‚Ì‰I‰ñ‚ð‚µ‚Ü‚·
-			//ÚG”»’è‚ª‚È‚­‚È‚Á‚½Žž“_‚ÅAvoid‚Ìs“®‚ðI—¹‚³‚¹‚Ü‚·B
+			//¶•ûŒü‚Ö‚Ì‰I‰ñ‚ð‚µ‚Ü‚·‚ÅAvoid‚Ìs“®‚ðI—¹‚³‚¹‚Ü‚·B
 
+
+}
+
+void Enemy::SetTarget(XMFLOAT3* x)
+{
+	TargetTower = *x;
+}
+
+void Enemy::SetTower(Tower* tow)
+{
+	mokuhyou = tow;
+}
+
+void Enemy::TowerAtack()
+{
+	//mokuhyou->SetHp(GetPower());
+	mokuhyou->hp = mokuhyou->hp - GetPower();
 }
 
 
