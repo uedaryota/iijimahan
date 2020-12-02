@@ -40,6 +40,8 @@ public:
 	void SetTower(Tower* tow);
 	Tower* mokuhyou;
 	void TowerAtack();
+	void GetAlive();//¶‚«‚Ä‚é‚©H
+	bool Deadflag = false;
 private:
 	Poly * pol = new Poly();
 };
