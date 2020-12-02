@@ -310,7 +310,7 @@ void Poly::CreateMainHeap(ID3D12Device * dev)
 
 
 	matView = XMMatrixLookAtLH(
-		XMLoadFloat3(&Camera::CameraPos()), XMLoadFloat3(&Camera::Target()), XMLoadFloat3(&Camera::Up())
+		XMLoadFloat3(&Camera::MainCameraPos()), XMLoadFloat3(&Camera::Target()), XMLoadFloat3(&Camera::Up())
 	);
 
 
@@ -345,7 +345,7 @@ void Poly::CreateMainHeap(ID3D12Device * dev)
 	matWorld *= matTrans;
 
 	constMap->world = matWorld;
-	constMap->viewproj = matView * matProjection;
+	//constMap->viewproj = matView * matProjection;
 	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc = {};
 	cbvDesc.BufferLocation = constBuff->GetGPUVirtualAddress();
 	cbvDesc.SizeInBytes = constBuff->GetDesc().Width;
@@ -531,6 +531,13 @@ void Poly::SetVert(ID3D12Device * dev)
 
 void Poly::Draw(ID3D12GraphicsCommandList * cmdList, ID3D12Device * dev)
 {
+	HRESULT result = constBuff->Map(0, nullptr, (void**)&constMap);
+
+	constMap->world = matWorld;
+	constMap->viewproj = Camera::ReturnCameraState()->matView *  Camera::ReturnCameraState()->matProjection;
+	//constMap->alpha = constalpha;
+	constBuff->Unmap(0, nullptr);
+
 	cmdList->SetPipelineState(pipelinestate);
 	cmdList->SetGraphicsRootSignature(rootsignature);
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -564,15 +571,8 @@ void Poly::Update()
 
 
 
-	matView = XMMatrixLookAtLH(
-		XMLoadFloat3(&Camera::CameraPos()), XMLoadFloat3(&Camera::Target()), XMLoadFloat3(&Camera::Up())
-	);
 
-	HRESULT result;
-	result = constBuff->Map(0, nullptr, (void**)&constMap);
-	constMap->world = matWorld;
-	constMap->viewproj = matView * matProjection;
-	constBuff->Unmap(0, nullptr);
+	
 }
 
 void Poly::SetPos(XMFLOAT3 pos)

@@ -28,28 +28,28 @@ void Tower::Update()
 	//if (input->PushKey(DIK_UP))
 	//{
 	//	//カメラ移動
-	//	float len = sqrtf(obj->position.x - Camera::cameraPos.x + obj->position.y - Camera::cameraPos.y + obj->position.z - Camera::cameraPos.z);
-	//	XMFLOAT3 vec = XMFLOAT3(Camera::cameraPos.x / len * speed, Camera::cameraPos.y / len * speed, Camera::cameraPos.z / len * speed);
-	//	Camera::cameraPos = XMFLOAT3(Camera::cameraPos.x - vec.x, Camera::cameraPos.y - vec.y, Camera::cameraPos.z - vec.z);
+	//	float len = sqrtf(obj->position.x - Camera::ReturnCameraState()->cameraPos.x + obj->position.y - Camera::ReturnCameraState()->cameraPos.y + obj->position.z - Camera::ReturnCameraState()->cameraPos.z);
+	//	XMFLOAT3 vec = XMFLOAT3(Camera::ReturnCameraState()->cameraPos.x / len * speed, Camera::ReturnCameraState()->cameraPos.y / len * speed, Camera::ReturnCameraState()->cameraPos.z / len * speed);
+	//	Camera::ReturnCameraState()->cameraPos = XMFLOAT3(Camera::ReturnCameraState()->cameraPos.x - vec.x, Camera::ReturnCameraState()->cameraPos.y - vec.y, Camera::ReturnCameraState()->cameraPos.z - vec.z);
 
 	//}
 	//if (input->PushKey(DIK_DOWN))
 	//{
 	//	//カメラ移動
-	//	float len = sqrtf(obj->position.x - Camera::cameraPos.x + obj->position.y - Camera::cameraPos.y + obj->position.z - Camera::cameraPos.z);
-	//	XMFLOAT3 vec = XMFLOAT3(Camera::cameraPos.x / len * speed, Camera::cameraPos.y / len * speed, Camera::cameraPos.z / len * speed);
-	//	Camera::cameraPos = XMFLOAT3(Camera::cameraPos.x + vec.x, Camera::cameraPos.y + vec.y, Camera::cameraPos.z + vec.z);
+	//	float len = sqrtf(obj->position.x - Camera::ReturnCameraState()->cameraPos.x + obj->position.y - Camera::ReturnCameraState()->cameraPos.y + obj->position.z - Camera::ReturnCameraState()->cameraPos.z);
+	//	XMFLOAT3 vec = XMFLOAT3(Camera::ReturnCameraState()->cameraPos.x / len * speed, Camera::ReturnCameraState()->cameraPos.y / len * speed, Camera::ReturnCameraState()->cameraPos.z / len * speed);
+	//	Camera::ReturnCameraState()->cameraPos = XMFLOAT3(Camera::ReturnCameraState()->cameraPos.x + vec.x, Camera::ReturnCameraState()->cameraPos.y + vec.y, Camera::ReturnCameraState()->cameraPos.z + vec.z);
 
 	//}
 	//if (input->PushKey(DIK_LEFT))
 	//{
 	//	//カメラアングル変更
-	//	Camera::eyeangleY += 0.03;
+	//	Camera::ReturnCameraState()->eyeangleY += 0.03;
 	//}
 	//if (input->PushKey(DIK_RIGHT))
 	//{
 	//	//カメラアングル変更
-	//	Camera::eyeangleY -= 0.03;
+	//	Camera::ReturnCameraState()->eyeangleY -= 0.03;
 	//}
 	//if (input->PushKey(DIK_SPACE))
 	//{

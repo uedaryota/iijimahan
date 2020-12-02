@@ -7,14 +7,15 @@ ID3D12GraphicsCommandList* DirectXDevice::cmdList = nullptr;;
 ID3D12Device* DirectXDevice::dev = nullptr;
 IDXGIFactory6*  DirectXDevice::dxgifactory;
 IDXGISwapChain4*  DirectXDevice::swapchain{};
-D3D12_VIEWPORT  DirectXDevice::viewport;
-D3D12_VIEWPORT viewport2;
+D3D12_VIEWPORT DirectXDevice::viewport;
+D3D12_VIEWPORT DirectXDevice::viewport2;
 D3D12_RECT  DirectXDevice::scissorrect;
 ID3D12CommandAllocator*  DirectXDevice::cmdAllocator;
 ID3D12CommandQueue* DirectXDevice::cmdQueue = nullptr;
 HWND DirectXDevice::hwnd;
 ID3D12DescriptorHeap* DirectXDevice::rtvHeaps = nullptr;
-
+float DirectXDevice::clearColor[] = { 1.0f,1.0f,1.0f,0.0f };
+D3D12_CPU_DESCRIPTOR_HANDLE DirectXDevice::rtvH;
 std::vector<ID3D12Resource*>DirectXDevice::backBuffers;
 ID3D12DescriptorHeap* DirectXDevice::dsvHeap = nullptr;
 ID3D12Resource* DirectXDevice::depthBuff = nullptr;
@@ -35,6 +36,7 @@ Enemy* enemy = new Enemy();
 Enemy* enemy2 = new Enemy();
 EnemyAI* ai = new EnemyAI();
 EnemyManeger* manager = new EnemyManeger();
+Sprite* back = new Sprite();
 Input* input = new Input();
 
 LRESULT WindowProc1(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
@@ -67,12 +69,18 @@ void DirectXDevice::Initialize()
 	manager->Add(enemy);
 	//manager->Add(enemy2);
 	enemy->state = move1;
+
+	back->Initialize();
+	back->ResetTex(L"img/Blueback.png");
+	back->SetScale(XMFLOAT3(Camera::window_width, Camera::window_height, 1));
+
 	enemy->SetTower(tower);
 	//enemy->SetTarget(&tower->GetPosition);
 	//enemy2->state = move3;
 	//enemy2->SetPos(XMFLOAT3{ 0.0f,240.0f,0.0f });
 	sound->LoadFile(L".\\Resources\\01.mp3");
 	input->Initialize();
+
 }
 	
 void DirectXDevice::Update()
@@ -80,7 +88,7 @@ void DirectXDevice::Update()
 	HRESULT result;
 	result = DirectXDevice::cmdAllocator->Reset();
 	UINT bbIdx = DirectXDevice::swapchain->GetCurrentBackBufferIndex();
-	D3D12_CPU_DESCRIPTOR_HANDLE rtvH = DirectXDevice::rtvHeaps->GetCPUDescriptorHandleForHeapStart();
+	rtvH = DirectXDevice::rtvHeaps->GetCPUDescriptorHandleForHeapStart();
 	rtvH.ptr += bbIdx * DirectXDevice::dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 
 
@@ -100,8 +108,7 @@ void DirectXDevice::Update()
 
 	DirectXDevice::cmdList->OMSetRenderTargets(1, &rtvH, true, &dsvH);
 	DirectXDevice::cmdList->ClearDepthStencilView(dsvH, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
-	float clearColor[] = { 1.0f,1.0f,1.0f,0.0f };
-
+	
 	DirectXDevice::cmdList->ClearRenderTargetView(rtvH, clearColor, 0, nullptr);
 	
 	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
@@ -116,39 +123,30 @@ void DirectXDevice::Update()
 	viewport2.MinDepth = 0.0f;
 
 	DirectXDevice::cmdList->RSSetViewports(1, &viewport);
-	//DirectXDevice::cmdList->RSSetViewports(2, &viewport2);
 
 	DirectXDevice::cmdList->RSSetScissorRects(1, &scissorrect);
 	//‚±‚±‚©‚çUpdate
-	//tex->Update();
-	block->Update();
+
+	Camera::Update();
 	tower->Update();
 	sound->Update();
-	//floor1->Update();
-	block->Draw();
+
+
 	tower->Draw(DirectXDevice::cmdList);
-	//floor1->Draw(DirectXDevice::cmdList,DirectXDevice::dev);
+
 	stage->Update();
 	stage->Draw();
 	manager->Update();
 	manager->Draw();
-	//enemy->Draw();
-	//manager->Draw();
+	//back->Update();
+	//back->Draw();
+
 	DirectXDevice::cmdList->RSSetViewports(1, &viewport2);
-	float clearColor2[] = { 0.0f,1.0f,0.0f,0.0f };
 
-//	DirectXDevice::cmdList->ClearRenderTargetView(rtvH, clearColor2, 0, nullptr);
-
-	block->Update();
-	tower->Update();
-	sound->Update();
-	//floor1->Update();
-	block->Draw();
 	tower->Draw(DirectXDevice::cmdList);
-	//floor1->Draw(DirectXDevice::cmdList,DirectXDevice::dev);
-	stage->Update();
+
+//	stage->Update();
 	stage->Draw();
-	manager->Update();
 	manager->Draw();
 
 	//‚±‚±‚Ü‚Å

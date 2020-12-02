@@ -69,10 +69,10 @@ void Stage::Update()
 		}
 		stageList[(floorCount - 1) * 5]->constalpha = 1.0f;
 
-		Camera::cameraPos.y += 100;
-		/*float len = sqrtf(floor1_1->position.x - Camera::cameraPos.x + floor1_1->position.y - Camera::cameraPos.y + floor1_1->position.z - Camera::cameraPos.z);
-		XMFLOAT3 vec = XMFLOAT3(Camera::cameraPos.x / len * speed, Camera::cameraPos.y / len * speed, Camera::cameraPos.z / len * speed);
-		Camera::cameraPos = XMFLOAT3(Camera::cameraPos.x - vec.x, Camera::cameraPos.y - vec.y, Camera::cameraPos.z - vec.z);*/
+		Camera::ReturnCameraState()->cameraPos.y += 100;
+		/*float len = sqrtf(floor1_1->position.x - Camera::ReturnCameraState()->cameraPos.x + floor1_1->position.y - Camera::ReturnCameraState()->cameraPos.y + floor1_1->position.z - Camera::ReturnCameraState()->cameraPos.z);
+		XMFLOAT3 vec = XMFLOAT3(Camera::ReturnCameraState()->cameraPos.x / len * speed, Camera::ReturnCameraState()->cameraPos.y / len * speed, Camera::ReturnCameraState()->cameraPos.z / len * speed);
+		Camera::ReturnCameraState()->cameraPos = XMFLOAT3(Camera::ReturnCameraState()->cameraPos.x - vec.x, Camera::ReturnCameraState()->cameraPos.y - vec.y, Camera::ReturnCameraState()->cameraPos.z - vec.z);*/
 
 	}
 	
@@ -89,11 +89,11 @@ void Stage::Update()
 		}
 		stageList[(floorCount - 1) * 5]->constalpha = 1.0f;
 
-		Camera::cameraPos.y -= 100;
+		Camera::ReturnCameraState()->cameraPos.y -= 100;
 		//カメラ移動
-		/*float len = sqrtf(floor1_1->position.x - Camera::cameraPos.x + floor1_1->position.y - Camera::cameraPos.y + floor1_1->position.z - Camera::cameraPos.z);
-		XMFLOAT3 vec = XMFLOAT3(Camera::cameraPos.x / len * speed, Camera::cameraPos.y / len * speed, Camera::cameraPos.z / len * speed);
-		Camera::cameraPos = XMFLOAT3(Camera::cameraPos.x + vec.x, Camera::cameraPos.y + vec.y, Camera::cameraPos.z + vec.z);*/
+		/*float len = sqrtf(floor1_1->position.x - Camera::ReturnCameraState()->cameraPos.x + floor1_1->position.y - Camera::ReturnCameraState()->cameraPos.y + floor1_1->position.z - Camera::ReturnCameraState()->cameraPos.z);
+		XMFLOAT3 vec = XMFLOAT3(Camera::ReturnCameraState()->cameraPos.x / len * speed, Camera::ReturnCameraState()->cameraPos.y / len * speed, Camera::ReturnCameraState()->cameraPos.z / len * speed);
+		Camera::ReturnCameraState()->cameraPos = XMFLOAT3(Camera::ReturnCameraState()->cameraPos.x + vec.x, Camera::ReturnCameraState()->cameraPos.y + vec.y, Camera::ReturnCameraState()->cameraPos.z + vec.z);*/
 
 	}
 
@@ -111,12 +111,12 @@ void Stage::Update()
 	if (input->PushKey(DIK_LEFT)||input->PushKey(DIK_A))
 	{
 		//カメラアングル変更
-		Camera::eyeangleY += 0.03;
+		Camera::ReturnCameraState()->eyeangleY += 0.03;
 	}
 	if (input->PushKey(DIK_RIGHT)|| input->PushKey(DIK_D))
 	{
 		//カメラアングル変更
-		Camera::eyeangleY -= 0.03;
+		Camera::ReturnCameraState()->eyeangleY -= 0.03;
 	}
 	if (input->PushKey(DIK_SPACE))
 	{

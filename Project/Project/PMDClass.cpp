@@ -427,7 +427,7 @@ void PMDClass::CreateMainHeap(ID3D12Device * dev)
 
 
 	matView = XMMatrixLookAtLH(
-		XMLoadFloat3(&Camera::CameraPos()), XMLoadFloat3(&Camera::Target()), XMLoadFloat3(&Camera::Up())
+		XMLoadFloat3(&Camera::MainCameraPos()), XMLoadFloat3(&Camera::Target()), XMLoadFloat3(&Camera::Up())
 	);
 
 
@@ -541,7 +541,7 @@ void PMDClass::Update()
 
 	if (input->PushKey(DIK_UP))
 	{
-		XMFLOAT3 flontVec = Camera::NormalizeXZ(XMFLOAT3(Camera::CameraPos().x - position.x, Camera::CameraPos().y - position.y, Camera::CameraPos().z - position.z));
+		XMFLOAT3 flontVec = Camera::NormalizeXZ(XMFLOAT3(Camera::MainCameraPos().x - position.x, Camera::MainCameraPos().y - position.y, Camera::MainCameraPos().z - position.z));
 		position = XMFLOAT3(position.x - flontVec.x, position.y - flontVec.y, position.z - flontVec.z);
 	}
 	if (input->PushKey(DIK_DOWN))
@@ -564,11 +564,11 @@ void PMDClass::Update()
 
 	if (input->PushKey(DIK_A))
 	{
-		Camera::eyeangleY += 0.03f;
+		Camera::ReturnCameraState()->eyeangleY += 0.03f;
 	}
 	if (input->PushKey(DIK_D))
 	{
-		Camera::eyeangleY -= 0.03f;
+		Camera::ReturnCameraState()->eyeangleY -= 0.03f;
 	}
 
 	
@@ -596,7 +596,7 @@ void PMDClass::Update()
 	Camera::SetTarget(position);
 
 	matView = XMMatrixLookAtLH(
-		XMLoadFloat3(&Camera::CameraPos()), XMLoadFloat3(&Camera::Target()), XMLoadFloat3(&Camera::Up())
+		XMLoadFloat3(&Camera::MainCameraPos()), XMLoadFloat3(&Camera::Target()), XMLoadFloat3(&Camera::Up())
 	);
 
 	HRESULT result;

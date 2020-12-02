@@ -47,6 +47,8 @@ public:
 	static IDXGIFactory6* dxgifactory;
 	static IDXGISwapChain4* swapchain;
 	static D3D12_VIEWPORT viewport;
+	static D3D12_VIEWPORT viewport2;
+
 	static D3D12_RECT scissorrect;
 	static ID3D12CommandAllocator* cmdAllocator;
 	static ID3D12CommandQueue* cmdQueue;
@@ -58,4 +60,6 @@ public:
 	static ID3D12Fence* fence;
 	static UINT64 fenceVal;
 	static WNDCLASSEX w;
+	static float clearColor[];
+	static D3D12_CPU_DESCRIPTOR_HANDLE rtvH;
 };

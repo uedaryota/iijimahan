@@ -1,7 +1,7 @@
 #pragma once
 #include"Poly.h"
 #include"EnemyAI.h"
-
+using namespace DirectX;
 enum State {
 	move1, move2, move3, atack1, atack2, Destory
 };
