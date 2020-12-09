@@ -30,7 +30,7 @@ void Enemy::Update()
 		return;
 	}
 	pol->Update();
-	PositionUpdate(XMFLOAT3{ 15,15,15 }, XMFLOAT3{ 10,10,10 }, TargetTower);
+	PositionUpdate(Ancer1, Ancer2, TargetTower);
 	GetState();
 	GetAlive();
 }
@@ -218,17 +218,17 @@ void Enemy::PositionUpdate(XMFLOAT3 pointA, XMFLOAT3 pointB, XMFLOAT3 tower)//エ
 		case atack1://目標物に対しての攻撃
 #pragma region
 
-			if (Cnt < 120.0f)
+			if (Cnt < 10.0f)
 			{
 				Cnt++;
 				pol->position.y = pol->position.y + vel.z;
 			}
-			else if (Cnt > 240.0f)
+			else if (Cnt > 20.0f)
 			{
 				Cnt = 0;
 				TowerAtack();
 			}
-			else if (Cnt <= 240.0f &Cnt >= 120.0f)
+			else if (Cnt <= 20.0f &Cnt >= 10.0f)
 			{
 				Cnt++;
 				pol->position.y = pol->position.y - vel.z;
@@ -253,15 +253,16 @@ State Enemy::GetState()
 }
 
 ///<summary>
-///障害物避ける予定地
+///エネミーごとに設定された特殊な行動を行います。
 ///</summary>
-void Enemy::Avoid()//障害物を避けます
+void Enemy::Avoid()
 {
 	//接触判定がなくなった時点
 	switch (code) 
 	{//行動理念によって行動が変化します。
 	case Lazy://面倒臭がり………最短ルートを進みます。
 #pragma region
+
 		break;
 #pragma endregion
 	case Pride://うぬぼれ………基本的に敵が少ない道に進む傾向を持たせます。
@@ -270,6 +271,14 @@ void Enemy::Avoid()//障害物を避けます
 #pragma endregion
 	case Coward://腰抜け…………DamegeがTRUEになり次第特殊行動を開始します。
 #pragma region
+		if (Damege&&!Kosinuke)
+		{
+			Kosinuke = true;
+		}
+		if (Kosinuke)
+		{
+			//腰抜け状態なので行動を制限します。
+		}
 		break;
 #pragma endregion
 	case Sage://知恵者…………基本的に敵が多い道に進む傾向を持たせます。
@@ -278,29 +287,20 @@ void Enemy::Avoid()//障害物を避けます
 	}
 
 	#pragma endregion
-	//if(/*あたり判定を書きます*/)
-		//右方向への迂回を
-		//if(/*再び判定がTRUEの場合*/)
-			//左方向への迂回をしますでAvoidの行動を終了させます。
+
 }
 
 ///<summary>
 ///目標位置を引っ張ってくるのに使用します。
 ///<param name="x">目標地点</param>
 ///</summary>
-void Enemy::SetTarget(XMFLOAT3* x)
-{
-	TargetTower = *x;
-}
+void Enemy::SetTarget(XMFLOAT3* x){TargetTower = *x;}
 
 ///<summary>
 ///主に攻撃処理等に変更します。
 ///<param name="tow">最終目標</param>
 ///</summary>
-void Enemy::SetTower(Tower* tow)
-{
-	mokuhyou = tow;
-}
+void Enemy::SetTower(Tower* tow){mokuhyou = tow;}
 
 ///<summary>
 ///タワーに対しての攻撃を行います。
@@ -324,10 +324,7 @@ void Enemy::GetAlive()
 ///<summary>
 ///エネミーの性格を引っ張てきます。
 ///</summary>
-CodeOfConduct Enemy::GetCode()
-{
-	return code;
-}
+CodeOfConduct Enemy::GetCode(){return code;}
 
 ///<summary>
 ///エネミーに対する攻撃処理、与えるダメージをfloat形式で入力する。
@@ -342,5 +339,25 @@ void Enemy::EnemyDamege(float x)
 	}
 	Damege = true;
 }
+
+///<summary>
+///エネミー第1目標設定
+///</summary>
+XMFLOAT3 Enemy::SetAncer1(XMFLOAT3 x)
+{
+	Ancer1 = x;
+	return Ancer1;
+}
+
+
+///<summary>
+///エネミー第2目標設定
+///</summary>
+XMFLOAT3 Enemy::SetAncer2(XMFLOAT3 x)
+{
+	Ancer2 = x;
+	return Ancer2;
+}
+
 
 

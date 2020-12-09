@@ -45,6 +45,10 @@ public:
 	CodeOfConduct code;
 	CodeOfConduct GetCode();
 	void EnemyDamege(float x);//エネミーに対する攻撃処理です。floatにダメージ量を入れる。
+	XMFLOAT3 SetAncer1(XMFLOAT3 x);
+	XMFLOAT3 SetAncer2(XMFLOAT3 x);
+	XMFLOAT3 Ancer1{ 15,15,15 };
+	XMFLOAT3 Ancer2{ 10,10,10 };
 private:
 	Poly * pol = new Poly();
 
