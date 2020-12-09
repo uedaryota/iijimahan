@@ -37,6 +37,7 @@ public:
 	void Initialize(ID3D12Device* dev);
 	void CreatePipeline(ID3D12Device* dev);
 	void CreateMainHeap(ID3D12Device* dev);
+	void CreateSubHeap(ID3D12Device* dev);
 	void SetDepth(ID3D12Device* dev);
 	void SetVert(ID3D12Device* dev);
 	void Draw(ID3D12GraphicsCommandList* cmdList, ID3D12Device* dev);
@@ -46,6 +47,8 @@ public:
 	ID3D12PipelineState* pipelinestate = nullptr;
 	ID3D12RootSignature* rootsignature = nullptr;
 	ID3D12DescriptorHeap* mainDescHeap;
+	ID3D12DescriptorHeap* subDescHeap;
+
 	ID3D12DescriptorHeap* dsvHeap = nullptr;
 	D3D12_VERTEX_BUFFER_VIEW vbView = {};
 
@@ -65,10 +68,11 @@ public:
 
 private:
 	XMMATRIX matWorld = XMMatrixIdentity();
-	XMMATRIX matView;
 	ID3D12Resource* constBuff = nullptr;
-	XMMATRIX matProjection;
 	MatrocesDate* constMap;
+
+	ID3D12Resource* constBuff2 = nullptr;
+	MatrocesDate* constMap2;
 
 	XMMATRIX matScale;
 	XMMATRIX matRot;

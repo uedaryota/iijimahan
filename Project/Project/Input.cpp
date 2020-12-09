@@ -42,4 +42,31 @@ bool Input::PushKey(int keynum)
 	return false;
 }
 
+bool Input::TriggerKey(int keynum)
+{
+
+	if (keynum < 0)
+	{
+		trigger1 = false;
+		return false;
+	}
+	if (keynum > 255) 
+	{
+		trigger1 = false;
+		return false;
+	}
+	if (key[keynum] && !trigger1)
+	{
+		trigger1 = true;
+		return true;
+	}
+	else if (key[keynum] && trigger1)
+	{
+		trigger1 = true;
+		return false;
+	}
+	trigger1 = false;
+	return false;
+}
+
 

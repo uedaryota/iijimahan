@@ -2,7 +2,7 @@
 #include "DirectXDevice.h"
 #include <comutil.h>
 #include "Input.h"
-
+#include"Texture.h"
 ID3D12GraphicsCommandList* DirectXDevice::cmdList = nullptr;;
 ID3D12Device* DirectXDevice::dev = nullptr;
 IDXGIFactory6*  DirectXDevice::dxgifactory;
@@ -38,7 +38,7 @@ EnemyAI* ai = new EnemyAI();
 EnemyManeger* manager = new EnemyManeger();
 Sprite* back = new Sprite();
 Input* input = new Input();
-
+Texture* tex = new Texture();
 LRESULT WindowProc1(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
 
@@ -70,16 +70,19 @@ void DirectXDevice::Initialize()
 	//manager->Add(enemy2);
 	enemy->state = move1;
 
+	tex->Initialize();
 	back->Initialize();
 	back->ResetTex(L"img/Blueback.png");
-	back->SetScale(XMFLOAT3(Camera::window_width, Camera::window_height, 1));
-
+	back->SetScale(XMFLOAT3(300, 300, 300));
+	back->SetPos(XMFLOAT3(0, 0, 500));
 	enemy->SetTower(tower);
 	//enemy->SetTarget(&tower->GetPosition);
 	//enemy2->state = move3;
 	//enemy2->SetPos(XMFLOAT3{ 0.0f,240.0f,0.0f });
 	sound->LoadFile(L".\\Resources\\01.mp3");
 	input->Initialize();
+
+
 
 }
 	
@@ -129,25 +132,25 @@ void DirectXDevice::Update()
 
 	Camera::Update();
 	tower->Update();
-	sound->Update();
-
-
+//	sound->Update();
+	
 	tower->Draw(DirectXDevice::cmdList);
 
-	stage->Update();
-	stage->Draw();
 	manager->Update();
 	manager->Draw();
-	//back->Update();
-	//back->Draw();
+	back->Update();
+	back->Draw();
+	
+	stage->Update();
+	stage->Draw();
+	
+	//DirectXDevice::cmdList->RSSetViewports(1, &viewport2);
 
-	DirectXDevice::cmdList->RSSetViewports(1, &viewport2);
-
-	tower->Draw(DirectXDevice::cmdList);
+	//tower->Draw(DirectXDevice::cmdList);
 
 //	stage->Update();
-	stage->Draw();
-	manager->Draw();
+	//stage->Draw();
+	//manager->Draw();
 
 	//‚±‚±‚Ü‚Å
 	DirectXDevice::cmdList->Close();

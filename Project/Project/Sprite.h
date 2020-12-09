@@ -54,26 +54,7 @@ public:
 	XMFLOAT3 position = { 0,0,0 };
 	XMFLOAT3 rotation = { 0,0,0 };
 	XMFLOAT3 scale = { 100.0f,100.0f,100.0f };
-
-	/*/// <summary>
-	/// 座標の設定
-	/// </summary>
-	/// <param name="position">座標</param>
-	void SetPosition(XMFLOAT2 position);
-
-	/// <summary>
-	/// サイズの設定
-	/// </summary>
-	/// <param name="size">サイズ</param>
-	void SetSize(XMFLOAT2 size);
-
-	/// <summary>
-	/// テクスチャ範囲設定
-	/// </summary>
-	/// <param name="texBase">テクスチャ左上座標</param>
-	/// <param name="texSize">テクスチャサイズ</param>
-	void SetTextureRect(XMFLOAT2 texBase, XMFLOAT2 texSize);*/
-
+	
 private:
 	XMMATRIX matWorld = XMMatrixIdentity();
 	XMMATRIX matView;
