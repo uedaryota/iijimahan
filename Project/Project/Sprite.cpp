@@ -360,6 +360,7 @@ void Sprite::CreateMainHeap()
 	matRot *= XMMatrixRotationZ(rotation.z);
 	matTrans = XMMatrixTranslation(position.x, position.y, position.z);
 	matWorld = XMMatrixIdentity();
+
 	matWorld *= matScale;
 	matWorld *= matRot;
 	matWorld *= matTrans;
@@ -587,10 +588,41 @@ void Sprite::Update()
 {
 
 
+	XMVECTOR eyePos = XMLoadFloat3(&Camera::MainCameraPos());
+	XMVECTOR targetPos = XMLoadFloat3(&Camera::ReturnCameraState()->target);
+	XMVECTOR upVector = XMLoadFloat3(&Camera::ReturnCameraState()->up);
+
+	XMVECTOR cameraAxisZ = XMVectorSubtract(targetPos, eyePos);
 	//
-	//matView = XMMatrixLookAtLH(
-	//	XMLoadFloat3(&Camera::MainCameraPos()), XMLoadFloat3(&Camera::Target()), XMLoadFloat3(&Camera::Up())
-	//);
+	//０ベクトルだと除外
+	//
+	cameraAxisZ = XMVector3Normalize(cameraAxisZ);
+
+	XMVECTOR cameraAxisX = XMVector3Cross(upVector, cameraAxisZ);
+	cameraAxisX = XMVector3Normalize(cameraAxisX);
+
+
+	XMVECTOR cameraAxisY = XMVector3Cross(cameraAxisZ, cameraAxisX);
+	XMMATRIX matcameraRot;
+	matcameraRot.r[0] = cameraAxisX;
+	matcameraRot.r[1] = cameraAxisY;
+	matcameraRot.r[2] = cameraAxisZ;
+	matcameraRot.r[3] = XMVectorSet(0, 0, 0, 1);
+	matView = XMMatrixTranspose(matcameraRot);
+
+	XMVECTOR reverseEyePos = XMVectorNegate(eyePos);
+	XMVECTOR tX = XMVector3Dot(cameraAxisX, reverseEyePos);
+	XMVECTOR tY = XMVector3Dot(cameraAxisY, reverseEyePos);
+	XMVECTOR tZ = XMVector3Dot(cameraAxisZ, reverseEyePos);
+
+	XMVECTOR translation = XMVectorSet(tX.m128_f32[0], tY.m128_f32[1], tZ.m128_f32[2], 1.0f);
+	matView.r[3] = translation;
+
+	matBillboard = XMMatrixIdentity();
+	matBillboard.r[0] = cameraAxisX;
+	matBillboard.r[1] = cameraAxisY;
+	matBillboard.r[2] = cameraAxisZ;
+	matBillboard.r[3] = XMVectorSet(0, 0, 0, 1);
 
 	matScale = XMMatrixScaling(scale.x, scale.y, scale.z);
 	matRot = XMMatrixIdentity();
@@ -599,17 +631,23 @@ void Sprite::Update()
 	matRot *= XMMatrixRotationZ(rotation.z);
 	matTrans = XMMatrixTranslation(position.x, position.y, position.z);
 	matWorld = XMMatrixIdentity();
-	matWorld *= matBillboard;
+	
+
 	matWorld *= matScale;
+	matWorld *= matBillboard;
 	matWorld *= matRot;
 	matWorld *= matTrans;
-
 	HRESULT result = constBuff->Map(0, nullptr, (void**)&constMap);
 
 	constMap->world = matWorld;
 	constMap->viewproj = matView * matProjection;
 	constMap->alpha = alpha;
 	constBuff->Unmap(0, nullptr);
+}
+
+void Sprite::SetPos(XMFLOAT3 pos)
+{
+	position = pos;
 }
 
 void Sprite::SetScale(XMFLOAT3 Scale)

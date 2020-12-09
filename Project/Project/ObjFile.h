@@ -66,6 +66,8 @@ public:
 	void Draw(ID3D12GraphicsCommandList * cmdList);
 	void CreatePipeline();
 	void CreateMainHeap();
+	void CreateSubHeap();
+
 	void LoadObj(const std::string name);
 	void LoadMaterial(const std::string&directorypath, const std::string& filename);
 	bool LoadTexture(const std::string&directorypath, const std::string& filename);
@@ -81,8 +83,8 @@ private:
 	ID3D12PipelineState* pipelinestate = nullptr;
 	ID3D12RootSignature* rootsignature = nullptr;
 	ID3D12DescriptorHeap* mainDescHeap;
-
-	 std::vector<Vertex>vertices;
+	ID3D12DescriptorHeap* subDescHeap;
+	std::vector<Vertex>vertices;
 	 std::vector<unsigned short>indices;
 
 	D3D12_VERTEX_BUFFER_VIEW vbView {};
@@ -104,10 +106,14 @@ private:
 	XMMATRIX matTrans;
 	//ワールド行列マップ
 	ConstBufferDataB0* constMap0;
+	ConstBufferDataB0* subconstMap0;
+
 	//Objデータ定数マップ
 	ConstBufferDataB1* constMap1;
 
-	ComPtr<ID3D12Resource> constBuffB0; // 定数バッファ
+	ComPtr<ID3D12Resource> constBuffB0;
+	ComPtr<ID3D12Resource> subconstBuffB0;
+	// 定数バッファ
 	ComPtr<ID3D12Resource> constBuffB1; // 定数バッファ
 
 	Material material;

@@ -60,7 +60,7 @@ public:
 	static XMFLOAT3 NormalizeXZ(XMFLOAT3 vec);
 	static CameraState* ReturnCameraState();
 	static CameraState* ReturnSubCameraState();
-
+	static CurrentCamera ReturnCurrentCamera();
 
 private:
 

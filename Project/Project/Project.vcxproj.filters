@@ -25,6 +25,12 @@
     <FxCompile Include="PMDVertexShader.hlsl">
       <Filter>シェーダファイル</Filter>
     </FxCompile>
+    <FxCompile Include="TexPixelShader.hlsl">
+      <Filter>シェーダファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="TexVertexShader.hlsl">
+      <Filter>シェーダファイル</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Block.cpp">
@@ -164,6 +170,9 @@
       <Filter>シェーダファイル</Filter>
     </None>
     <None Include="PMDShaderHeader.hlsli">
+      <Filter>シェーダファイル</Filter>
+    </None>
+    <None Include="TexShaderHeader.hlsli">
       <Filter>シェーダファイル</Filter>
     </None>
   </ItemGroup>
