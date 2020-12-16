@@ -96,7 +96,9 @@
     <ClCompile Include="Tower.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
-    <ClCompile Include="DebugText.cpp" />
+    <ClCompile Include="Stage2D.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Block.h">
@@ -159,10 +161,9 @@
     <ClInclude Include="Tower.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
-    <ClInclude Include="BoxCollision.h">
+    <ClInclude Include="Stage2D.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
-    <ClInclude Include="DebugText.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="BasicShaderHeader.hlsli">

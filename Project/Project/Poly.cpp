@@ -15,7 +15,7 @@ Poly::~Poly()
 	delete(dsvHeap);
 	delete(constBuff);
 	delete(constMap);
-	delete(subDescHeap);
+	//delete(subDescHeap);
 	delete(constBuff2);
 	delete(constMap2);
 
@@ -26,7 +26,7 @@ void Poly::Initialize(ID3D12Device * dev)
 {
 	
 	CreateMainHeap(dev);
-	CreateSubHeap(dev);
+//	CreateSubHeap(dev);
 
 	CreatePipeline(dev);
 	SetVert(dev);
@@ -351,104 +351,104 @@ void Poly::CreateMainHeap(ID3D12Device * dev)
 
 void Poly::CreateSubHeap(ID3D12Device * dev)
 {
-	HRESULT result;
-
-	TexMetadata metadate = {};
-	ScratchImage scratchImg = {};
-	result = LoadFromWICFile(
-		L"img/°.png",
-		WIC_FLAGS_NONE,
-		&metadate,
-		scratchImg
-	);
-
-	const Image* img = scratchImg.GetImage(0, 0, 0);
-
-
-	D3D12_HEAP_PROPERTIES texheapprop = {};
-	texheapprop.Type = D3D12_HEAP_TYPE_CUSTOM;
-	texheapprop.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_WRITE_BACK;
-	texheapprop.MemoryPoolPreference = D3D12_MEMORY_POOL_L0;
-	texheapprop.CreationNodeMask = 0;
-	texheapprop.VisibleNodeMask = 0;
-
-	D3D12_RESOURCE_DESC texresdes = {};
-
-	texresdes.Format = metadate.format;
-	texresdes.Width = img->width;
-	texresdes.Height = img->height;
-	texresdes.DepthOrArraySize = metadate.arraySize;
-	texresdes.SampleDesc.Count = 1;
-	texresdes.SampleDesc.Quality = 0;
-	texresdes.MipLevels = metadate.mipLevels;
-	texresdes.Dimension = static_cast<D3D12_RESOURCE_DIMENSION>(metadate.dimension);
-	texresdes.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
-	texresdes.Flags = D3D12_RESOURCE_FLAG_NONE;
-
-	ID3D12Resource* texBuff = nullptr;
-
-
-
-	result = dev->CreateCommittedResource(
-		&texheapprop,
-		D3D12_HEAP_FLAG_NONE,
-		&texresdes,
-		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
-		nullptr,
-		IID_PPV_ARGS(&texBuff));
-
-	result = texBuff->WriteToSubresource(
-		0,
-		nullptr,
-		img->pixels,
-		img->rowPitch,
-		img->slicePitch
-	);
-	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
-	srvDesc.Format = metadate.format;//resdesc‚Æ‡‚í‚¹‚é
-	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-	srvDesc.Texture2D.MipLevels = 1;
-
-
-
-
-	subDescHeap = nullptr;
-	D3D12_DESCRIPTOR_HEAP_DESC descHeapDesc = {};
-
-	descHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-	descHeapDesc.NodeMask = 0;
-	descHeapDesc.NumDescriptors = 2;
-	descHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-
-	result = dev->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(&subDescHeap));
-
-
-	D3D12_CPU_DESCRIPTOR_HANDLE HeapHandle = subDescHeap->GetCPUDescriptorHandleForHeapStart();
-
-	dev->CreateShaderResourceView(
-		texBuff,
-		&srvDesc,
-		HeapHandle);
-
-	HeapHandle.ptr += dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-
-
-
-
-	result = dev->CreateCommittedResource(
-		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-		D3D12_HEAP_FLAG_NONE,
-		&CD3DX12_RESOURCE_DESC::Buffer((sizeof(MatrocesDate) + 0xff)&~0xff),
-		D3D12_RESOURCE_STATE_GENERIC_READ,
-		nullptr,
-		IID_PPV_ARGS(&constBuff2)
-	);
-
-	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc = {};
-	cbvDesc.BufferLocation = constBuff2->GetGPUVirtualAddress();
-	cbvDesc.SizeInBytes = constBuff2->GetDesc().Width;
-	dev->CreateConstantBufferView(&cbvDesc, HeapHandle);
+//	HRESULT result;
+//
+//	TexMetadata metadate = {};
+//	ScratchImage scratchImg = {};
+//	result = LoadFromWICFile(
+//		L"img/°.png",
+//		WIC_FLAGS_NONE,
+//		&metadate,
+//		scratchImg
+//	);
+//
+//	const Image* img = scratchImg.GetImage(0, 0, 0);
+//
+//
+//	D3D12_HEAP_PROPERTIES texheapprop = {};
+//	texheapprop.Type = D3D12_HEAP_TYPE_CUSTOM;
+//	texheapprop.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_WRITE_BACK;
+//	texheapprop.MemoryPoolPreference = D3D12_MEMORY_POOL_L0;
+//	texheapprop.CreationNodeMask = 0;
+//	texheapprop.VisibleNodeMask = 0;
+//
+//	D3D12_RESOURCE_DESC texresdes = {};
+//
+//	texresdes.Format = metadate.format;
+//	texresdes.Width = img->width;
+//	texresdes.Height = img->height;
+//	texresdes.DepthOrArraySize = metadate.arraySize;
+//	texresdes.SampleDesc.Count = 1;
+//	texresdes.SampleDesc.Quality = 0;
+//	texresdes.MipLevels = metadate.mipLevels;
+//	texresdes.Dimension = static_cast<D3D12_RESOURCE_DIMENSION>(metadate.dimension);
+//	texresdes.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
+//	texresdes.Flags = D3D12_RESOURCE_FLAG_NONE;
+//
+//	ID3D12Resource* texBuff = nullptr;
+//
+//
+//
+//	result = dev->CreateCommittedResource(
+//		&texheapprop,
+//		D3D12_HEAP_FLAG_NONE,
+//		&texresdes,
+//		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+//		nullptr,
+//		IID_PPV_ARGS(&texBuff));
+//
+//	result = texBuff->WriteToSubresource(
+//		0,
+//		nullptr,
+//		img->pixels,
+//		img->rowPitch,
+//		img->slicePitch
+//	);
+//	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+//	srvDesc.Format = metadate.format;//resdesc‚Æ‡‚í‚¹‚é
+//	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+//	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+//	srvDesc.Texture2D.MipLevels = 1;
+//
+//
+//
+//
+//	subDescHeap = nullptr;
+//	D3D12_DESCRIPTOR_HEAP_DESC descHeapDesc = {};
+//
+//	descHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+//	descHeapDesc.NodeMask = 0;
+//	descHeapDesc.NumDescriptors = 2;
+//	descHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+//
+//	result = dev->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(&subDescHeap));
+//
+//
+//	D3D12_CPU_DESCRIPTOR_HANDLE HeapHandle = subDescHeap->GetCPUDescriptorHandleForHeapStart();
+//
+//	dev->CreateShaderResourceView(
+//		texBuff,
+//		&srvDesc,
+//		HeapHandle);
+//
+//	HeapHandle.ptr += dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+//
+//
+//
+//
+//	result = dev->CreateCommittedResource(
+//		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+//		D3D12_HEAP_FLAG_NONE,
+//		&CD3DX12_RESOURCE_DESC::Buffer((sizeof(MatrocesDate) + 0xff)&~0xff),
+//		D3D12_RESOURCE_STATE_GENERIC_READ,
+//		nullptr,
+//		IID_PPV_ARGS(&constBuff2)
+//	);
+//
+//	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc = {};
+//	cbvDesc.BufferLocation = constBuff2->GetGPUVirtualAddress();
+//	cbvDesc.SizeInBytes = constBuff2->GetDesc().Width;
+//	dev->CreateConstantBufferView(&cbvDesc, HeapHandle);
 }
 
 void Poly::SetDepth(ID3D12Device * dev)
@@ -532,7 +532,6 @@ void Poly::SetVert(ID3D12Device * dev)
 		vertices[a + 1].uv = { 1, 0 };
 		vertices[a + 2].uv = { 1, 1 };
 		vertices[a + 4].uv = { 0, 1 };
-
 	}
 
 	for (int a = 0; a < n * 3; a += 3)
@@ -544,9 +543,6 @@ void Poly::SetVert(ID3D12Device * dev)
 		indices[a + n * 3] = n * 2 + 1;
 		indices[a + (n * 3 + 1)] = n + a / 3 + 1;
 		indices[a + (n * 3 + 2)] = n + a / 3 + 2;
-
-		
-	
 	}
 	for (int a = 0; a < _countof(indices) / 2; a += 6)
 	{
@@ -631,9 +627,9 @@ void Poly::Draw(ID3D12GraphicsCommandList * cmdList, ID3D12Device * dev)
 {
 	
 
-	if (Camera::ReturnCurrentCamera() == CurrentCamera::Main)
-	{
-		DirectXDevice::cmdList->RSSetViewports(1, &DirectXDevice::viewport);
+	//if (Camera::ReturnCurrentCamera() == CurrentCamera::Main)
+	//{
+	//	DirectXDevice::cmdList->RSSetViewports(1, &DirectXDevice::viewport);
 
 		cmdList->SetPipelineState(pipelinestate);
 		cmdList->SetGraphicsRootSignature(rootsignature);
@@ -651,59 +647,59 @@ void Poly::Draw(ID3D12GraphicsCommandList * cmdList, ID3D12Device * dev)
 		//
 
 
-		DirectXDevice::cmdList->RSSetViewports(1, &DirectXDevice::viewport2);
+	//	DirectXDevice::cmdList->RSSetViewports(1, &DirectXDevice::viewport2);
 
 
-		cmdList->SetDescriptorHeaps(1, &subDescHeap);
-		handle = subDescHeap->GetGPUDescriptorHandleForHeapStart();
-		cmdList->SetGraphicsRootDescriptorTable(0, handle);
+	//	cmdList->SetDescriptorHeaps(1, &subDescHeap);
+	//	handle = subDescHeap->GetGPUDescriptorHandleForHeapStart();
+	//	cmdList->SetGraphicsRootDescriptorTable(0, handle);
 
-		handle.ptr += dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-		cmdList->SetGraphicsRootDescriptorTable(1, handle);
+	//	handle.ptr += dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	//	cmdList->SetGraphicsRootDescriptorTable(1, handle);
 
-		cmdList->DrawIndexedInstanced(_countof(indices), 1, 0, 0, 0);
-		//
-
-
-	}
-	else if (Camera::ReturnCurrentCamera() == CurrentCamera::Sub)
-	{
-		DirectXDevice::cmdList->RSSetViewports(1, &DirectXDevice::viewport);
-		cmdList->SetPipelineState(pipelinestate);
-		cmdList->SetGraphicsRootSignature(rootsignature);
-		cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		cmdList->IASetVertexBuffers(0, 1, &vbView);
-		cmdList->IASetIndexBuffer(&ibView);
-		D3D12_GPU_DESCRIPTOR_HANDLE handle = subDescHeap->GetGPUDescriptorHandleForHeapStart();
-		//
-		cmdList->SetDescriptorHeaps(1, &subDescHeap);
-
-		cmdList->SetGraphicsRootDescriptorTable(0, handle);
-
-		handle.ptr += dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-		cmdList->SetGraphicsRootDescriptorTable(1, handle);
-
-		cmdList->DrawIndexedInstanced(_countof(indices), 1, 0, 0, 0);
+	//	cmdList->DrawIndexedInstanced(_countof(indices), 1, 0, 0, 0);
+	//	//
 
 
-		//
+	//}
+	//else if (Camera::ReturnCurrentCamera() == CurrentCamera::Sub)
+	//{
+	//	DirectXDevice::cmdList->RSSetViewports(1, &DirectXDevice::viewport);
+	//	cmdList->SetPipelineState(pipelinestate);
+	//	cmdList->SetGraphicsRootSignature(rootsignature);
+	//	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	//	cmdList->IASetVertexBuffers(0, 1, &vbView);
+	//	cmdList->IASetIndexBuffer(&ibView);
+	//	D3D12_GPU_DESCRIPTOR_HANDLE handle = subDescHeap->GetGPUDescriptorHandleForHeapStart();
+	//	//
+	//	cmdList->SetDescriptorHeaps(1, &subDescHeap);
+
+	//	cmdList->SetGraphicsRootDescriptorTable(0, handle);
+
+	//	handle.ptr += dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	//	cmdList->SetGraphicsRootDescriptorTable(1, handle);
+
+	//	cmdList->DrawIndexedInstanced(_countof(indices), 1, 0, 0, 0);
 
 
-		DirectXDevice::cmdList->RSSetViewports(1, &DirectXDevice::viewport2);
+	//	//
 
-		//
-		handle = mainDescHeap->GetGPUDescriptorHandleForHeapStart();
-		cmdList->SetDescriptorHeaps(1, &mainDescHeap);
 
-		cmdList->SetGraphicsRootDescriptorTable(0, handle);
+	//	DirectXDevice::cmdList->RSSetViewports(1, &DirectXDevice::viewport2);
 
-		handle.ptr += dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-		cmdList->SetGraphicsRootDescriptorTable(1, handle);
+	//	//
+	//	handle = mainDescHeap->GetGPUDescriptorHandleForHeapStart();
+	//	cmdList->SetDescriptorHeaps(1, &mainDescHeap);
 
-		cmdList->DrawIndexedInstanced(_countof(indices), 1, 0, 0, 0);
-		//
+	//	cmdList->SetGraphicsRootDescriptorTable(0, handle);
 
-	}
+	//	handle.ptr += dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	//	cmdList->SetGraphicsRootDescriptorTable(1, handle);
+
+	//	cmdList->DrawIndexedInstanced(_countof(indices), 1, 0, 0, 0);
+	//	//
+
+	//}
 }
 
 void Poly::Update()
@@ -727,11 +723,11 @@ void Poly::Update()
 	constMap->viewproj = Camera::ReturnCameraState()->matView *  Camera::ReturnCameraState()->matProjection;
 	constBuff->Unmap(0, nullptr);
 
-	result = constBuff2->Map(0, nullptr, (void**)&constMap2);
+	//result = constBuff2->Map(0, nullptr, (void**)&constMap2);
 
-	constMap2->world = matWorld;
-	constMap2->viewproj = Camera::ReturnSubCameraState()->matView *  Camera::ReturnSubCameraState()->matProjection;
-	constBuff2->Unmap(0, nullptr);
+	//constMap2->world = matWorld;
+	//constMap2->viewproj = Camera::ReturnSubCameraState()->matView *  Camera::ReturnSubCameraState()->matProjection;
+	//constBuff2->Unmap(0, nullptr);
 
 	
 }

@@ -3,6 +3,7 @@
 #include <comutil.h>
 #include "Input.h"
 #include"Texture.h"
+#include"Stage2D.h"
 ID3D12GraphicsCommandList* DirectXDevice::cmdList = nullptr;;
 ID3D12Device* DirectXDevice::dev = nullptr;
 IDXGIFactory6*  DirectXDevice::dxgifactory;
@@ -31,7 +32,8 @@ XMFLOAT3 pointA = { 15,15,15 };
 XMFLOAT3 pointB = { -15,-15,-15 };
 Block* block = new Block();
 Sound* sound = new Sound();
-Stage* stage = new Stage();
+//Stage* stage = new Stage();
+Stage2D* stage = new Stage2D();
 Enemy* enemy = new Enemy();
 Enemy* enemy2 = new Enemy();
 EnemyAI* ai = new EnemyAI();
@@ -81,9 +83,6 @@ void DirectXDevice::Initialize()
 	//enemy2->SetPos(XMFLOAT3{ 0.0f,240.0f,0.0f });
 	sound->LoadFile(L".\\Resources\\01.mp3");
 	input->Initialize();
-
-
-
 }
 	
 void DirectXDevice::Update()
@@ -138,9 +137,9 @@ void DirectXDevice::Update()
 
 	manager->Update();
 	manager->Draw();
-	back->Update();
+	/*back->Update();
 	back->Draw();
-	
+	*/
 	stage->Update();
 	stage->Draw();
 
