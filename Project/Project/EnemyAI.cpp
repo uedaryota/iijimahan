@@ -12,7 +12,7 @@ EnemyAI::EnemyAI()
 
 void EnemyAI::Initialize()
 {
-	pol->Initialize(DirectXDevice::dev);
+	pol->Initialize();
 }
 
 

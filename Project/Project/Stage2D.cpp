@@ -16,6 +16,7 @@ void Stage2D::Initialize()
 	input->Initialize();
 	floor = new Floor();
 	floor->Initialize(DirectXDevice::dev);
+	floor->SetScale({ 200, 200, 200 });
 }
 void Stage2D::CreateStage(int count)
 {

@@ -1,8 +1,6 @@
 #include "Poly.h"
 #include"Camera.h"
-
 #include"DirectXDevice.h"
-
 Poly::Poly()
 {
 }
@@ -22,20 +20,20 @@ Poly::~Poly()
 	delete(input);
 }
 
-void Poly::Initialize(ID3D12Device * dev)
+void Poly::Initialize()
 {
 	
-	CreateMainHeap(dev);
-//	CreateSubHeap(dev);
+	CreateMainHeap();
+//	CreateSubHeap(DirectXDevice::dev);
 
-	CreatePipeline(dev);
-	SetVert(dev);
-	SetDepth(dev);
+	CreatePipeline();
+	SetVert();
+	SetDepth();
 	input = new Input();
 	input->Initialize();
 }
 
-void Poly::CreatePipeline(ID3D12Device * dev)
+void Poly::CreatePipeline()
 {
 	ID3DBlob* vsBlob = nullptr;
 	ID3DBlob* psBlob = nullptr;
@@ -195,20 +193,20 @@ void Poly::CreatePipeline(ID3D12Device * dev)
 		&rootSigBlob,
 		&errorBlob);
 
-	result = dev->CreateRootSignature(
+	result = DirectXDevice::dev->CreateRootSignature(
 		0,
 		rootSigBlob->GetBufferPointer(),
 		rootSigBlob->GetBufferSize(),
 		IID_PPV_ARGS(&rootsignature)
 	);
 	gpipeline.pRootSignature = rootsignature;
-	result = dev->CreateGraphicsPipelineState(&gpipeline, IID_PPV_ARGS(&pipelinestate));
+	result = DirectXDevice::dev->CreateGraphicsPipelineState(&gpipeline, IID_PPV_ARGS(&pipelinestate));
 
 
 
 }
 
-void Poly::CreateMainHeap(ID3D12Device * dev)
+void Poly::CreateMainHeap()
 {
 
 	HRESULT result;
@@ -249,7 +247,7 @@ void Poly::CreateMainHeap(ID3D12Device * dev)
 
 
 
-	result = dev->CreateCommittedResource(
+	result = DirectXDevice::dev->CreateCommittedResource(
 		&texheapprop,
 		D3D12_HEAP_FLAG_NONE,
 		&texresdes,
@@ -281,22 +279,22 @@ void Poly::CreateMainHeap(ID3D12Device * dev)
 	descHeapDesc.NumDescriptors = 2;
 	descHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 
-	result = dev->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(&mainDescHeap));
+	result = DirectXDevice::dev->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(&mainDescHeap));
 
 
 	D3D12_CPU_DESCRIPTOR_HANDLE HeapHandle = mainDescHeap->GetCPUDescriptorHandleForHeapStart();
 
-	dev->CreateShaderResourceView(
+	DirectXDevice::dev->CreateShaderResourceView(
 		texBuff,
 		&srvDesc,
 		HeapHandle);
 
-	HeapHandle.ptr += dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	HeapHandle.ptr += DirectXDevice::dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
 
 
 
-	result = dev->CreateCommittedResource(
+	result = DirectXDevice::dev->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
 		D3D12_HEAP_FLAG_NONE,
 		&CD3DX12_RESOURCE_DESC::Buffer((sizeof(MatrocesDate) + 0xff)&~0xff),
@@ -309,7 +307,7 @@ void Poly::CreateMainHeap(ID3D12Device * dev)
 
 
 
-	//HeapHandle.ptr += dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	//HeapHandle.ptr += DirectXDevice::dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
 	matWorld.r[0].m128_f32[0] = 2.0f / Camera::window_width;
 	matWorld.r[1].m128_f32[1] = -2.0f / Camera::window_height;
@@ -346,10 +344,10 @@ void Poly::CreateMainHeap(ID3D12Device * dev)
 	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc = {};
 	cbvDesc.BufferLocation = constBuff->GetGPUVirtualAddress();
 	cbvDesc.SizeInBytes = constBuff->GetDesc().Width;
-	dev->CreateConstantBufferView(&cbvDesc, HeapHandle);
+	DirectXDevice::dev->CreateConstantBufferView(&cbvDesc, HeapHandle);
 }
 
-void Poly::CreateSubHeap(ID3D12Device * dev)
+void Poly::CreateSubHeap()
 {
 //	HRESULT result;
 //
@@ -389,7 +387,7 @@ void Poly::CreateSubHeap(ID3D12Device * dev)
 //
 //
 //
-//	result = dev->CreateCommittedResource(
+//	result = DirectXDevice::dev->CreateCommittedResource(
 //		&texheapprop,
 //		D3D12_HEAP_FLAG_NONE,
 //		&texresdes,
@@ -421,22 +419,22 @@ void Poly::CreateSubHeap(ID3D12Device * dev)
 //	descHeapDesc.NumDescriptors = 2;
 //	descHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 //
-//	result = dev->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(&subDescHeap));
+//	result = DirectXDevice::dev->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(&subDescHeap));
 //
 //
 //	D3D12_CPU_DESCRIPTOR_HANDLE HeapHandle = subDescHeap->GetCPUDescriptorHandleForHeapStart();
 //
-//	dev->CreateShaderResourceView(
+//	DirectXDevice::dev->CreateShaderResourceView(
 //		texBuff,
 //		&srvDesc,
 //		HeapHandle);
 //
-//	HeapHandle.ptr += dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+//	HeapHandle.ptr += DirectXDevice::dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 //
 //
 //
 //
-//	result = dev->CreateCommittedResource(
+//	result = DirectXDevice::dev->CreateCommittedResource(
 //		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
 //		D3D12_HEAP_FLAG_NONE,
 //		&CD3DX12_RESOURCE_DESC::Buffer((sizeof(MatrocesDate) + 0xff)&~0xff),
@@ -448,10 +446,10 @@ void Poly::CreateSubHeap(ID3D12Device * dev)
 //	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc = {};
 //	cbvDesc.BufferLocation = constBuff2->GetGPUVirtualAddress();
 //	cbvDesc.SizeInBytes = constBuff2->GetDesc().Width;
-//	dev->CreateConstantBufferView(&cbvDesc, HeapHandle);
+//	DirectXDevice::dev->CreateConstantBufferView(&cbvDesc, HeapHandle);
 }
 
-void Poly::SetDepth(ID3D12Device * dev)
+void Poly::SetDepth()
 {
 	D3D12_RESOURCE_DESC depthresdesc = {};
 	depthresdesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
@@ -474,7 +472,7 @@ void Poly::SetDepth(ID3D12Device * dev)
 
 	ID3D12Resource* depthBuff = nullptr;
 	HRESULT result;
-	result = dev->CreateCommittedResource(
+	result = DirectXDevice::dev->CreateCommittedResource(
 		&depthHeapProp,
 		D3D12_HEAP_FLAG_NONE,
 		&depthresdesc,
@@ -487,36 +485,33 @@ void Poly::SetDepth(ID3D12Device * dev)
 	dsvHeapDesc.NumDescriptors = 1;
 	dsvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
 
-	result = dev->CreateDescriptorHeap(&dsvHeapDesc, IID_PPV_ARGS(&dsvHeap));
+	result = DirectXDevice::dev->CreateDescriptorHeap(&dsvHeapDesc, IID_PPV_ARGS(&dsvHeap));
 
 	D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc = {};
 	dsvDesc.Format = DXGI_FORMAT_D32_FLOAT;
 	dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
 	dsvDesc.Flags = D3D12_DSV_FLAG_NONE;
 
-	dev->CreateDepthStencilView(
+	DirectXDevice::dev->CreateDepthStencilView(
 		depthBuff,
 		&dsvDesc,
 		dsvHeap->GetCPUDescriptorHandleForHeapStart());
 
 }
 
-void Poly::SetVert(ID3D12Device * dev)
+void Poly::SetVert()
 {
 	for (int a = 0; a < n; a++)
 	{
-		vertices[a].pos.x = float(10 * sin(2 * 3.14f / n * a));
+		vertices[a].pos.x = float(0.5f * sin(2 * 3.14f / n * a));
 
-		vertices[a].pos.y = float(10 * cos(2 * 3.14f / n * a));
+		vertices[a].pos.y = float(0.5f * cos(2 * 3.14f / n * a));
 
 		vertices[a].pos.z = 0;
 
-		vertices[a + n + 1].pos.x = float(10 * sin(2 * 3.14f / n * a));
-		vertices[a + n + 1].pos.y = float(10 * cos(2 * 3.14f / n * a));
-
-		vertices[a + n + 1].pos.z = 10;
-
-
+		vertices[a + n + 1].pos.x = float(0.5 * sin(2 * 3.14f / n * a));
+		vertices[a + n + 1].pos.y = float(0.5 * cos(2 * 3.14f / n * a));
+		vertices[a + n + 1].pos.z = 0.5;
 	}
 	vertices[n].pos.x = 0;
 	vertices[n].pos.y = 0;
@@ -524,7 +519,7 @@ void Poly::SetVert(ID3D12Device * dev)
 
 	vertices[n * 2 + 1].pos.x = 0;
 	vertices[n * 2 + 1].pos.y = 0;
-	vertices[n * 2 + 1].pos.z = 10;
+	vertices[n * 2 + 1].pos.z = 0.5;
 
 	for (int a = 0; a < 1; a++)
 	{
@@ -578,7 +573,7 @@ void Poly::SetVert(ID3D12Device * dev)
 	ID3D12Resource* vertBuff;
 	vertBuff = nullptr;
 	HRESULT result;
-	result = dev->CreateCommittedResource(
+	result = DirectXDevice::dev->CreateCommittedResource(
 		&vertheapprop, // ヒープ設定
 		D3D12_HEAP_FLAG_NONE,
 		&vertresdesc, // リソース設定
@@ -600,7 +595,7 @@ void Poly::SetVert(ID3D12Device * dev)
 	ID3D12Resource* indexBuff = nullptr;
 	vertresdesc.Width = sizeof(indices); // インデックス情報が入る分のサイズ
 	  // GPU リソースの生成 	
-	result = dev->CreateCommittedResource(&vertheapprop, // ヒープ設定
+	result = DirectXDevice::dev->CreateCommittedResource(&vertheapprop, // ヒープ設定
 		D3D12_HEAP_FLAG_NONE, &vertresdesc, // リソース設定 
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
@@ -623,80 +618,80 @@ void Poly::SetVert(ID3D12Device * dev)
 
 }
 
-void Poly::Draw(ID3D12GraphicsCommandList * cmdList, ID3D12Device * dev)
+void Poly::Draw()
 {
 	
 
 	//if (Camera::ReturnCurrentCamera() == CurrentCamera::Main)
 	//{
-	//	DirectXDevice::cmdList->RSSetViewports(1, &DirectXDevice::viewport);
+	//	DirectXDevice::DirectXDevice::cmdList->RSSetViewports(1, &DirectXDevice::viewport);
 
-		cmdList->SetPipelineState(pipelinestate);
-		cmdList->SetGraphicsRootSignature(rootsignature);
-		cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		cmdList->IASetVertexBuffers(0, 1, &vbView);
-		cmdList->IASetIndexBuffer(&ibView);
-		cmdList->SetDescriptorHeaps(1, &mainDescHeap);
+		DirectXDevice::cmdList->SetPipelineState(pipelinestate);
+		DirectXDevice::cmdList->SetGraphicsRootSignature(rootsignature);
+		DirectXDevice::cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		DirectXDevice::cmdList->IASetVertexBuffers(0, 1, &vbView);
+		DirectXDevice::cmdList->IASetIndexBuffer(&ibView);
+		DirectXDevice::cmdList->SetDescriptorHeaps(1, &mainDescHeap);
 		D3D12_GPU_DESCRIPTOR_HANDLE handle = mainDescHeap->GetGPUDescriptorHandleForHeapStart();
-		cmdList->SetGraphicsRootDescriptorTable(0, handle);
+		DirectXDevice::cmdList->SetGraphicsRootDescriptorTable(0, handle);
 
-		handle.ptr += dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-		cmdList->SetGraphicsRootDescriptorTable(1, handle);
+		handle.ptr += DirectXDevice::dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+		DirectXDevice::cmdList->SetGraphicsRootDescriptorTable(1, handle);
 
-		cmdList->DrawIndexedInstanced(_countof(indices), 1, 0, 0, 0);
+		DirectXDevice::cmdList->DrawIndexedInstanced(_countof(indices), 1, 0, 0, 0);
 		//
 
 
-	//	DirectXDevice::cmdList->RSSetViewports(1, &DirectXDevice::viewport2);
+	//	DirectXDevice::DirectXDevice::cmdList->RSSetViewports(1, &DirectXDevice::viewport2);
 
 
-	//	cmdList->SetDescriptorHeaps(1, &subDescHeap);
+	//	DirectXDevice::cmdList->SetDescriptorHeaps(1, &subDescHeap);
 	//	handle = subDescHeap->GetGPUDescriptorHandleForHeapStart();
-	//	cmdList->SetGraphicsRootDescriptorTable(0, handle);
+	//	DirectXDevice::cmdList->SetGraphicsRootDescriptorTable(0, handle);
 
-	//	handle.ptr += dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	//	cmdList->SetGraphicsRootDescriptorTable(1, handle);
+	//	handle.ptr += DirectXDevice::dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	//	DirectXDevice::cmdList->SetGraphicsRootDescriptorTable(1, handle);
 
-	//	cmdList->DrawIndexedInstanced(_countof(indices), 1, 0, 0, 0);
+	//	DirectXDevice::cmdList->DrawIndexedInstanced(_countof(indices), 1, 0, 0, 0);
 	//	//
 
 
 	//}
 	//else if (Camera::ReturnCurrentCamera() == CurrentCamera::Sub)
 	//{
-	//	DirectXDevice::cmdList->RSSetViewports(1, &DirectXDevice::viewport);
-	//	cmdList->SetPipelineState(pipelinestate);
-	//	cmdList->SetGraphicsRootSignature(rootsignature);
-	//	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	//	cmdList->IASetVertexBuffers(0, 1, &vbView);
-	//	cmdList->IASetIndexBuffer(&ibView);
+	//	DirectXDevice::DirectXDevice::cmdList->RSSetViewports(1, &DirectXDevice::viewport);
+	//	DirectXDevice::cmdList->SetPipelineState(pipelinestate);
+	//	DirectXDevice::cmdList->SetGraphicsRootSignature(rootsignature);
+	//	DirectXDevice::cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	//	DirectXDevice::cmdList->IASetVertexBuffers(0, 1, &vbView);
+	//	DirectXDevice::cmdList->IASetIndexBuffer(&ibView);
 	//	D3D12_GPU_DESCRIPTOR_HANDLE handle = subDescHeap->GetGPUDescriptorHandleForHeapStart();
 	//	//
-	//	cmdList->SetDescriptorHeaps(1, &subDescHeap);
+	//	DirectXDevice::cmdList->SetDescriptorHeaps(1, &subDescHeap);
 
-	//	cmdList->SetGraphicsRootDescriptorTable(0, handle);
+	//	DirectXDevice::cmdList->SetGraphicsRootDescriptorTable(0, handle);
 
-	//	handle.ptr += dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	//	cmdList->SetGraphicsRootDescriptorTable(1, handle);
+	//	handle.ptr += DirectXDevice::dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	//	DirectXDevice::cmdList->SetGraphicsRootDescriptorTable(1, handle);
 
-	//	cmdList->DrawIndexedInstanced(_countof(indices), 1, 0, 0, 0);
+	//	DirectXDevice::cmdList->DrawIndexedInstanced(_countof(indices), 1, 0, 0, 0);
 
 
 	//	//
 
 
-	//	DirectXDevice::cmdList->RSSetViewports(1, &DirectXDevice::viewport2);
+	//	DirectXDevice::DirectXDevice::cmdList->RSSetViewports(1, &DirectXDevice::viewport2);
 
 	//	//
 	//	handle = mainDescHeap->GetGPUDescriptorHandleForHeapStart();
-	//	cmdList->SetDescriptorHeaps(1, &mainDescHeap);
+	//	DirectXDevice::cmdList->SetDescriptorHeaps(1, &mainDescHeap);
 
-	//	cmdList->SetGraphicsRootDescriptorTable(0, handle);
+	//	DirectXDevice::cmdList->SetGraphicsRootDescriptorTable(0, handle);
 
-	//	handle.ptr += dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	//	cmdList->SetGraphicsRootDescriptorTable(1, handle);
+	//	handle.ptr += DirectXDevice::dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	//	DirectXDevice::cmdList->SetGraphicsRootDescriptorTable(1, handle);
 
-	//	cmdList->DrawIndexedInstanced(_countof(indices), 1, 0, 0, 0);
+	//	DirectXDevice::cmdList->DrawIndexedInstanced(_countof(indices), 1, 0, 0, 0);
 	//	//
 
 	//}
@@ -740,4 +735,9 @@ void Poly::SetPos(XMFLOAT3 pos)
 void Poly::SetScale(XMFLOAT3 Scale)
 {
 	scale = Scale;
+}
+
+void Poly::SetRotate(XMFLOAT3 rotate)
+{
+	rotation = rotate;
 }
