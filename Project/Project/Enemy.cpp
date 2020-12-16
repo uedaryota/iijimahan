@@ -359,6 +359,9 @@ XMFLOAT3 Enemy::SetAncer2(XMFLOAT3 x)
 	return Ancer2;
 }
 
+///<summary>
+///‘æˆê–Ú•W’ÇÕ‚É–ß‚·
+///</summary>
 void Enemy::ActionRiset()
 {
 	state = move1;
