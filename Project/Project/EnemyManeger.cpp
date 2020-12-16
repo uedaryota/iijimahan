@@ -28,11 +28,11 @@ void EnemyManeger::Destory()
 {
 }
 
-void EnemyManeger::Draw()
+void EnemyManeger::Draw(ID3D12GraphicsCommandList * cmdList)
 {
 	for (int i = 0; i < boxcount; i++)
 	{
-		enemybox[i]->Draw();
+		enemybox[i]->Draw(cmdList);
 	}
 }
 
@@ -42,6 +42,7 @@ void EnemyManeger::Update()
 	{
 		enemybox[i]->Update();
 	}
+	Serch();
 }
 
 ///<summary>
@@ -80,4 +81,41 @@ void EnemyManeger::SecondAncerSet(XMFLOAT3 anc2)
 	{
 		enemybox[i]->SetAncer2(anc2);
 	}
+}
+
+void EnemyManeger::ReAncerSet(XMFLOAT3 anc1, XMFLOAT3 anc2)
+{
+	for (int i = 0; i < boxcount; i++)
+	{
+		enemybox[i]->ActionRiset();
+		enemybox[i]->SetAncer1(anc1);
+		enemybox[i]->SetAncer2(anc2);
+	}
+}
+
+bool EnemyManeger::Serch()
+{
+	float hitX = 0.5f;
+	float hitZ = 0.5f;
+	
+	for (int i = 0; i < boxcount; i++)
+	{
+		for (int x = 0; x < boxcount; x++)
+		{
+			if (enemybox[i]->GetPosition().x - enemybox[x]->GetPosition().x == 0 && enemybox[i]->GetPosition().z - enemybox[x]->GetPosition().z == 0)
+			{
+			}
+			else if (abs(enemybox[i]->GetPosition().x - enemybox[x]->GetPosition().x) > hitX)
+			{
+			}
+			else if (abs(enemybox[i]->GetPosition().z - enemybox[x]->GetPosition().z) > hitZ)
+			{
+			}
+			else
+			{
+				enemybox[i]->state = Stay;
+			}
+		}
+	}
+	return false;
 }

@@ -14,11 +14,13 @@ Enemy::~Enemy()
 ///</summary>
 void Enemy::Initialize()
 {
-	pol->Initialize();
-	pol->SetScale({ 30, 30, 30 });
+	pol->Initialize(DirectXDevice::dev);
 	ai.Initialize();
 	SetState();
 	Deadflag = false;
+	obj->Initialize(DirectXDevice::dev);
+	obj->LoadObj("UFO");
+	obj->position.y = 0;
 }
 
 ///<summary>
@@ -31,6 +33,8 @@ void Enemy::Update()
 		return;
 	}
 	pol->Update();
+	obj->Update();
+	obj->position = pol->position;
 	PositionUpdate(Ancer1, Ancer2, TargetTower);
 	GetState();
 	GetAlive();
@@ -40,13 +44,14 @@ void Enemy::Update()
 ///<summary>
 ///描画処理
 ///</summary>
-void Enemy::Draw()
+void Enemy::Draw(ID3D12GraphicsCommandList * cmdList)
 {
 	if (Deadflag)
 	{
 		return;
 	}
-	pol->Draw();
+	//pol->Draw(DirectXDevice::cmdList, DirectXDevice::dev);
+	obj->Draw(DirectXDevice::cmdList);
 }
 
 ///<summary>
@@ -63,6 +68,7 @@ void Enemy::SetPos(XMFLOAT3 position)
 void Enemy::SetScale(XMFLOAT3 scale)
 {
 	pol->scale = scale;
+	obj->scale = scale;
 }
 
 ///<summary>
@@ -78,7 +84,7 @@ void Enemy::Install(EnemyAI Ai)
 ///</summary>
 void Enemy::SetState()
 {
-	Hp = ai.GetHp();
+	Hp = 5.0f;
 	Speed = ai.GetSpeed();
 	Power = ai.GetPower();
 }
@@ -101,6 +107,10 @@ void Enemy::PositionUpdate(XMFLOAT3 pointA, XMFLOAT3 pointB, XMFLOAT3 tower)//エ
 #pragma region
 		Deadflag = true;
 		break;
+#pragma endregion
+		case Stay:
+#pragma region
+			break;
 #pragma endregion
 		case move1://第1移動
 #pragma region
@@ -186,7 +196,7 @@ void Enemy::PositionUpdate(XMFLOAT3 pointA, XMFLOAT3 pointB, XMFLOAT3 tower)//エ
 				}
 				else if (pol->position.x - tower.x < -0.5f)
 				{
-					pol->position.x = pol->position.x + vel.z;
+					pol->position.x = pol->position.x -  vel.x;
 				}
 				else
 				{
@@ -197,11 +207,11 @@ void Enemy::PositionUpdate(XMFLOAT3 pointA, XMFLOAT3 pointB, XMFLOAT3 tower)//エ
 			if (!NextZ) {
 				if (pol->position.z - tower.z > 0.5f)
 				{
-					pol->position.z = pol->position.z + vel.x;
+					pol->position.z = pol->position.z + vel.z;
 				}
 				else if (pol->position.z - tower.z < -0.5f)
 				{
-					pol->position.x = pol->position.x + vel.z;
+					pol->position.z = pol->position.z - vel.z;
 				}
 				else
 				{
@@ -333,7 +343,7 @@ CodeOfConduct Enemy::GetCode(){return code;}
 ///</summary>
 void Enemy::EnemyDamege(float x)
 {
-	SetHp(Hp-x);
+	Hp = Hp - x;
 	if (Damege)
 	{
 		return;
@@ -358,6 +368,19 @@ XMFLOAT3 Enemy::SetAncer2(XMFLOAT3 x)
 {
 	Ancer2 = x;
 	return Ancer2;
+}
+
+///<summary>
+///第一目標追跡に戻す
+///</summary>
+void Enemy::ActionRiset()
+{
+	state = move1;
+}
+
+XMFLOAT3 Enemy::GetPosition()
+{
+	return pol->position;
 }
 
 

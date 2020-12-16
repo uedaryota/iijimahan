@@ -1,9 +1,11 @@
 #pragma once
 #include"Poly.h"
 #include"EnemyAI.h"
+#include <d3dx12.h>
+#include"Texture.h"
 using namespace DirectX;
 enum State {
-	move1, move2, move3, atack1, special1, Destory
+	move1, move2, move3, atack1, special1, Destory, Stay, 
 };
 
 enum CodeOfConduct {
@@ -16,7 +18,7 @@ public:
 	~Enemy();
 	void Initialize();
 	void Update();
-	void Draw();
+	void Draw(ID3D12GraphicsCommandList * cmdList);
 	void SetPos(XMFLOAT3 position);
 	void SetScale(XMFLOAT3 scale);
 	void Install(EnemyAI Ai);
@@ -49,11 +51,15 @@ public:
 	XMFLOAT3 SetAncer2(XMFLOAT3 x);
 	XMFLOAT3 Ancer1{ 15,15,15 };
 	XMFLOAT3 Ancer2{ 10,10,10 };
+	void ActionRiset();
+	XMFLOAT3 GetPosition();
 private:
 	Poly * pol = new Poly();
 
 	//性格事に行動変化するための変数です
 	bool Damege = false;//ダメージを受けた際にTRUEになる変数です
 	bool Kosinuke = false;//腰抜け状態です。
+	ObjFile* obj = new ObjFile();
+	Texture* tex = new Texture();
 	
 };
