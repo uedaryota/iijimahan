@@ -18,6 +18,9 @@ void Enemy::Initialize()
 	ai.Initialize();
 	SetState();
 	Deadflag = false;
+	obj->Initialize(DirectXDevice::dev);
+	obj->LoadObj("UFO");
+	obj->position.y = 0;
 }
 
 ///<summary>
@@ -30,6 +33,8 @@ void Enemy::Update()
 		return;
 	}
 	pol->Update();
+	obj->Update();
+	obj->position = pol->position;
 	PositionUpdate(Ancer1, Ancer2, TargetTower);
 	GetState();
 	GetAlive();
@@ -39,13 +44,14 @@ void Enemy::Update()
 ///<summary>
 ///ï`âÊèàóù
 ///</summary>
-void Enemy::Draw()
+void Enemy::Draw(ID3D12GraphicsCommandList * cmdList)
 {
 	if (Deadflag)
 	{
 		return;
 	}
-	pol->Draw(DirectXDevice::cmdList, DirectXDevice::dev);
+	//pol->Draw(DirectXDevice::cmdList, DirectXDevice::dev);
+	obj->Draw(DirectXDevice::cmdList);
 }
 
 ///<summary>
@@ -62,6 +68,7 @@ void Enemy::SetPos(XMFLOAT3 position)
 void Enemy::SetScale(XMFLOAT3 scale)
 {
 	pol->scale = scale;
+	obj->scale = scale;
 }
 
 ///<summary>
@@ -77,7 +84,7 @@ void Enemy::Install(EnemyAI Ai)
 ///</summary>
 void Enemy::SetState()
 {
-	Hp = 1.0f;
+	Hp = 5.0f;
 	Speed = ai.GetSpeed();
 	Power = ai.GetPower();
 }
@@ -100,6 +107,10 @@ void Enemy::PositionUpdate(XMFLOAT3 pointA, XMFLOAT3 pointB, XMFLOAT3 tower)//ÉG
 #pragma region
 		Deadflag = true;
 		break;
+#pragma endregion
+		case Stay:
+#pragma region
+			break;
 #pragma endregion
 		case move1://ëÊ1à⁄ìÆ
 #pragma region
@@ -365,6 +376,11 @@ XMFLOAT3 Enemy::SetAncer2(XMFLOAT3 x)
 void Enemy::ActionRiset()
 {
 	state = move1;
+}
+
+XMFLOAT3 Enemy::GetPosition()
+{
+	return pol->position;
 }
 
 

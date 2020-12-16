@@ -9,7 +9,7 @@ public:
 	void Add(Enemy* enemy);//マネージャーに登録
 	void Create();//マネージャーで作成
 	void Destory();//削除
-	void Draw();//描画
+	void Draw(ID3D12GraphicsCommandList * cmdList);//描画
 	void Update();//更新処理
 
     ///<summary>
@@ -37,7 +37,9 @@ public:
 	///<param name="anc2">第2移動地点</param>
 	///</summary>
 	void ReAncerSet(XMFLOAT3 anc1, XMFLOAT3 anc2);
-	
+
+	bool Serch();
+	State Bank;
 private:
 	Enemy* enemybox[999];
 	int boxcount = 0;

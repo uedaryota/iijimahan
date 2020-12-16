@@ -66,6 +66,7 @@ void DirectXDevice::Initialize()
 	tower->Initialize(DirectXDevice::dev);
 	floor1->Initialize(DirectXDevice::dev);
 	manager->Initialize();
+	enemy->Initialize();
 	sound->Initialize();
 	stage->Initialize();
 	manager->Add(enemy);
@@ -79,8 +80,8 @@ void DirectXDevice::Initialize()
 	back->SetPos(XMFLOAT3(0, 0, 500));
 	enemy->SetTower(tower);
 	//enemy->SetTarget(&tower->GetPosition);
-	//enemy2->state = move3;
-	//enemy2->SetPos(XMFLOAT3{ 0.0f,240.0f,0.0f });
+	enemy2->state = move1;
+	enemy2->SetTower(tower);
 	sound->LoadFile(L".\\Resources\\01.mp3");
 	input->Initialize();
 }
@@ -134,9 +135,11 @@ void DirectXDevice::Update()
 //	sound->Update();
 	
 	tower->Draw(DirectXDevice::cmdList);
-
+	enemy->SetScale(XMFLOAT3{ 10,10,10 });
 	manager->Update();
-	manager->Draw();
+	manager->Draw(DirectXDevice::cmdList);
+	//enemy->Update();
+	//enemy->Draw(DirectXDevice::cmdList);
 	/*back->Update();
 	back->Draw();
 	*/
@@ -154,7 +157,8 @@ void DirectXDevice::Update()
 	}
 	if (input->PushKey(DIK_Z))
 	{
-		enemy->EnemyDamege(2);
+		enemy->EnemyDamege(1);
+		//enemy2->EnemyDamege(0.5);
 	}
 	//DirectXDevice::cmdList->RSSetViewports(1, &viewport2);
 	//
