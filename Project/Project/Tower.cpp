@@ -19,7 +19,7 @@ void Tower::Initialize(ID3D12Device* dev)
 	tex->scale = { texSize.x / Camera::window_width*hp,texSize.y / Camera::window_height,100.0f };
 	obj->Initialize(dev);
 	obj->LoadObj("triangle_mat");
-	obj->position.y = 110;
+	obj->position.y = 10;
 	hp = 100;
 }
 
