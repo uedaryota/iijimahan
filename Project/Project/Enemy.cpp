@@ -14,7 +14,7 @@ Enemy::~Enemy()
 ///</summary>
 void Enemy::Initialize()
 {
-	pol->Initialize(DirectXDevice::dev);
+	pol->Initialize();
 	ai.Initialize();
 	SetState();
 	Deadflag = false;
