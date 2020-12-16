@@ -12,6 +12,7 @@ ObjFile::ObjFile()
 
 void ObjFile::Initialize(ID3D12Device* dev)
 {
+	
 	this->dev = dev;
 	CreatePipeline();
 	CreateMainHeap();
@@ -330,6 +331,20 @@ void ObjFile::CreateSubHeap()
 	HeapHandle.ptr += dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 	CcbvHandle1 = HeapHandle;
 
+}
+
+void ObjFile::SetPos(XMFLOAT3 pos)
+{
+	position = pos;
+}
+
+void ObjFile::SetRotate(XMFLOAT3 rotate)
+{
+}
+
+void ObjFile::SetScale(XMFLOAT3 scale)
+{
+	this->scale = scale;
 }
 
 void ObjFile::LoadObj(std::string name)

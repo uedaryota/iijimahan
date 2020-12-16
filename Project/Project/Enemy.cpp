@@ -14,7 +14,8 @@ Enemy::~Enemy()
 ///</summary>
 void Enemy::Initialize()
 {
-	pol->Initialize(DirectXDevice::dev);
+	pol->Initialize();
+	pol->SetScale({ 30, 30, 30 });
 	ai.Initialize();
 	SetState();
 	Deadflag = false;
@@ -45,7 +46,7 @@ void Enemy::Draw()
 	{
 		return;
 	}
-	pol->Draw(DirectXDevice::cmdList, DirectXDevice::dev);
+	pol->Draw();
 }
 
 ///<summary>

@@ -99,6 +99,11 @@
     <ClCompile Include="Stage2D.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
+    <ClCompile Include="DebugText.cpp" />
+    <ClCompile Include="Battery.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Collision.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Block.h">
@@ -164,6 +169,12 @@
     <ClInclude Include="Stage2D.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
+    <ClInclude Include="BoxCollision.h" />
+    <ClInclude Include="DebugText.h" />
+    <ClInclude Include="Battery.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="BasicShaderHeader.hlsli">

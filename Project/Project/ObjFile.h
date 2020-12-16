@@ -67,6 +67,9 @@ public:
 	void CreatePipeline();
 	void CreateMainHeap();
 	void CreateSubHeap();
+	void SetPos(XMFLOAT3 pos);
+	void SetRotate(XMFLOAT3 rotate);
+	void SetScale(XMFLOAT3 scale);
 
 	void LoadObj(const std::string name);
 	void LoadMaterial(const std::string&directorypath, const std::string& filename);

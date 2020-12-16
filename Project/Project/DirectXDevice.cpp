@@ -4,6 +4,7 @@
 #include "Input.h"
 #include"Texture.h"
 #include"Stage2D.h"
+#include"Battery.h"
 ID3D12GraphicsCommandList* DirectXDevice::cmdList = nullptr;;
 ID3D12Device* DirectXDevice::dev = nullptr;
 IDXGIFactory6*  DirectXDevice::dxgifactory;
@@ -41,6 +42,7 @@ EnemyManeger* manager = new EnemyManeger();
 Sprite* back = new Sprite();
 Input* input = new Input();
 Texture* tex = new Texture();
+Battery* bat = new Battery();
 LRESULT WindowProc1(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
 
@@ -64,6 +66,7 @@ void DirectXDevice::Initialize()
 	SetFence();
 	block->Initialize();
 	tower->Initialize(DirectXDevice::dev);
+	
 	floor1->Initialize(DirectXDevice::dev);
 	manager->Initialize();
 	sound->Initialize();
@@ -78,6 +81,7 @@ void DirectXDevice::Initialize()
 	back->SetScale(XMFLOAT3(300, 300, 300));
 	back->SetPos(XMFLOAT3(0, 0, 500));
 	enemy->SetTower(tower);
+	bat->Initialize();
 	//enemy->SetTarget(&tower->GetPosition);
 	//enemy2->state = move3;
 	//enemy2->SetPos(XMFLOAT3{ 0.0f,240.0f,0.0f });
@@ -142,7 +146,8 @@ void DirectXDevice::Update()
 	*/
 	stage->Update();
 	stage->Draw();
-
+	bat->Update();
+	bat->Draw();
 
 	if (input->PushKey(DIK_Q))//実験用→実験結果成功　＊座標の変更を行えます。
 	{

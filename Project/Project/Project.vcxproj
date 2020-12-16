@@ -145,9 +145,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Battery.cpp" />
     <ClCompile Include="Block.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CircleCollision.cpp" />
+    <ClCompile Include="Collision.cpp" />
     <ClCompile Include="DebugText.cpp" />
     <ClCompile Include="DirectXDevice.cpp" />
     <ClCompile Include="Enemy.cpp" />
@@ -247,10 +249,12 @@
     <None Include="TexShaderHeader.hlsli" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Battery.h" />
     <ClInclude Include="Block.h" />
     <ClInclude Include="BoxCollision.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CircleCollision.h" />
+    <ClInclude Include="Collision.h" />
     <ClInclude Include="DebugText.h" />
     <ClInclude Include="DirectXDevice.h" />
     <ClInclude Include="Enemy.h" />

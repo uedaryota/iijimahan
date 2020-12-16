@@ -11,7 +11,7 @@ Point::~Point()
 
 void Point::Initialize()
 {
-	pol->Initialize(DirectXDevice::dev);
+	pol->Initialize();
 }
 
 void Point::Update()
