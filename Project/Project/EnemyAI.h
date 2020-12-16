@@ -15,14 +15,14 @@ public:
 	float GetHp();
 	float GetSpeed();
 	float GetPower();
-	float SetHp(float x);
-	float SetSpeed(float x);
-	float SetPower(float x);
+	void SetHp(float x);
+	void SetSpeed(float x);
+	void SetPower(float x);
 	XMFLOAT3 position;
 	XMFLOAT3 velocity;
 	EnemyAI GetAI(EnemyAI ai);
 	Tower tower,pointA,pointB;
-	float Hp=3;
+	float Hp;
 	float Speed=1;
 	float Power=1;
 private:

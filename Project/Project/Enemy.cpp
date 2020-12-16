@@ -77,7 +77,7 @@ void Enemy::Install(EnemyAI Ai)
 ///</summary>
 void Enemy::SetState()
 {
-	Hp = ai.GetHp();
+	Hp = 1.0f;
 	Speed = ai.GetSpeed();
 	Power = ai.GetPower();
 }
@@ -332,7 +332,7 @@ CodeOfConduct Enemy::GetCode(){return code;}
 ///</summary>
 void Enemy::EnemyDamege(float x)
 {
-	SetHp(Hp-x);
+	Hp = Hp - x;
 	if (Damege)
 	{
 		return;
