@@ -6,7 +6,8 @@ DebugText::DebugText()
 
 DebugText::~DebugText()
 {
-	for (int i = 0; i < _countof(spriteDatas); i++) {
+	for (int i = 0; i < _countof(spriteDatas); i++) 
+	{
 		delete spriteDatas[i];
 	}
 }
@@ -28,7 +29,8 @@ void DebugText::Print(const std::string & text, float x, float y, float scale = 
 	for (int i = 0; i < text.size(); i++)
 	{
 		// 最大文字数超過
-		if (spriteIndex >= maxCharCount) {
+		if (spriteIndex >= maxCharCount)
+		{
 			break;
 		}
 
@@ -36,7 +38,8 @@ void DebugText::Print(const std::string & text, float x, float y, float scale = 
 		const unsigned char& character = text[i];
 
 		int fontIndex = character - 32;
-		if (character >= 0x7f) {
+		if (character >= 0x7f) 
+		{
 			fontIndex = 0;
 		}
 
