@@ -43,3 +43,41 @@ void EnemyManeger::Update()
 		enemybox[i]->Update();
 	}
 }
+
+///<summary>
+///第1第2ポイントまとめての移動目標の全体設定
+///<param name="anc1">第1移動地点</param>
+///<param name="anc2">第2移動地点</param>
+///</summary>
+void EnemyManeger::AncerSet(XMFLOAT3 anc1, XMFLOAT3 anc2)
+{
+	for (int i = 0; i < boxcount; i++)
+	{
+		enemybox[i]->SetAncer1(anc1);
+		enemybox[i]->SetAncer2(anc2);
+	}
+}
+
+///<summary>
+///第1ポイントの全体設定
+///<param name="anc1">第1移動地点</param>
+///</summary>
+void EnemyManeger::FirstAncerSet(XMFLOAT3 anc1)
+{
+	for (int i = 0; i < boxcount; i++)
+	{
+		enemybox[i]->SetAncer1(anc1);
+	}
+}
+
+///<summary>
+///第2ポイントの全体設定
+///<param name="anc2">第2移動地点</param>
+///</summary>
+void EnemyManeger::SecondAncerSet(XMFLOAT3 anc2)
+{
+	for (int i = 0; i < boxcount; i++)
+	{
+		enemybox[i]->SetAncer2(anc2);
+	}
+}

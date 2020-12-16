@@ -3,7 +3,7 @@
 #include"EnemyAI.h"
 using namespace DirectX;
 enum State {
-	move1, move2, move3, atack1, atack2, Destory
+	move1, move2, move3, atack1, special1, Destory
 };
 
 enum CodeOfConduct {
@@ -40,6 +40,20 @@ public:
 	void SetTower(Tower* tow);
 	Tower* mokuhyou;
 	void TowerAtack();
+	void GetAlive();//生きてるか？
+	bool Deadflag = false;
+	CodeOfConduct code;
+	CodeOfConduct GetCode();
+	void EnemyDamege(float x);//エネミーに対する攻撃処理です。floatにダメージ量を入れる。
+	XMFLOAT3 SetAncer1(XMFLOAT3 x);
+	XMFLOAT3 SetAncer2(XMFLOAT3 x);
+	XMFLOAT3 Ancer1{ 15,15,15 };
+	XMFLOAT3 Ancer2{ 10,10,10 };
 private:
 	Poly * pol = new Poly();
+
+	//性格事に行動変化するための変数です
+	bool Damege = false;//ダメージを受けた際にTRUEになる変数です
+	bool Kosinuke = false;//腰抜け状態です。
+	
 };

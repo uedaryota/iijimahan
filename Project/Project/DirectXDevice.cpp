@@ -142,9 +142,14 @@ void DirectXDevice::Update()
 	*/
 	stage->Update();
 	stage->Draw();
-	
-	//DirectXDevice::cmdList->RSSetViewports(1, &viewport2);
 
+
+	if (input->PushKey(DIK_Q))//実験用→実験結果成功　＊座標の変更を行えます。
+	{
+		manager->AncerSet(XMFLOAT3{ 15,15,15 }, XMFLOAT3{ 15,15,15 });
+	}
+	//DirectXDevice::cmdList->RSSetViewports(1, &viewport2);
+	//
 	//tower->Draw(DirectXDevice::cmdList);
 
 //	stage->Update();
