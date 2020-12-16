@@ -185,7 +185,7 @@ void Enemy::PositionUpdate(XMFLOAT3 pointA, XMFLOAT3 pointB, XMFLOAT3 tower)//ƒG
 				}
 				else if (pol->position.x - tower.x < -0.5f)
 				{
-					pol->position.x = pol->position.x + vel.z;
+					pol->position.x = pol->position.x -  vel.x;
 				}
 				else
 				{
@@ -196,11 +196,11 @@ void Enemy::PositionUpdate(XMFLOAT3 pointA, XMFLOAT3 pointB, XMFLOAT3 tower)//ƒG
 			if (!NextZ) {
 				if (pol->position.z - tower.z > 0.5f)
 				{
-					pol->position.z = pol->position.z + vel.x;
+					pol->position.z = pol->position.z + vel.z;
 				}
 				else if (pol->position.z - tower.z < -0.5f)
 				{
-					pol->position.x = pol->position.x + vel.z;
+					pol->position.z = pol->position.z - vel.z;
 				}
 				else
 				{
@@ -357,6 +357,11 @@ XMFLOAT3 Enemy::SetAncer2(XMFLOAT3 x)
 {
 	Ancer2 = x;
 	return Ancer2;
+}
+
+void Enemy::ActionRiset()
+{
+	state = move1;
 }
 
 

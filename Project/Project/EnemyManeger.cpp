@@ -81,3 +81,13 @@ void EnemyManeger::SecondAncerSet(XMFLOAT3 anc2)
 		enemybox[i]->SetAncer2(anc2);
 	}
 }
+
+void EnemyManeger::ReAncerSet(XMFLOAT3 anc1, XMFLOAT3 anc2)
+{
+	for (int i = 0; i < boxcount; i++)
+	{
+		enemybox[i]->ActionRiset();
+		enemybox[i]->SetAncer1(anc1);
+		enemybox[i]->SetAncer2(anc2);
+	}
+}

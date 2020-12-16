@@ -49,6 +49,7 @@ public:
 	XMFLOAT3 SetAncer2(XMFLOAT3 x);
 	XMFLOAT3 Ancer1{ 15,15,15 };
 	XMFLOAT3 Ancer2{ 10,10,10 };
+	void ActionRiset();
 private:
 	Poly * pol = new Poly();
 

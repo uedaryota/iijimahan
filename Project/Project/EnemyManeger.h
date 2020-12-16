@@ -31,6 +31,13 @@ public:
 	///</summary>
 	void SecondAncerSet(XMFLOAT3 anc2);
 
+	///<summary>
+	///第1第2ポイントまとめての移動目標の再設定
+	///<param name="anc1">第1移動地点</param>
+	///<param name="anc2">第2移動地点</param>
+	///</summary>
+	void ReAncerSet(XMFLOAT3 anc1, XMFLOAT3 anc2);
+	
 private:
 	Enemy* enemybox[999];
 	int boxcount = 0;
