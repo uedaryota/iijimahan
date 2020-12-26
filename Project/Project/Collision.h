@@ -15,5 +15,6 @@ public:
 	void Draw();
 	void Initialize();
 	bool MouseToCircle(Input input, CircleCollision circle);
+	bool CircleToCircle(CircleCollision a, CircleCollision b);
 };
 

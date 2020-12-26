@@ -1,6 +1,7 @@
 #pragma once
 #include<DirectXMath.h>
 #include"ObjFile.h"
+#include"CircleCollision.h"
 using namespace DirectX;
 class Bullet
 {
@@ -18,7 +19,10 @@ public:
 	XMFLOAT3 scale{};
 
 	ObjFile* obj;
-	float speed;
+	CircleCollision* col;
+	XMFLOAT3* targetPos = nullptr;
+	float speed=3;
+
 
 };
 

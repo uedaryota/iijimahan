@@ -5,6 +5,7 @@
 #include"Texture.h"
 #include"Stage2D.h"
 #include"Battery.h"
+#include"Collision.h"
 ID3D12GraphicsCommandList* DirectXDevice::cmdList = nullptr;;
 ID3D12Device* DirectXDevice::dev = nullptr;
 IDXGIFactory6*  DirectXDevice::dxgifactory;
@@ -43,6 +44,7 @@ Sprite* back = new Sprite();
 Input* input = new Input();
 Texture* tex = new Texture();
 Battery* bat = new Battery();
+Collision* collider = new Collision();
 LRESULT WindowProc1(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
 
@@ -160,11 +162,12 @@ void DirectXDevice::Update()
 	{
 		manager->ReAncerSet(XMFLOAT3{ -100,1,-100 }, XMFLOAT3{ 500,500,500 });
 	}
-	if (input->PushKey(DIK_Z))
+	if (input->TriggerKey(DIK_Z))
 	{
 		enemy->EnemyDamege(1);
 		//enemy2->EnemyDamege(0.5);
 	}
+	CollisionUpdate();
 	//DirectXDevice::cmdList->RSSetViewports(1, &viewport2);
 	//
 	//tower->Draw(DirectXDevice::cmdList);
@@ -450,4 +453,27 @@ void DirectXDevice::SetFence()
 
 }
 
+void DirectXDevice::CollisionUpdate()
+{
+	if (collider->CircleToCircle(*bat->col, *enemy->col))
+	{
+		if (bat->targetPos == nullptr)
+		{
+			bat->SetTarget(&enemy->col->position);
 
+			bat->Shot();
+		}
+
+	}
+	if (bat->bulletList.size() != 0)
+	{
+		for (int a = 0; a < bat->bulletList.size(); a++)
+		{
+			if (collider->CircleToCircle(*bat->bulletList[a]->col, *enemy->col))
+			{
+				//enemy->EnemyDamege(bat->damage);
+		//		delete(bat->bulletList[a]);
+			}
+		}
+	}
+}

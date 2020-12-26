@@ -42,6 +42,7 @@ public:
 	static void CreateDsv();
 	static void SetView_Scissor();
 	static void SetFence();
+	static void CollisionUpdate();
 	static ID3D12GraphicsCommandList* cmdList;
 	static ID3D12Device* dev;
 	static IDXGIFactory6* dxgifactory;
