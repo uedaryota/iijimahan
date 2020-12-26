@@ -382,6 +382,3 @@ XMFLOAT3 Enemy::GetPosition()
 {
 	return pol->position;
 }
-
-
-
