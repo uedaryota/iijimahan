@@ -11,7 +11,7 @@ public:
 	void SetPos(XMFLOAT3 pos);//座標変更
 	void SetLength(float len);//半径変更
 	XMFLOAT3 position;//座標
-private:
 	float length = 0.5f;//半径
+private:
 };
 

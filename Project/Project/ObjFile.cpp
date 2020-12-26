@@ -13,45 +13,44 @@ ObjFile::ObjFile()
 
 ObjFile::~ObjFile()
 {
-	if (dev != nullptr);
-	{
-		delete(dev);
-	}
+	
+	dev->Release();
+		
+	
 
 	if (pipelinestate != nullptr);
 	{
-		delete(pipelinestate);
+		pipelinestate->Release();
 	}
 
 	if (rootsignature != nullptr);
 	{
-		delete(rootsignature);
+		rootsignature->Release();
 	}
 
 	if (mainDescHeap != nullptr);
 	{
-		delete(mainDescHeap);
+		mainDescHeap->Release();
 	}
 
 	if (subDescHeap != nullptr);
 	{
-		delete(subDescHeap);
+	//	subDescHeap->Release();
 	}
 
-	if (constMap0 != nullptr);
-	{
-		delete(constMap0);
-	}
+	//if (constMap0 != nullptr);
+	//{
+	//	delete &constMap0->viewproj;
+	//	delete &constMap0->world;
 
-	if (constMap0 != nullptr);
-	{
-		delete(constMap1);
-	}
+	//}
 
-	if (subconstMap0 != nullptr);
-	{
-		delete(subconstMap0);
-	}
+
+
+	//if (subconstMap0 != nullptr);
+	//{
+	//	delete(subconstMap0);
+	//}
 
 	//delete(pipelinestate);
 	//delete(rootsignature);

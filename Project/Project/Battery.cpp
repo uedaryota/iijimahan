@@ -46,18 +46,22 @@ void Battery::Initialize()
 		input->Initialize();
 	obj->Initialize();
 	obj->LoadObj("Gun_All");
+	col = new CircleCollision();
+	col->length = 1000;
 	SetScale({ 10,10,10 });
 	SetPos({ 100, 0, 100 });
 }
 
-void Battery::SetTarget(XMFLOAT3 targetpos)
+void Battery::SetTarget(XMFLOAT3* targetpos)
 {
+	this->targetPos = targetpos;
 }
 
 void Battery::SetPos(XMFLOAT3 pos)
 {
 	mainPos = pos;
 	obj->SetPos(mainPos);
+	col->position = mainPos;
 }
 
 void Battery::SetScale(XMFLOAT3 scale)
@@ -70,6 +74,6 @@ void Battery::Shot()
 	Bullet* b = new Bullet();
 	b->Initialize();
 	b->SetPos(mainPos);
-	b->SetVelocity({ 0.5f, 0.5f, -0.5f });
+	b->targetPos = targetPos;
 	bulletList.push_back(b);
 }

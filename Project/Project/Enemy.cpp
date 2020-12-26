@@ -14,6 +14,8 @@ Enemy::~Enemy()
 ///</summary>
 void Enemy::Initialize()
 {
+	col = new CircleCollision();
+	col->length = 10;
 	pol->Initialize();
 	ai.Initialize();
 	SetState();
@@ -35,6 +37,7 @@ void Enemy::Update()
 	pol->Update();
 	obj->Update();
 	obj->position = pol->position;
+	col->position = obj->position;
 	PositionUpdate(Ancer1, Ancer2, TargetTower);
 	GetState();
 	GetAlive();

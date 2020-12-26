@@ -3,6 +3,7 @@
 #include"EnemyAI.h"
 #include <d3dx12.h>
 #include"Texture.h"
+#include"CircleCollision.h"
 using namespace DirectX;
 enum State {
 	move1, move2, move3, atack1, special1, Destory, Stay, 
@@ -53,6 +54,8 @@ public:
 	XMFLOAT3 Ancer2{ 10,10,10 };
 	void ActionRiset();
 	XMFLOAT3 GetPosition();
+
+	CircleCollision* col;
 private:
 	Poly * pol = new Poly();
 

@@ -3,6 +3,7 @@
 #include"Bullet.h"
 #include<vector>
 #include"Input.h"
+#include"CircleCollision.h"
 class Battery
 {
 public:
@@ -11,19 +12,19 @@ public:
 	void Update();
 	void Draw();
 	void Initialize();
-	void SetTarget(XMFLOAT3 targetpos);
+	void SetTarget(XMFLOAT3* Targetpos);
 	void SetPos(XMFLOAT3 pos);
 	void SetScale(XMFLOAT3 scale);
 	void Shot();
 	ObjFile* obj=nullptr;
-
+	CircleCollision* col = nullptr;
 	std::vector<Bullet*>bulletList;
 	XMFLOAT3 mainPos{};
 	XMFLOAT3 mainScale{};
 	XMFLOAT3 mainRotate{};
-	XMFLOAT3 targetPos;
+	XMFLOAT3* targetPos = nullptr;
 	int interval;
-	int damage;
+	int damage=1;
 	Input* input;
 
 };
