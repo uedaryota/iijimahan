@@ -61,7 +61,8 @@ public: // サブクラス
 
 public:
 	ObjFile();
-	void Initialize(ID3D12Device* dev);
+	~ObjFile();
+	void Initialize();
 	void Update();
 	void Draw(ID3D12GraphicsCommandList * cmdList);
 	void CreatePipeline();

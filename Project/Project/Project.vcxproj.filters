@@ -104,6 +104,8 @@
       <Filter>ソースファイル</Filter>
     </ClCompile>
     <ClCompile Include="Collision.cpp" />
+    <ClCompile Include="Bullet.cpp" />
+    <ClCompile Include="DefenderSpawn.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Block.h">
@@ -175,6 +177,8 @@
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
     <ClInclude Include="Collision.h" />
+    <ClInclude Include="Bullet.h" />
+    <ClInclude Include="DefenderSpawn.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="BasicShaderHeader.hlsli">

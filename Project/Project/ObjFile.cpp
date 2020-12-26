@@ -5,15 +5,67 @@
 #include<sstream>
 #include<string>
 #include<vector>
+#include"DirectXDevice.h"
 ObjFile::ObjFile()
 {
 	
 }
 
-void ObjFile::Initialize(ID3D12Device* dev)
+ObjFile::~ObjFile()
+{
+	if (dev != nullptr);
+	{
+		delete(dev);
+	}
+
+	if (pipelinestate != nullptr);
+	{
+		delete(pipelinestate);
+	}
+
+	if (rootsignature != nullptr);
+	{
+		delete(rootsignature);
+	}
+
+	if (mainDescHeap != nullptr);
+	{
+		delete(mainDescHeap);
+	}
+
+	if (subDescHeap != nullptr);
+	{
+		delete(subDescHeap);
+	}
+
+	if (constMap0 != nullptr);
+	{
+		delete(constMap0);
+	}
+
+	if (constMap0 != nullptr);
+	{
+		delete(constMap1);
+	}
+
+	if (subconstMap0 != nullptr);
+	{
+		delete(subconstMap0);
+	}
+
+	//delete(pipelinestate);
+	//delete(rootsignature);
+	//delete(mainDescHeap);
+	//delete(subDescHeap);
+	//delete(constMap0);
+	//delete(constMap1);
+	//delete(subconstMap0);
+}
+
+void ObjFile::Initialize()
 {
 	
-	this->dev = dev;
+	this->dev = DirectXDevice::dev;
 	CreatePipeline();
 	CreateMainHeap();
 }
@@ -44,7 +96,7 @@ void ObjFile::Update()
 	
 	constBuffB0->Unmap(0, nullptr);
 
-	 constMap1 = nullptr;
+	constMap1 = nullptr;
 	result = constBuffB1->Map(0, nullptr, (void**)&constMap1);
 	constMap1->ambient = material.ambient;
 	constMap1->diffuse = material.diffuse;
