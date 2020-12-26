@@ -147,10 +147,12 @@
   <ItemGroup>
     <ClCompile Include="Battery.cpp" />
     <ClCompile Include="Block.cpp" />
+    <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CircleCollision.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="DebugText.cpp" />
+    <ClCompile Include="DefenderSpawn.cpp" />
     <ClCompile Include="DirectXDevice.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="EnemyAI.cpp" />
@@ -252,10 +254,12 @@
     <ClInclude Include="Battery.h" />
     <ClInclude Include="Block.h" />
     <ClInclude Include="BoxCollision.h" />
+    <ClInclude Include="Bullet.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CircleCollision.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="DebugText.h" />
+    <ClInclude Include="DefenderSpawn.h" />
     <ClInclude Include="DirectXDevice.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="EnemyAI.h" />

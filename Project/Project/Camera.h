@@ -61,13 +61,14 @@ public:
 	static CameraState* ReturnCameraState();
 	static CameraState* ReturnSubCameraState();
 	static CurrentCamera ReturnCurrentCamera();
-
-private:
-
 	static CameraState camera1;
 	static CameraState camera2;
 
 	static CurrentCamera currentcamera;
+
+private:
+
+
 	
 };
 

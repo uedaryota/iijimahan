@@ -206,7 +206,7 @@ void DirectXDevice::CreateGameWindow()
 {
 
 
-	WNDCLASSEX w{};
+	
 	w.cbSize = sizeof(WNDCLASSEX);
 	w.lpfnWndProc = (WNDPROC)WindowProc1;
 	w.lpszClassName = (L"DXSample");
@@ -218,7 +218,7 @@ void DirectXDevice::CreateGameWindow()
 	AdjustWindowRect(&wrc, WS_OVERLAPPEDWINDOW, false);
 
 	DirectXDevice::hwnd = CreateWindow(w.lpszClassName,
-		L"DXTest",
+		L"DXSample",
 		WS_OVERLAPPEDWINDOW,
 		CW_USEDEFAULT,
 		CW_USEDEFAULT,

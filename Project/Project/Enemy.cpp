@@ -18,7 +18,7 @@ void Enemy::Initialize()
 	ai.Initialize();
 	SetState();
 	Deadflag = false;
-	obj->Initialize(DirectXDevice::dev);
+	obj->Initialize();
 	obj->LoadObj("UFO");
 	obj->position.y = 0;
 }
