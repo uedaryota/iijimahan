@@ -152,11 +152,11 @@ void DirectXDevice::Update()
 	bat->Update();
 	bat->Draw();
 
-	if (input->PushKey(DIK_Q))//実験用→実験結果成功　＊座標の変更を行えます。
-	{
-		manager->AncerSet(XMFLOAT3{ 15,15,15 }, XMFLOAT3{ 15,15,15 });
-	}
-	if (input->PushKey(DIK_A))//実験用→実験結果成功　＊座標の変更を行えます。
+	//if (input->PushKey(DIK_Q))//実験用→実験結果成功　＊座標の変更を行えます。
+	//{
+	//	manager->AncerSet(XMFLOAT3{ 15,15,15 }, XMFLOAT3{ 15,15,15 });
+	//}
+	if (input->PushKey(DIK_SPACE))//実験用→実験結果成功　＊座標の変更を行えます。
 	{
 		manager->ReAncerSet(XMFLOAT3{ -100,1,-100 }, XMFLOAT3{ 500,500,500 });
 	}

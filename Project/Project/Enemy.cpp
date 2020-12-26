@@ -14,7 +14,7 @@ Enemy::~Enemy()
 ///</summary>
 void Enemy::Initialize()
 {
-	pol->Initialize(DirectXDevice::dev);
+	pol->Initialize();
 	ai.Initialize();
 	SetState();
 	Deadflag = false;
@@ -125,7 +125,6 @@ void Enemy::PositionUpdate(XMFLOAT3 pointA, XMFLOAT3 pointB, XMFLOAT3 tower)//エ
 			{
 				NextX = true;
 			}
-			pol->position.y = pol->position.y + vel.y;
 			if (NextX) {
 				if (pol->position.z - pointA.z > 0.5f)
 				{
@@ -144,7 +143,6 @@ void Enemy::PositionUpdate(XMFLOAT3 pointA, XMFLOAT3 pointB, XMFLOAT3 tower)//エ
 			if (NextX == true, NextZ == true)
 			{
 				state = move2;
-				//pol->position.y = pol->position.y + Floar2;
 				NextX = false;
 				NextZ = false;
 			}
@@ -165,7 +163,6 @@ void Enemy::PositionUpdate(XMFLOAT3 pointA, XMFLOAT3 pointB, XMFLOAT3 tower)//エ
 					NextX = true;
 				}
 			}
-			pol->position.y = pol->position.y + vel.y;
 			if (pol->position.z - pointA.z > 0.5f)
 			{
 				pol->position.z = pol->position.z + vel.x;
@@ -203,7 +200,6 @@ void Enemy::PositionUpdate(XMFLOAT3 pointA, XMFLOAT3 pointB, XMFLOAT3 tower)//エ
 					NextX = true;
 				}
 			}
-			pol->position.y = pol->position.y + vel.y;
 			if (!NextZ) {
 				if (pol->position.z - tower.z > 0.5f)
 				{
