@@ -376,5 +376,5 @@ void Enemy::ActionRiset()
 
 XMFLOAT3 Enemy::GetPosition()
 {
-	return pol->position;
+	return obj->position;
 }
