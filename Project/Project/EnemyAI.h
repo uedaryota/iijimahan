@@ -15,16 +15,16 @@ public:
 	float GetHp();
 	float GetSpeed();
 	float GetPower();
+	void SetHp(float x);
+	void SetSpeed(float x);
+	void SetPower(float x);
 	XMFLOAT3 position;
 	XMFLOAT3 velocity;
 	EnemyAI GetAI(EnemyAI ai);
 	Tower tower,pointA,pointB;
 	float Hp;
-	float Speed;
-	float Power;
-	
-	//XMFLOAT3 UpdateAI(Point pointA, Point pointB, Tower tower);
-	XMFLOAT3 UpdateAI(XMFLOAT3 pointA, XMFLOAT3 pointB, XMFLOAT3 tower);
+	float Speed=1;
+	float Power=1;
 private:
 	Poly* pol = new Poly();
 	XMFLOAT3 vel = { -1, 0, 1 };
@@ -32,4 +32,3 @@ private:
 	bool NextZ = false;
 	float Floar2 = 110.0f;
 };
-

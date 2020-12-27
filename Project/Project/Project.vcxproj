@@ -145,9 +145,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Battery.cpp" />
     <ClCompile Include="Block.cpp" />
+    <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CircleCollision.cpp" />
+    <ClCompile Include="Collision.cpp" />
+    <ClCompile Include="DebugText.cpp" />
+    <ClCompile Include="DefenderSpawn.cpp" />
     <ClCompile Include="DirectXDevice.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="EnemyAI.cpp" />
@@ -165,6 +170,7 @@
     <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Stage.cpp" />
+    <ClCompile Include="Stage2D.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Title.cpp" />
     <ClCompile Include="Tower.cpp" />
@@ -226,17 +232,36 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
+    <FxCompile Include="TexPixelShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="TexVertexShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="BasicShaderHeader.hlsli" />
     <None Include="FloorShaderHeader.hlsli" />
     <None Include="ObjShaderHeader.hlsli" />
     <None Include="PMDShaderHeader.hlsli" />
+    <None Include="TexShaderHeader.hlsli" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Battery.h" />
     <ClInclude Include="Block.h" />
+    <ClInclude Include="BoxCollision.h" />
+    <ClInclude Include="Bullet.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CircleCollision.h" />
+    <ClInclude Include="Collision.h" />
+    <ClInclude Include="DebugText.h" />
+    <ClInclude Include="DefenderSpawn.h" />
     <ClInclude Include="DirectXDevice.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="EnemyAI.h" />
@@ -253,6 +278,7 @@
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="Stage.h" />
+    <ClInclude Include="Stage2D.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Title.h" />
     <ClInclude Include="Tower.h" />

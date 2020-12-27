@@ -25,6 +25,12 @@
     <FxCompile Include="PMDVertexShader.hlsl">
       <Filter>シェーダファイル</Filter>
     </FxCompile>
+    <FxCompile Include="TexPixelShader.hlsl">
+      <Filter>シェーダファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="TexVertexShader.hlsl">
+      <Filter>シェーダファイル</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Block.cpp">
@@ -90,12 +96,16 @@
     <ClCompile Include="Tower.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Sphere.cpp">
+    <ClCompile Include="Stage2D.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Light.cpp">
+    <ClCompile Include="DebugText.cpp" />
+    <ClCompile Include="Battery.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Collision.cpp" />
+    <ClCompile Include="Bullet.cpp" />
+    <ClCompile Include="DefenderSpawn.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Block.h">
@@ -158,12 +168,17 @@
     <ClInclude Include="Tower.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Sphere.h">
+    <ClInclude Include="Stage2D.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Light.h">
+    <ClInclude Include="BoxCollision.h" />
+    <ClInclude Include="DebugText.h" />
+    <ClInclude Include="Battery.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
+    <ClInclude Include="Collision.h" />
+    <ClInclude Include="Bullet.h" />
+    <ClInclude Include="DefenderSpawn.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="BasicShaderHeader.hlsli">
@@ -176,6 +191,9 @@
       <Filter>シェーダファイル</Filter>
     </None>
     <None Include="PMDShaderHeader.hlsli">
+      <Filter>シェーダファイル</Filter>
+    </None>
+    <None Include="TexShaderHeader.hlsli">
       <Filter>シェーダファイル</Filter>
     </None>
   </ItemGroup>

@@ -19,7 +19,7 @@ void Sprite::CreatePipeline()
 	ID3DBlob* errorBlob = nullptr;
 	HRESULT result;
 	result = D3DCompileFromFile(
-		L"BasicVertexShader.hlsl", // シェーダファイル名
+		L"FloorVertexShader.hlsl", // シェーダファイル名
 		nullptr,
 		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
 		"main", "vs_5_0", // エントリーポイント名、シェーダーモデル指定
@@ -28,7 +28,7 @@ void Sprite::CreatePipeline()
 		&vsBlob, &errorBlob);
 	// ピクセルシェーダの読み込みとコンパイル
 	result = D3DCompileFromFile(
-		L"BasicPixelShader.hlsl", // シェーダファイル名
+		L"FloorPixelShader.hlsl", // シェーダファイル名
 		nullptr,
 		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
 		"main", "ps_5_0", // エントリーポイント名、シェーダーモデル指定
@@ -90,7 +90,7 @@ void Sprite::CreatePipeline()
 	blenddesc.SrcBlendAlpha = D3D12_BLEND_ONE;
 	blenddesc.DestBlendAlpha = D3D12_BLEND_ZERO;
 
-	blenddesc.BlendOp = D3D12_BLEND_OP_ADD;  // 加算
+	blenddesc.BlendOp = D3D12_BLEND_OP_MIN;  // 加算
 	blenddesc.SrcBlend = D3D12_BLEND_SRC_ALPHA;  // ソースのアルファ値
 	blenddesc.DestBlend = D3D12_BLEND_INV_SRC_ALPHA; // 1.0f-ソースのアルファ値 
 
@@ -138,12 +138,12 @@ void Sprite::CreatePipeline()
 	D3D12_ROOT_PARAMETER rootparam[2] = {};
 
 	rootparam[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-	rootparam[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;//ALL
+	rootparam[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//ALL
 	rootparam[0].DescriptorTable.pDescriptorRanges = &descTblRange[0];
 	rootparam[0].DescriptorTable.NumDescriptorRanges = 1;
 
 	rootparam[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-	rootparam[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;//ALL
+	rootparam[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//ALL
 	rootparam[1].DescriptorTable.pDescriptorRanges = &descTblRange[1];
 	rootparam[1].DescriptorTable.NumDescriptorRanges = 1;
 
@@ -281,9 +281,56 @@ void Sprite::CreateMainHeap()
 
 
 
-	matView = XMMatrixLookAtLH(
-		XMLoadFloat3(&Camera::CameraPos()), XMLoadFloat3(&Camera::Target()), XMLoadFloat3(&Camera::Up())
-	);
+	//matView = XMMatrixLookAtLH(
+	//	XMLoadFloat3(&Camera::MainCameraPos()), XMLoadFloat3(&Camera::Target()), XMLoadFloat3(&Camera::Up())
+	//);
+	//
+	XMFLOAT3 _cameraPos;
+
+	_cameraPos = XMFLOAT3(Camera::ReturnCameraState()->cameraPos.x*cos(Camera::ReturnCameraState()->eyeangleY) - Camera::ReturnCameraState()->cameraPos.z*sin(Camera::ReturnCameraState()->eyeangleY),
+		Camera::ReturnCameraState()->cameraPos.y, Camera::ReturnCameraState()->cameraPos.x*sin(Camera::ReturnCameraState()->eyeangleY) + Camera::ReturnCameraState()->cameraPos.z*cos(Camera::ReturnCameraState()->eyeangleY));
+	_cameraPos.x += Camera::ReturnCameraState()->pPos.x;
+	_cameraPos.y += Camera::ReturnCameraState()->pPos.y;
+	_cameraPos.z += Camera::ReturnCameraState()->pPos.z;
+
+
+
+	XMVECTOR eyePos = XMLoadFloat3(&Camera::MainCameraPos());
+	XMVECTOR targetPos = XMLoadFloat3(&Camera::ReturnCameraState()->target);
+	XMVECTOR upVector = XMLoadFloat3(&Camera::ReturnCameraState()->up);
+
+	XMVECTOR cameraAxisZ = XMVectorSubtract(targetPos, eyePos);
+	//
+	//０ベクトルだと除外
+	//
+	cameraAxisZ = XMVector3Normalize(cameraAxisZ);
+
+	XMVECTOR cameraAxisX = XMVector3Cross(upVector, cameraAxisZ);
+	cameraAxisX = XMVector3Normalize(cameraAxisX);
+
+
+	XMVECTOR cameraAxisY = XMVector3Cross(cameraAxisZ, cameraAxisX);
+	XMMATRIX matcameraRot;
+	matcameraRot.r[0] = cameraAxisX;
+	matcameraRot.r[1] = cameraAxisY;
+	matcameraRot.r[2] = cameraAxisZ;
+	matcameraRot.r[3] = XMVectorSet(0, 0, 0, 1);
+	matView = XMMatrixTranspose(matcameraRot);
+
+	XMVECTOR reverseEyePos = XMVectorNegate(eyePos);
+	XMVECTOR tX = XMVector3Dot(cameraAxisX, reverseEyePos);
+	XMVECTOR tY = XMVector3Dot(cameraAxisY, reverseEyePos);
+	XMVECTOR tZ = XMVector3Dot(cameraAxisZ, reverseEyePos);
+
+	XMVECTOR translation = XMVectorSet(tX.m128_f32[0], tY.m128_f32[1], tZ.m128_f32[2], 1.0f);
+	matView.r[3] = translation;
+
+	matBillboard = XMMatrixIdentity();
+	matBillboard.r[0] = cameraAxisX;
+	matBillboard.r[1] = cameraAxisY;
+	matBillboard.r[2] = cameraAxisZ;
+	matBillboard.r[3] = XMVectorSet(0, 0, 0, 1);
+
 
 
 	matProjection = XMMatrixPerspectiveFovLH(
@@ -313,12 +360,14 @@ void Sprite::CreateMainHeap()
 	matRot *= XMMatrixRotationZ(rotation.z);
 	matTrans = XMMatrixTranslation(position.x, position.y, position.z);
 	matWorld = XMMatrixIdentity();
+
 	matWorld *= matScale;
 	matWorld *= matRot;
 	matWorld *= matTrans;
 
 	constMap->world = matWorld;
 	constMap->viewproj = matView * matProjection;
+	constMap->alpha = alpha;
 	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc = {};
 	cbvDesc.BufferLocation = constBuff->GetGPUVirtualAddress();
 	cbvDesc.SizeInBytes = constBuff->GetDesc().Width;
@@ -537,11 +586,11 @@ void Sprite::Draw()
 
 void Sprite::Update()
 {
-	//
 
-	XMVECTOR eyePos = XMLoadFloat3(&Camera::cameraPos);
-	XMVECTOR targetPos = XMLoadFloat3(&Camera::target);
-	XMVECTOR upVector = XMLoadFloat3(&Camera::up);
+
+	XMVECTOR eyePos = XMLoadFloat3(&Camera::MainCameraPos());
+	XMVECTOR targetPos = XMLoadFloat3(&Camera::ReturnCameraState()->target);
+	XMVECTOR upVector = XMLoadFloat3(&Camera::ReturnCameraState()->up);
 
 	XMVECTOR cameraAxisZ = XMVectorSubtract(targetPos, eyePos);
 	//
@@ -569,18 +618,11 @@ void Sprite::Update()
 	XMVECTOR translation = XMVectorSet(tX.m128_f32[0], tY.m128_f32[1], tZ.m128_f32[2], 1.0f);
 	matView.r[3] = translation;
 
-	XMMATRIX matBillboard = XMMatrixIdentity();
+	matBillboard = XMMatrixIdentity();
 	matBillboard.r[0] = cameraAxisX;
 	matBillboard.r[1] = cameraAxisY;
 	matBillboard.r[2] = cameraAxisZ;
 	matBillboard.r[3] = XMVectorSet(0, 0, 0, 1);
-
-	
-
-	//
-	matView = XMMatrixLookAtLH(
-		XMLoadFloat3(&Camera::CameraPos()), XMLoadFloat3(&Camera::Target()), XMLoadFloat3(&Camera::Up())
-	);
 
 	matScale = XMMatrixScaling(scale.x, scale.y, scale.z);
 	matRot = XMMatrixIdentity();
@@ -589,13 +631,26 @@ void Sprite::Update()
 	matRot *= XMMatrixRotationZ(rotation.z);
 	matTrans = XMMatrixTranslation(position.x, position.y, position.z);
 	matWorld = XMMatrixIdentity();
-	matWorld *= matBillboard;
+	
+
 	matWorld *= matScale;
+	matWorld *= matBillboard;
 	matWorld *= matRot;
 	matWorld *= matTrans;
 	HRESULT result = constBuff->Map(0, nullptr, (void**)&constMap);
 
 	constMap->world = matWorld;
 	constMap->viewproj = matView * matProjection;
+	constMap->alpha = alpha;
 	constBuff->Unmap(0, nullptr);
+}
+
+void Sprite::SetPos(XMFLOAT3 pos)
+{
+	position = pos;
+}
+
+void Sprite::SetScale(XMFLOAT3 Scale)
+{
+	scale = Scale;
 }

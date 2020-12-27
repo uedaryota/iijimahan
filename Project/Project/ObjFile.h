@@ -72,11 +72,17 @@ public: // サブクラス
 
 public:
 	ObjFile();
-	void Initialize(ID3D12Device* dev);
+	~ObjFile();
+	void Initialize();
 	void Update();
 	void Draw(ID3D12GraphicsCommandList * cmdList);
 	void CreatePipeline();
 	void CreateMainHeap();
+	void CreateSubHeap();
+	void SetPos(XMFLOAT3 pos);
+	void SetRotate(XMFLOAT3 rotate);
+	void SetScale(XMFLOAT3 scale);
+
 	void LoadObj(const std::string name);
 	void LoadMaterial(const std::string&directorypath, const std::string& filename);
 	bool LoadTexture(const std::string&directorypath, const std::string& filename);
@@ -92,8 +98,8 @@ private:
 	ComPtr<ID3D12PipelineState> pipelinestate;
 	ComPtr<ID3D12RootSignature> rootsignature;
 	ID3D12DescriptorHeap* mainDescHeap;
-
-	 std::vector<Vertex>vertices;
+	ID3D12DescriptorHeap* subDescHeap;
+	std::vector<Vertex>vertices;
 	 std::vector<unsigned short>indices;
 
 	D3D12_VERTEX_BUFFER_VIEW vbView {};
@@ -115,10 +121,14 @@ private:
 	XMMATRIX matTrans;
 	//ワールド行列マップ
 	ConstBufferDataB0* constMap0;
+	ConstBufferDataB0* subconstMap0;
+
 	//Objデータ定数マップ
 	ConstBufferDataB1* constMap1;
 
-	ComPtr<ID3D12Resource> constBuffB0; // 定数バッファ
+	ComPtr<ID3D12Resource> constBuffB0;
+	ComPtr<ID3D12Resource> subconstBuffB0;
+	// 定数バッファ
 	ComPtr<ID3D12Resource> constBuffB1; // 定数バッファ
 
 	static Material material;

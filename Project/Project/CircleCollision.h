@@ -10,8 +10,8 @@ public:
 	void Draw();//•`‰æ
 	void SetPos(XMFLOAT3 pos);//À•W•ÏX
 	void SetLength(float len);//”¼Œa•ÏX
-private:
-	float length = 0.5f;//”¼Œa
 	XMFLOAT3 position;//À•W
+	float length = 0.5f;//”¼Œa
+private:
 };
 

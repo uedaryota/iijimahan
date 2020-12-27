@@ -14,43 +14,43 @@
 #pragma comment(lib,"dxgi.lib")
 #pragma comment(lib,"d3dcompiler.lib")
 #include"Camera.h"
+
 using namespace std;
 using namespace DirectX;
 class Texture
 {
 	public:
 		Texture();
-		void Initialize(ID3D12Device* dev, Camera* camera);
+		void Initialize();
 		void Update();
+		void Draw();
+		void ResetTex(const wchar_t* Texname);
 		ID3D12PipelineState* texpipelinestate = nullptr;
 		ID3D12RootSignature* texrootsignature = nullptr;
 		ID3D12DescriptorHeap* texDescHeap;
-		ID3D12DescriptorHeap* dsvHeap = nullptr;
-		D3D12_VERTEX_BUFFER_VIEW vbView = {};
-	
+		D3D12_VERTEX_BUFFER_VIEW vbView{};
+		D3D12_INDEX_BUFFER_VIEW ibView{};
+
+		XMFLOAT3 position = { 0,0,0 };
+		XMFLOAT3 rotation = { 0,0,0 };
+		XMFLOAT3 scale = { 1,1,1 };
 private:
 	void SetPipe_Rootsig(ID3D12Device* dev);
-	void SetDepth(ID3D12Device* dev);
-	
+
 	void SetVert(ID3D12Device* dev);
 
-	const int window_width = 1280;
-	const int window_height = 720;
-	float angle = 0;
+	XMMATRIX matScale;
+	XMMATRIX matRot;
+	XMMATRIX matTrans;
 	struct MatrocesDate
 	{
 		XMMATRIX world;
 		XMMATRIX viewproj;
 	};
-	Camera* c;
+
 	XMMATRIX matWorld = XMMatrixIdentity();
-	XMMATRIX matView;
 	ID3D12Resource* constBuff = nullptr;
-	XMMATRIX matProjection;
 	MatrocesDate* constMap;
-	XMFLOAT3 eye=XMFLOAT3(0, 25, -25);
-	XMFLOAT3 target = XMFLOAT3(0, 0, 0);
-	XMFLOAT3 up = XMFLOAT3(0, 1, 0);
 
 	struct  Vertex
 	{
@@ -61,10 +61,10 @@ private:
    
 	Vertex vertices[4] =
 	{
-		{{-1.0f,-1.0f,0},{0.0f,1.0f}},
-	{{-1.0f,1.0f,0},{0.0f,0.0f} },
-	{{1.0f,-1.0f,0} , { 1.0f,1.0f }},
-	{{1.0f,1.0f,0} , { 1.0f,0.0f }},
+		{{-0.5f,-0.5f,0},{0.0f,1.0f}},
+	{{-0.5f,0.5f,0},{0.0f,0.0f} },
+	{{0.5f,-0.5f,0} , { 1.0f,1.0f }},
+	{{0.5f,0.5f,0} , { 1.0f,0.0f }},
 
 	};
 

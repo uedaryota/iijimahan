@@ -12,7 +12,7 @@ EnemyAI::EnemyAI()
 
 void EnemyAI::Initialize()
 {
-	pol->Initialize(DirectXDevice::dev);
+	pol->Initialize();
 }
 
 
@@ -32,16 +32,32 @@ float EnemyAI::GetHp()
 	return Hp;
 }
 
+void EnemyAI::SetHp(float x)
+{
+	Hp = x;
+}
+
 float EnemyAI::GetSpeed()
 {
 	return Speed;
 }
+
+void EnemyAI::SetSpeed(float x)
+{
+	Speed = x;
+	Speed;
+}
+
 
 float EnemyAI::GetPower()
 {
 	return Power;
 }
 
+void EnemyAI::SetPower(float x)
+{
+	Power = x;
+}
 EnemyAI EnemyAI::GetAI(EnemyAI ai)
 {
 	return ai;

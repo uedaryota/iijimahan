@@ -11,7 +11,7 @@ Block::~Block()
 
 void Block::Initialize()
 {
-	pol->Initialize(DirectXDevice::dev);
+	pol->Initialize();
 }
 
 void Block::Update()
@@ -21,7 +21,7 @@ void Block::Update()
 
 void Block::Draw()
 {
-	pol->Draw(DirectXDevice::cmdList, DirectXDevice::dev);
+	pol->Draw();
 }
 
 void Block::SetPos(XMFLOAT3 position)

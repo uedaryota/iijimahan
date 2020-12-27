@@ -1,26 +1,25 @@
 #include "Texture.h"
 #include"Input.h"
 #include "Camera.h"
+#include"DirectXDevice.h"
 Texture::Texture()
 {
 	
 }
 
-void Texture::Initialize(ID3D12Device* dev, Camera* camera)
+void Texture::Initialize()
 {
-	c = camera;
 	HRESULT result;
 
 	
-	SetDepth(dev);
-	SetPipe_Rootsig(dev);
-	SetVert(dev);
+	SetPipe_Rootsig(DirectXDevice::dev);
+	SetVert(DirectXDevice::dev);
 
 
 	TexMetadata metadate = {};
 	ScratchImage scratchImg = {};
 	result = LoadFromWICFile(
-		L"img/ダウンロード (1).jpg",
+		L"img/Blueback.png",
 		WIC_FLAGS_NONE,
 		&metadate,
 		scratchImg
@@ -53,7 +52,7 @@ void Texture::Initialize(ID3D12Device* dev, Camera* camera)
 
 	
 
-	result = dev->CreateCommittedResource(
+	result = DirectXDevice::dev->CreateCommittedResource(
 		&texheapprop,
 		D3D12_HEAP_FLAG_NONE,
 		&texresdes,
@@ -76,7 +75,7 @@ void Texture::Initialize(ID3D12Device* dev, Camera* camera)
 	descHeapDesc.NumDescriptors = 2;
 	descHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 
-	result = dev->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(&texDescHeap));
+	result = DirectXDevice::dev->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(&texDescHeap));
 
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
 	srvDesc.Format = metadate.format;//resdescと合わせる
@@ -86,32 +85,20 @@ void Texture::Initialize(ID3D12Device* dev, Camera* camera)
 
 	D3D12_CPU_DESCRIPTOR_HANDLE HeapHandle = texDescHeap->GetCPUDescriptorHandleForHeapStart();
 
-	dev->CreateShaderResourceView(
+	DirectXDevice::dev->CreateShaderResourceView(
 		texBuff,
 		&srvDesc,
 		HeapHandle);
 
-	HeapHandle.ptr += dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	HeapHandle.ptr += DirectXDevice::dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
-	matWorld.r[0].m128_f32[0] = 2.0f / Camera::window_width;
-	matWorld.r[1].m128_f32[1] = -2.0f / Camera::window_height;
-	matWorld.r[3].m128_f32[0] = -1.0f ;
-	matWorld.r[3].m128_f32[1] = 1.0f ;
-	matWorld = XMMatrixRotationY(angle);
-
-		matView = XMMatrixLookAtLH(
-		XMLoadFloat3(&c->CameraPos()), XMLoadFloat3(&c->Target()), XMLoadFloat3(&c->Up())
-	);
+	//matWorld.r[0].m128_f32[0] = 2.0f / Camera::window_width;
+	//matWorld.r[1].m128_f32[1] = -2.0f / Camera::window_height;
+	//matWorld.r[3].m128_f32[0] = -1.0f ;
+	//matWorld.r[3].m128_f32[1] = 1.0f ;
 
 	
-	matProjection = XMMatrixPerspectiveFovLH(
-		XM_PIDIV2,
-		static_cast<float>(window_width) / static_cast<float>(window_height),
-		1.0f,
-		100.0f
-	);
-
-	result = dev->CreateCommittedResource(
+	result = DirectXDevice::dev->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
 		D3D12_HEAP_FLAG_NONE,
 		&CD3DX12_RESOURCE_DESC::Buffer((sizeof(MatrocesDate) + 0xff)&~0xff),
@@ -123,11 +110,11 @@ void Texture::Initialize(ID3D12Device* dev, Camera* camera)
 	
 	result = constBuff->Map(0, nullptr, (void**)&constMap);
 	constMap->world = matWorld ;
-	constMap->viewproj = matView * matProjection;
+	//constMap->viewproj = matView * matProjection;
 	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc = {};
 	cbvDesc.BufferLocation = constBuff->GetGPUVirtualAddress();
 	cbvDesc.SizeInBytes = constBuff->GetDesc().Width;
-	dev->CreateConstantBufferView(&cbvDesc, HeapHandle);
+	DirectXDevice::dev->CreateConstantBufferView(&cbvDesc, HeapHandle);
 	
 //	HeapHandle.ptr += dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
@@ -140,7 +127,7 @@ void Texture::SetPipe_Rootsig(ID3D12Device* dev)
 	ID3DBlob* errorBlob = nullptr;
 	HRESULT result;
 	result = D3DCompileFromFile(
-		L"PMDVertexShader.hlsl", // シェーダファイル名
+		L"TexVertexShader.hlsl", // シェーダファイル名
 		nullptr,
 		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
 		"main", "vs_5_0", // エントリーポイント名、シェーダーモデル指定
@@ -149,7 +136,7 @@ void Texture::SetPipe_Rootsig(ID3D12Device* dev)
 		&vsBlob, &errorBlob);
 	// ピクセルシェーダの読み込みとコンパイル
 	result = D3DCompileFromFile(
-		L"PMDPixelShader.hlsl", // シェーダファイル名
+		L"TexPixelShader.hlsl", // シェーダファイル名
 		nullptr,
 		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
 		"main", "ps_5_0", // エントリーポイント名、シェーダーモデル指定
@@ -180,71 +167,7 @@ void Texture::SetPipe_Rootsig(ID3D12Device* dev)
 	};
 
 
-	D3D12_INPUT_ELEMENT_DESC inputLayout2[] = {
-		{
-"POSITION",
-0,
-DXGI_FORMAT_R32G32B32_FLOAT,
-0,
-D3D12_APPEND_ALIGNED_ELEMENT,
-D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,
-0
-}, // (1 行で書いたほうが見やすい)
-
-		{
-"NORMAL",
-0,
-DXGI_FORMAT_R32G32B32_FLOAT,
-0,
-D3D12_APPEND_ALIGNED_ELEMENT,
-D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,
-0
-}, // (1 行で書いたほうが見やすい)
-
-		{
-"TEXCOORD",
-0,
-DXGI_FORMAT_R32G32_FLOAT,
-0,
-D3D12_APPEND_ALIGNED_ELEMENT,
-D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,
-0
-}, // (1 行で書いたほうが見やすい)
-
-		{
-"BONE_NO",
-0,
-DXGI_FORMAT_R16G16_UINT,
-0,
-D3D12_APPEND_ALIGNED_ELEMENT,
-D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,
-0
-}, // (1 行で書いたほうが見やすい)
-
-		{
-"WEIGHT",
-0,
-DXGI_FORMAT_R8_UINT,
-0,
-D3D12_APPEND_ALIGNED_ELEMENT,
-D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,
-0
-}, // (1 行で書いたほうが見やすい)
-
-		{
-"EDGE_FLG",
-0,
-DXGI_FORMAT_R8_UINT,
-0,
-D3D12_APPEND_ALIGNED_ELEMENT,
-D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,
-0
-}, // (1 行で書いたほうが見やすい)
-
-	};
-
-
-
+	
 
 
 
@@ -280,8 +203,8 @@ D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,
 	// ブレンドステートに設定する
 	gpipeline.BlendState.RenderTarget[0] = blenddesc;
 
-	gpipeline.InputLayout.pInputElementDescs = inputLayout2;
-	gpipeline.InputLayout.NumElements = _countof(inputLayout2);
+	gpipeline.InputLayout.pInputElementDescs = inputLayout;
+	gpipeline.InputLayout.NumElements = _countof(inputLayout);
 
 	gpipeline.IBStripCutValue = D3D12_INDEX_BUFFER_STRIP_CUT_VALUE_DISABLED;
 	gpipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
@@ -368,55 +291,6 @@ D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,
 
 }
 
-void Texture::SetDepth(ID3D12Device * dev)
-{
-	D3D12_RESOURCE_DESC depthresdesc = {};
-	depthresdesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
-	depthresdesc.Width = window_width;
-	depthresdesc.Height = window_height;
-	depthresdesc.DepthOrArraySize = 1;
-	depthresdesc.Format = DXGI_FORMAT_D32_FLOAT;
-	depthresdesc.SampleDesc.Count = 1;
-	depthresdesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
-
-	D3D12_HEAP_PROPERTIES depthHeapProp = {};
-	depthHeapProp.Type = D3D12_HEAP_TYPE_DEFAULT;
-	depthHeapProp.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
-	depthHeapProp.MemoryPoolPreference = D3D12_MEMORY_POOL_UNKNOWN;
-	
-
-	D3D12_CLEAR_VALUE depthClearValue = {};
-	depthClearValue.DepthStencil.Depth = 1.0f;
-	depthClearValue.Format = DXGI_FORMAT_D32_FLOAT;
-
-	ID3D12Resource* depthBuff = nullptr;
-	HRESULT result;
-	result = dev->CreateCommittedResource(
-		&depthHeapProp,
-		D3D12_HEAP_FLAG_NONE,
-		&depthresdesc,
-		D3D12_RESOURCE_STATE_DEPTH_WRITE,
-		&depthClearValue,
-		IID_PPV_ARGS(&depthBuff)
-	);
-
-	D3D12_DESCRIPTOR_HEAP_DESC dsvHeapDesc = {};
-	dsvHeapDesc.NumDescriptors = 1;
-	dsvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
-	
-	result = dev->CreateDescriptorHeap(&dsvHeapDesc, IID_PPV_ARGS(&dsvHeap));
-
-	D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc= {};
-	dsvDesc.Format = DXGI_FORMAT_D32_FLOAT;
-	dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
-	dsvDesc.Flags = D3D12_DSV_FLAG_NONE;
-
-	dev->CreateDepthStencilView(
-		depthBuff,
-		&dsvDesc,
-		dsvHeap->GetCPUDescriptorHandleForHeapStart());
-	
-}
 
 void Texture::SetVert(ID3D12Device * dev)
 {
@@ -455,29 +329,74 @@ void Texture::SetVert(ID3D12Device * dev)
 	vbView.BufferLocation = vertBuff->GetGPUVirtualAddress();
 	vbView.SizeInBytes = sizeof(vertices);
 	vbView.StrideInBytes = sizeof(vertices[0]);
+
+	ID3D12Resource* indexBuff = nullptr;
+	vertresdesc.Width = sizeof(indices); // インデックス情報が入る分のサイズ
+	  // GPU リソースの生成 	
+	result = DirectXDevice::dev->CreateCommittedResource(&vertheapprop, // ヒープ設定
+		D3D12_HEAP_FLAG_NONE, &vertresdesc, // リソース設定 
+		D3D12_RESOURCE_STATE_GENERIC_READ,
+		nullptr,
+		IID_PPV_ARGS(&indexBuff));
+	//
+	// GPU 上のバッファに対応した仮想メモリを取得
+	unsigned short* indexMap = nullptr;
+
+	result = indexBuff->Map(0, nullptr, (void**)&indexMap); // 全インデックスに対して
+	for (int i = 0; i < _countof(indices); i++)
+	{
+		indexMap[i] = indices[i]; // インデックスをコピー
+
+	}
+	indexBuff->Unmap(0, nullptr);
+
+	ibView.BufferLocation = indexBuff->GetGPUVirtualAddress();
+	ibView.Format = DXGI_FORMAT_R16_UINT;
+	ibView.SizeInBytes = sizeof(indices);
+
 }
 void Texture::Update()
 {
-	Input* input = new Input();
-	input->Initialize();
-	input->Update();
+
+
 	
-	if (input->PushKey(DIK_Z))
-	{
-		angle += 0.5f;
-	}
+	matScale = XMMatrixScaling(scale.x, scale.y, scale.z);
+	matRot = XMMatrixIdentity();
+	matRot *= XMMatrixRotationX(rotation.x);
+	matRot *= XMMatrixRotationY(rotation.y);
+	matRot *= XMMatrixRotationZ(rotation.z);
+	matTrans = XMMatrixTranslation(position.x, position.y, position.z);
+	matWorld = XMMatrixIdentity();
+	//matWorld.r[0].m128_f32[0] = 2.0f / Camera::window_width;
+	//matWorld.r[1].m128_f32[1] = -2.0f / Camera::window_height;
+	//matWorld.r[3].m128_f32[0] = -1.0f ;
+	//matWorld.r[3].m128_f32[1] = 1.0f ;
 
-	matWorld = XMMatrixRotationY(angle);
-
-
-	matView = XMMatrixLookAtLH(
-		XMLoadFloat3(&c->CameraPos()), XMLoadFloat3(&c->Target()), XMLoadFloat3(&c->Up())
-	);
+	matWorld *= matScale;
+//	matWorld *= matBillboard;
+	matWorld *= matRot;
+	matWorld *= matTrans;
 
 	HRESULT result;
 	result = constBuff->Map(0, nullptr, (void**)&constMap);
 	constMap->world = matWorld;
-	constMap->viewproj = matView * matProjection;
+
+//	constMap->viewproj = Camera::ReturnCameraState()->matView *  Camera::ReturnCameraState()->matProjection;
 	constBuff->Unmap(0, nullptr);
-	delete input;
+}
+
+void Texture::Draw()
+{
+	DirectXDevice::cmdList->SetPipelineState(texpipelinestate);
+	DirectXDevice::cmdList->SetGraphicsRootSignature(texrootsignature);
+	DirectXDevice::cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	DirectXDevice::cmdList->IASetVertexBuffers(0, 1, &vbView);
+	DirectXDevice::cmdList->IASetIndexBuffer(&ibView);
+	DirectXDevice::cmdList->SetDescriptorHeaps(1, &texDescHeap);
+	D3D12_GPU_DESCRIPTOR_HANDLE handle = texDescHeap->GetGPUDescriptorHandleForHeapStart();
+	DirectXDevice::cmdList->SetGraphicsRootDescriptorTable(0, handle);
+	handle.ptr += DirectXDevice::dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	DirectXDevice::cmdList->SetGraphicsRootDescriptorTable(1, handle);
+
+	DirectXDevice::cmdList->DrawIndexedInstanced(_countof(indices), 1, 0, 0, 0);
 }

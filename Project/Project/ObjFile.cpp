@@ -5,18 +5,66 @@
 #include<sstream>
 #include<string>
 #include<vector>
-
-ObjFile::Material ObjFile::material;
-Light* ObjFile::light = nullptr;
-
+#include"DirectXDevice.h"
 ObjFile::ObjFile()
 {
 	
 }
 
-void ObjFile::Initialize(ID3D12Device* dev)
+ObjFile::~ObjFile()
 {
-	this->dev = dev;
+	
+	dev->Release();
+		
+	
+
+	if (pipelinestate != nullptr);
+	{
+		pipelinestate->Release();
+	}
+
+	if (rootsignature != nullptr);
+	{
+		rootsignature->Release();
+	}
+
+	if (mainDescHeap != nullptr);
+	{
+		mainDescHeap->Release();
+	}
+
+	if (subDescHeap != nullptr);
+	{
+	//	subDescHeap->Release();
+	}
+
+	//if (constMap0 != nullptr);
+	//{
+	//	delete &constMap0->viewproj;
+	//	delete &constMap0->world;
+
+	//}
+
+
+
+	//if (subconstMap0 != nullptr);
+	//{
+	//	delete(subconstMap0);
+	//}
+
+	//delete(pipelinestate);
+	//delete(rootsignature);
+	//delete(mainDescHeap);
+	//delete(subDescHeap);
+	//delete(constMap0);
+	//delete(constMap1);
+	//delete(subconstMap0);
+}
+
+void ObjFile::Initialize()
+{
+	
+	this->dev = DirectXDevice::dev;
 	CreatePipeline();
 	CreateMainHeap();
 }
@@ -27,7 +75,7 @@ void ObjFile::Update()
 	HRESULT result = constBuffB0->Map(0, nullptr, (void**)&constMap0);
 
 	matView = XMMatrixLookAtLH(
-		XMLoadFloat3(&Camera::CameraPos()), XMLoadFloat3(&Camera::Target()), XMLoadFloat3(&Camera::Up())
+		XMLoadFloat3(&Camera::MainCameraPos()), XMLoadFloat3(&Camera::Target()), XMLoadFloat3(&Camera::Up())
 	);
 
 
@@ -47,7 +95,7 @@ void ObjFile::Update()
 	
 	constBuffB0->Unmap(0, nullptr);
 
-	 constMap1 = nullptr;
+	constMap1 = nullptr;
 	result = constBuffB1->Map(0, nullptr, (void**)&constMap1);
 	constMap1->ambient = material.ambient;
 	constMap1->diffuse = material.diffuse;
@@ -61,28 +109,29 @@ void ObjFile::Update()
 
 void ObjFile::Draw(ID3D12GraphicsCommandList * cmdList)
 {
+	HRESULT result = constBuffB0->Map(0, nullptr, (void**)&constMap0);
+
+	constMap0->world = matWorld;
+	constMap0->viewproj = Camera::ReturnCameraState()->matView *  Camera::ReturnCameraState()->matProjection;
+	
+	constBuffB0->Unmap(0, nullptr);
+
 
 	D3D12_GPU_DESCRIPTOR_HANDLE handle = mainDescHeap->GetGPUDescriptorHandleForHeapStart();
-	GPUsrvHandle = handle;
+	GsrvHandle = handle;
 	handle.ptr += dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	GPUcbvHandle0 = handle;
+	GcbvHandle0 = handle;
 	handle.ptr += dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	GPUcbvHandle1 = handle;
-	cmdList->SetPipelineState(pipelinestate.Get());
-	cmdList->SetGraphicsRootSignature(rootsignature.Get());
+	GcbvHandle1 = handle;
+	cmdList->SetPipelineState(pipelinestate);
+	cmdList->SetGraphicsRootSignature(rootsignature);
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	cmdList->IASetVertexBuffers(0, 1, &vbView);
 	cmdList->IASetIndexBuffer(&ibView);
 	cmdList->SetDescriptorHeaps(1, &mainDescHeap);
-	cmdList->SetGraphicsRootDescriptorTable(0, GPUsrvHandle);
-	cmdList->SetGraphicsRootDescriptorTable(1, GPUcbvHandle0);
-	cmdList->SetGraphicsRootDescriptorTable(2, GPUcbvHandle1);
-
-	// 定数バッファビューをセット
-	cmdList->SetGraphicsRootConstantBufferView(0, constBuffB0->GetGPUVirtualAddress());
-	cmdList->SetGraphicsRootConstantBufferView(1, constBuffB1->GetGPUVirtualAddress());
-
-	light->Draw(cmdList, 3);
+	cmdList->SetGraphicsRootDescriptorTable(0, GsrvHandle);
+	cmdList->SetGraphicsRootDescriptorTable(1, GcbvHandle0);
+	cmdList->SetGraphicsRootDescriptorTable(2, GcbvHandle1);
 
 	cmdList->DrawInstanced((UINT)vertices.size(), 1, 0, 0);
 
@@ -92,12 +141,9 @@ void ObjFile::Draw(ID3D12GraphicsCommandList * cmdList)
 void ObjFile::CreatePipeline()
 {
 
-	//ID3DBlob* vsBlob = nullptr;
-	//ID3DBlob* psBlob = nullptr;
-	//ID3DBlob* errorBlob = nullptr;
-	ComPtr<ID3DBlob> vsBlob;//頂点シェーダオブジェクト
-	ComPtr<ID3DBlob> psBlob;//ピクセルシェーダオブジェクト
-	ComPtr<ID3DBlob> errorBlob;//エラーオブジェクト
+	ID3DBlob* vsBlob = nullptr;
+	ID3DBlob* psBlob = nullptr;
+	ID3DBlob* errorBlob = nullptr;
 	HRESULT result;
 	result = D3DCompileFromFile(
 		L"ObjVertexShader.hlsl", // シェーダファイル名
@@ -159,19 +205,16 @@ void ObjFile::CreatePipeline()
 
 
 	gpipeline.pRootSignature = nullptr;
-	//gpipeline.VS.pShaderBytecode = vsBlob->GetBufferPointer();
-	//gpipeline.VS.BytecodeLength = vsBlob->GetBufferSize();
-	//gpipeline.PS.pShaderBytecode = psBlob->GetBufferPointer();
-	//gpipeline.PS.BytecodeLength = psBlob->GetBufferSize();
-	gpipeline.VS = CD3DX12_SHADER_BYTECODE(vsBlob.Get());
-	gpipeline.PS = CD3DX12_SHADER_BYTECODE(psBlob.Get());
-	
+	gpipeline.VS.pShaderBytecode = vsBlob->GetBufferPointer();
+	gpipeline.VS.BytecodeLength = vsBlob->GetBufferSize();
+	gpipeline.PS.pShaderBytecode = psBlob->GetBufferPointer();
+	gpipeline.PS.BytecodeLength = psBlob->GetBufferSize();
+
 	gpipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK; // 標準設定
-	//gpipeline.RasterizerState.MultisampleEnable = false;
-	//gpipeline.RasterizerState.CullMode = D3D12_CULL_MODE_NONE; // カリングしない
-	//gpipeline.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID; // ポリゴン内塗りつぶし
-	//gpipeline.RasterizerState.DepthClipEnable = true; // 深度クリッピングを有効に
-	gpipeline.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
+	gpipeline.RasterizerState.MultisampleEnable = false;
+	gpipeline.RasterizerState.CullMode = D3D12_CULL_MODE_NONE; // カリングしない
+	gpipeline.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID; // ポリゴン内塗りつぶし
+	gpipeline.RasterizerState.DepthClipEnable = true; // 深度クリッピングを有効に
 
 	gpipeline.BlendState.AlphaToCoverageEnable = false;
 	gpipeline.BlendState.IndependentBlendEnable = false;
@@ -201,107 +244,85 @@ void ObjFile::CreatePipeline()
 	gpipeline.SampleDesc.Count = 1; // 1 ピクセルにつき 1 回サンプリング
 	gpipeline.SampleDesc.Quality = 0;
 
-	gpipeline.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
-	//gpipeline.DepthStencilState.DepthEnable = true;
-	//gpipeline.DepthStencilState.StencilEnable = false;
-	//
-	//gpipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
-	//gpipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
+	gpipeline.DepthStencilState.DepthEnable = true;
+	gpipeline.DepthStencilState.StencilEnable = false;
+	
+	gpipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+	gpipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
 
 	gpipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;
 
 
-	//ルートシグネチャ元
-	//D3D12_ROOT_SIGNATURE_DESC rootSigunatureDesc = {};
-	//rootSigunatureDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
-	///////////////////////////////
-
-
-	//デスクリプタレンジ
-	CD3DX12_DESCRIPTOR_RANGE descRange;
-	descRange.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
-
-	//D3D12_DESCRIPTOR_RANGE descTblRange[3] = {};
-	//descTblRange[0].NumDescriptors = 1;
-	//descTblRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;//シェーダリソースタイプ
-	//descTblRange[0].BaseShaderRegister = 0;//t0に送る
-	//descTblRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
-
-	//descTblRange[1].NumDescriptors = 1;
-	//descTblRange[1].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;//定数タイプ
-	//descTblRange[1].BaseShaderRegister = 0;//b0に送る
-	//descTblRange[1].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
-
-	//descTblRange[2].NumDescriptors = 1;
-	//descTblRange[2].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;//定数タイプ
-	//descTblRange[2].BaseShaderRegister = 1;//b1に送る
-	//descTblRange[2].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
-
-	// ルートパラメータ
-	CD3DX12_ROOT_PARAMETER rootparam[4];
-	rootparam[0].InitAsConstantBufferView(0, 0, D3D12_SHADER_VISIBILITY_ALL);
-	rootparam[1].InitAsConstantBufferView(1, 0, D3D12_SHADER_VISIBILITY_ALL);
-	rootparam[2].InitAsDescriptorTable(1, &descRange, D3D12_SHADER_VISIBILITY_ALL);
-	rootparam[3].InitAsConstantBufferView(2, 0, D3D12_SHADER_VISIBILITY_ALL);
-
-	//D3D12_ROOT_PARAMETER rootparam[3] = {};
-
-	//rootparam[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-	//rootparam[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;//ALL
-	//rootparam[0].DescriptorTable.pDescriptorRanges = &descTblRange[0];
-	//rootparam[0].DescriptorTable.NumDescriptorRanges = 1;
-
-	//rootparam[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-	//rootparam[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;//ALL
-	//rootparam[1].DescriptorTable.pDescriptorRanges = &descTblRange[1];
-	//rootparam[1].DescriptorTable.NumDescriptorRanges = 1;
-
-	//rootparam[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-	//rootparam[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;//ALL
-	//rootparam[2].DescriptorTable.pDescriptorRanges = &descTblRange[2];
-	//rootparam[2].DescriptorTable.NumDescriptorRanges = 1;
-
-
-
-	//ルートシグネチャ元
-	//rootSigunatureDesc.pParameters = rootparam;
-	//rootSigunatureDesc.NumParameters = 3;
-
-	CD3DX12_STATIC_SAMPLER_DESC samplerDesc = CD3DX12_STATIC_SAMPLER_DESC(0);
-
-	//D3D12_STATIC_SAMPLER_DESC samplerDesc = {};
-	//
-	//samplerDesc.AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-	//samplerDesc.AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-	//samplerDesc.AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-	//samplerDesc.BorderColor = D3D12_STATIC_BORDER_COLOR_TRANSPARENT_BLACK;
-	//samplerDesc.Filter = D3D12_FILTER_ANISOTROPIC;
-	//samplerDesc.MaxLOD = D3D12_FLOAT32_MAX;
-	//samplerDesc.MinLOD = 0;
-	//samplerDesc.ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
-	//samplerDesc.ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
-	//samplerDesc.MaxAnisotropy = 16;
-	//ルートシグネチャ元
-	//rootSigunatureDesc.pStaticSamplers = &samplerDesc;
-	//rootSigunatureDesc.NumStaticSamplers = 1;
-	///////////////////////////////
-
-	//ルートシグネチャの設定
-	CD3DX12_VERSIONED_ROOT_SIGNATURE_DESC rootSignatureDesc;
-	rootSignatureDesc.Init_1_0(_countof(rootparam), rootparam, 1, &samplerDesc, D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 	
+	D3D12_ROOT_SIGNATURE_DESC rootSigunatureDesc = {};
+	rootSigunatureDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
+	///////////////////////////////
 
-	ComPtr<ID3DBlob> rootSigBlob;
-	result = D3DX12SerializeVersionedRootSignature(
-		&rootSignatureDesc,
-		D3D_ROOT_SIGNATURE_VERSION_1_0, 
-		&rootSigBlob, &errorBlob);
-	//バージョン自動判定
-	//result = D3D12SerializeRootSignature(
-	//	&rootSignatureDesc,
-	//	D3D_ROOT_SIGNATURE_VERSION_1_0,
-	//	&rootSigBlob,
-	//	&errorBlob);
+
+
+
+	D3D12_DESCRIPTOR_RANGE descTblRange[3] = {};
+	descTblRange[0].NumDescriptors = 1;
+	descTblRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;//シェーダリソースタイプ
+	descTblRange[0].BaseShaderRegister = 0;//t0に送る
+	descTblRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+	descTblRange[1].NumDescriptors = 1;
+	descTblRange[1].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;//定数タイプ
+	descTblRange[1].BaseShaderRegister = 0;//b0に送る
+	descTblRange[1].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+	descTblRange[2].NumDescriptors = 1;
+	descTblRange[2].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;//定数タイプ
+	descTblRange[2].BaseShaderRegister = 1;//b1に送る
+	descTblRange[2].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+
+	D3D12_ROOT_PARAMETER rootparam[3] = {};
+
+	rootparam[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	rootparam[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;//ALL
+	rootparam[0].DescriptorTable.pDescriptorRanges = &descTblRange[0];
+	rootparam[0].DescriptorTable.NumDescriptorRanges = 1;
+
+	rootparam[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	rootparam[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;//ALL
+	rootparam[1].DescriptorTable.pDescriptorRanges = &descTblRange[1];
+	rootparam[1].DescriptorTable.NumDescriptorRanges = 1;
+
+	rootparam[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	rootparam[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;//ALL
+	rootparam[2].DescriptorTable.pDescriptorRanges = &descTblRange[2];
+	rootparam[2].DescriptorTable.NumDescriptorRanges = 1;
+
+
+	rootSigunatureDesc.pParameters = rootparam;
+	rootSigunatureDesc.NumParameters = 3;
+
+	D3D12_STATIC_SAMPLER_DESC samplerDesc = {};
+
+	samplerDesc.AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+	samplerDesc.AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+	samplerDesc.AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+	samplerDesc.BorderColor = D3D12_STATIC_BORDER_COLOR_TRANSPARENT_BLACK;
+	samplerDesc.Filter = D3D12_FILTER_ANISOTROPIC;
+	samplerDesc.MaxLOD = D3D12_FLOAT32_MAX;
+	samplerDesc.MinLOD = 0;
+	samplerDesc.ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+	samplerDesc.ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
+	samplerDesc.MaxAnisotropy = 16;
+	rootSigunatureDesc.pStaticSamplers = &samplerDesc;
+	rootSigunatureDesc.NumStaticSamplers = 1;
+	///////////////////////////////
+
+
+
+	ID3DBlob* rootSigBlob = nullptr;
+	result = D3D12SerializeRootSignature(
+		&rootSigunatureDesc,
+		D3D_ROOT_SIGNATURE_VERSION_1_0,
+		&rootSigBlob,
+		&errorBlob);
 
 	result = dev->CreateRootSignature(
 		0,
@@ -311,7 +332,7 @@ void ObjFile::CreatePipeline()
 	);
 
 
-	gpipeline.pRootSignature = rootsignature.Get();
+	gpipeline.pRootSignature = rootsignature;
 
 	result = dev->CreateGraphicsPipelineState(&gpipeline, IID_PPV_ARGS(&pipelinestate));
 
@@ -332,13 +353,49 @@ void ObjFile::CreateMainHeap()
 	result = dev->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(&mainDescHeap));
 
 	D3D12_CPU_DESCRIPTOR_HANDLE HeapHandle = mainDescHeap->GetCPUDescriptorHandleForHeapStart();
-	CPUsrvHandle = HeapHandle;
+	CsrvHandle = HeapHandle;
 	HeapHandle.ptr += dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	CPUcbvHandle0 = HeapHandle;
+	CcbvHandle0 = HeapHandle;
 	HeapHandle.ptr += dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	CPUcbvHandle1 = HeapHandle;
+	CcbvHandle1 = HeapHandle;
 
 
+}
+
+void ObjFile::CreateSubHeap()
+{
+	HRESULT result;
+	mainDescHeap = nullptr;
+	D3D12_DESCRIPTOR_HEAP_DESC descHeapDesc = {};
+
+	descHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+	descHeapDesc.NodeMask = 0;
+	descHeapDesc.NumDescriptors = 3;
+	descHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+
+	result = dev->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(&mainDescHeap));
+
+	D3D12_CPU_DESCRIPTOR_HANDLE HeapHandle = mainDescHeap->GetCPUDescriptorHandleForHeapStart();
+	CsrvHandle = HeapHandle;
+	HeapHandle.ptr += dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	CcbvHandle0 = HeapHandle;
+	HeapHandle.ptr += dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	CcbvHandle1 = HeapHandle;
+
+}
+
+void ObjFile::SetPos(XMFLOAT3 pos)
+{
+	position = pos;
+}
+
+void ObjFile::SetRotate(XMFLOAT3 rotate)
+{
+}
+
+void ObjFile::SetScale(XMFLOAT3 scale)
+{
+	this->scale = scale;
 }
 
 void ObjFile::LoadObj(std::string name)
@@ -536,7 +593,7 @@ void ObjFile::LoadObj(std::string name)
 
 
 	matView = XMMatrixLookAtLH(
-		XMLoadFloat3(&Camera::CameraPos()), XMLoadFloat3(&Camera::Target()), XMLoadFloat3(&Camera::Up())
+		XMLoadFloat3(&Camera::MainCameraPos()), XMLoadFloat3(&Camera::Target()), XMLoadFloat3(&Camera::Up())
 	);
 
 
@@ -571,7 +628,7 @@ void ObjFile::LoadObj(std::string name)
 	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc0 = {};
 	cbvDesc0.BufferLocation = constBuffB0->GetGPUVirtualAddress();
 	cbvDesc0.SizeInBytes = constBuffB0->GetDesc().Width;
-	dev->CreateConstantBufferView(&cbvDesc0, CPUcbvHandle0);
+	dev->CreateConstantBufferView(&cbvDesc0, CcbvHandle0);
 
 	constMap0 = nullptr;
 	result = constBuffB0->Map(0, nullptr, (void**)&constMap0);
@@ -584,7 +641,7 @@ void ObjFile::LoadObj(std::string name)
 	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc1 = {};
 	cbvDesc1.BufferLocation = constBuffB1->GetGPUVirtualAddress();
 	cbvDesc1.SizeInBytes = constBuffB1->GetDesc().Width;
-	dev->CreateConstantBufferView(&cbvDesc1, CPUcbvHandle1);
+	dev->CreateConstantBufferView(&cbvDesc1, CcbvHandle1);
 
 	constMap1 = nullptr;
 	result = constBuffB1->Map(0, nullptr, (void**)&constMap1);
@@ -716,7 +773,7 @@ bool ObjFile::LoadTexture(const std::string&directorypath, const std::string& fi
 
 	dev->CreateShaderResourceView(texbuff.Get(), //ビューと関連付けるバッファ
 		&srvDesc, //テクスチャ設定情報
-		CPUsrvHandle
+		CsrvHandle
 	);
 
 	return true;

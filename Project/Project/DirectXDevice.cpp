@@ -2,19 +2,23 @@
 #include "DirectXDevice.h"
 #include <comutil.h>
 #include "Input.h"
-
+#include"Texture.h"
+#include"Stage2D.h"
+#include"Battery.h"
+#include"Collision.h"
 ID3D12GraphicsCommandList* DirectXDevice::cmdList = nullptr;;
 ID3D12Device* DirectXDevice::dev = nullptr;
 IDXGIFactory6*  DirectXDevice::dxgifactory;
 IDXGISwapChain4*  DirectXDevice::swapchain{};
-D3D12_VIEWPORT  DirectXDevice::viewport;
-D3D12_VIEWPORT viewport2;
+D3D12_VIEWPORT DirectXDevice::viewport;
+D3D12_VIEWPORT DirectXDevice::viewport2;
 D3D12_RECT  DirectXDevice::scissorrect;
 ID3D12CommandAllocator*  DirectXDevice::cmdAllocator;
 ID3D12CommandQueue* DirectXDevice::cmdQueue = nullptr;
 HWND DirectXDevice::hwnd;
 ID3D12DescriptorHeap* DirectXDevice::rtvHeaps = nullptr;
-
+float DirectXDevice::clearColor[] = { 1.0f,1.0f,1.0f,0.0f };
+D3D12_CPU_DESCRIPTOR_HANDLE DirectXDevice::rtvH;
 std::vector<ID3D12Resource*>DirectXDevice::backBuffers;
 ID3D12DescriptorHeap* DirectXDevice::dsvHeap = nullptr;
 ID3D12Resource* DirectXDevice::depthBuff = nullptr;
@@ -30,14 +34,17 @@ XMFLOAT3 pointA = { 15,15,15 };
 XMFLOAT3 pointB = { -15,-15,-15 };
 Block* block = new Block();
 Sound* sound = new Sound();
-Stage* stage = new Stage();
+//Stage* stage = new Stage();
+Stage2D* stage = new Stage2D();
 Enemy* enemy = new Enemy();
+Enemy* enemy2 = new Enemy();
 EnemyAI* ai = new EnemyAI();
 EnemyManeger* manager = new EnemyManeger();
+Sprite* back = new Sprite();
 Input* input = new Input();
-Sphere* sphere = new Sphere();
-Light* light = nullptr;
-
+Texture* tex = new Texture();
+Battery* bat = new Battery();
+Collision* collider = new Collision();
 LRESULT WindowProc1(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
 
@@ -61,20 +68,28 @@ void DirectXDevice::Initialize()
 	SetFence();
 	block->Initialize();
 	tower->Initialize(DirectXDevice::dev);
+	
 	floor1->Initialize(DirectXDevice::dev);
 	manager->Initialize();
+	enemy->Initialize();
 	sound->Initialize();
 	stage->Initialize();
 	manager->Add(enemy);
+	//manager->Add(enemy2);
 	enemy->state = move1;
-	sound->LoadFile(L"Resources01.mp3");
-	input->Initialize();
-	sphere->Initialize(DirectXDevice::dev);
-	Light::StaticInitialize(DirectXDevice::dev);
-	light = Light::Create();
-	light->SetLightColor({ 1, 1, 1 });
-	ObjFile::SetLight(light);
 
+	tex->Initialize();
+	back->Initialize();
+	back->ResetTex(L"img/Blueback.png");
+	back->SetScale(XMFLOAT3(300, 300, 300));
+	back->SetPos(XMFLOAT3(0, 0, 500));
+	enemy->SetTower(tower);
+	bat->Initialize();
+	//enemy->SetTarget(&tower->GetPosition);
+	enemy2->state = move1;
+	enemy2->SetTower(tower);
+	sound->LoadFile(L".\\Resources\\01.mp3");
+	input->Initialize();
 }
 	
 void DirectXDevice::Update()
@@ -82,7 +97,7 @@ void DirectXDevice::Update()
 	HRESULT result;
 	result = DirectXDevice::cmdAllocator->Reset();
 	UINT bbIdx = DirectXDevice::swapchain->GetCurrentBackBufferIndex();
-	D3D12_CPU_DESCRIPTOR_HANDLE rtvH = DirectXDevice::rtvHeaps->GetCPUDescriptorHandleForHeapStart();
+	rtvH = DirectXDevice::rtvHeaps->GetCPUDescriptorHandleForHeapStart();
 	rtvH.ptr += bbIdx * DirectXDevice::dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 
 
@@ -102,8 +117,7 @@ void DirectXDevice::Update()
 
 	DirectXDevice::cmdList->OMSetRenderTargets(1, &rtvH, true, &dsvH);
 	DirectXDevice::cmdList->ClearDepthStencilView(dsvH, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
-	float clearColor[] = { 1.0f,1.0f,1.0f,0.0f };
-
+	
 	DirectXDevice::cmdList->ClearRenderTargetView(rtvH, clearColor, 0, nullptr);
 	
 	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
@@ -118,44 +132,49 @@ void DirectXDevice::Update()
 	viewport2.MinDepth = 0.0f;
 
 	DirectXDevice::cmdList->RSSetViewports(1, &viewport);
-	//DirectXDevice::cmdList->RSSetViewports(2, &viewport2);
 
 	DirectXDevice::cmdList->RSSetScissorRects(1, &scissorrect);
 	//ここからUpdate
-	//tex->Update();
-	block->Update();
+
+	Camera::Update();
 	tower->Update();
-	sound->Update();
-	//floor1->Update();
-	block->Draw();
+//	sound->Update();
+	
 	tower->Draw(DirectXDevice::cmdList);
-	//floor1->Draw(DirectXDevice::cmdList,DirectXDevice::dev);
+	enemy->SetScale(XMFLOAT3{ 10,10,10 });
+	manager->Update();
+	manager->Draw(DirectXDevice::cmdList);
+	//enemy->Update();
+	//enemy->Draw(DirectXDevice::cmdList);
+	/*back->Update();
+	back->Draw();
+	*/
 	stage->Update();
 	stage->Draw();
-	manager->Update();
-	manager->Draw();
-	sphere->Update();
-	sphere->Draw(DirectXDevice::cmdList);
-	//enemy->Draw();
+	bat->Update();
+	bat->Draw();
+
+	//if (input->PushKey(DIK_Q))//実験用→実験結果成功　＊座標の変更を行えます。
+	//{
+	//	manager->AncerSet(XMFLOAT3{ 15,15,15 }, XMFLOAT3{ 15,15,15 });
+	//}
+	if (input->PushKey(DIK_SPACE))//実験用→実験結果成功　＊座標の変更を行えます。
+	{
+		manager->ReAncerSet(XMFLOAT3{ -100,1,-100 }, XMFLOAT3{ 500,500,500 });
+	}
+	if (input->TriggerKey(DIK_Z))
+	{
+		enemy->EnemyDamege(1);
+		//enemy2->EnemyDamege(0.5);
+	}
+	CollisionUpdate();
+	//DirectXDevice::cmdList->RSSetViewports(1, &viewport2);
+	//
+	//tower->Draw(DirectXDevice::cmdList);
+
+//	stage->Update();
+	//stage->Draw();
 	//manager->Draw();
-	DirectXDevice::cmdList->RSSetViewports(1, &viewport2);
-	float clearColor2[] = { 0.0f,1.0f,0.0f,0.0f };
-
-//	DirectXDevice::cmdList->ClearRenderTargetView(rtvH, clearColor2, 0, nullptr);
-
-	block->Update();
-	tower->Update();
-	sound->Update();
-	//floor1->Update();
-	block->Draw();
-	tower->Draw(DirectXDevice::cmdList);
-	//floor1->Draw(DirectXDevice::cmdList,DirectXDevice::dev);
-	stage->Update();
-	stage->Draw();
-	manager->Update();
-	manager->Draw();
-	sphere->Update();
-	sphere->Draw(DirectXDevice::cmdList);
 
 	//ここまで
 	DirectXDevice::cmdList->Close();
@@ -165,8 +184,6 @@ void DirectXDevice::Update()
 	{
 		sound->PlayRoop();
 	}
-
-	light->Update();
 	
 
 	ID3D12CommandList* cmdLists[] = { DirectXDevice::cmdList };
@@ -192,7 +209,7 @@ void DirectXDevice::CreateGameWindow()
 {
 
 
-	WNDCLASSEX w{};
+	
 	w.cbSize = sizeof(WNDCLASSEX);
 	w.lpfnWndProc = (WNDPROC)WindowProc1;
 	w.lpszClassName = (L"DXSample");
@@ -204,7 +221,7 @@ void DirectXDevice::CreateGameWindow()
 	AdjustWindowRect(&wrc, WS_OVERLAPPEDWINDOW, false);
 
 	DirectXDevice::hwnd = CreateWindow(w.lpszClassName,
-		L"DXTest",
+		L"DXSample",
 		WS_OVERLAPPEDWINDOW,
 		CW_USEDEFAULT,
 		CW_USEDEFAULT,
@@ -436,4 +453,27 @@ void DirectXDevice::SetFence()
 
 }
 
+void DirectXDevice::CollisionUpdate()
+{
+	if (collider->CircleToCircle(*bat->col, *enemy->col))
+	{
+		if (bat->targetPos == nullptr)
+		{
+			bat->SetTarget(&enemy->col->position);
 
+			bat->Shot();
+		}
+
+	}
+	if (bat->bulletList.size() != 0)
+	{
+		for (int a = 0; a < bat->bulletList.size(); a++)
+		{
+			if (collider->CircleToCircle(*bat->bulletList[a]->col, *enemy->col))
+			{
+				//enemy->EnemyDamege(bat->damage);
+		//		delete(bat->bulletList[a]);
+			}
+		}
+	}
+}

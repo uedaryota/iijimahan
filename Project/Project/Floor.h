@@ -39,6 +39,8 @@ public:
 	void CreateWallPipeline(ID3D12Device* dev);
 
 	void CreateMainHeap(ID3D12Device* dev);
+	void CreateSubHeap(ID3D12Device* dev);
+
 	void ResetTex(const wchar_t* Texname, ID3D12Device * dev);
 	void SetDepth(ID3D12Device* dev);
 	void SetVert(ID3D12Device* dev);
@@ -49,6 +51,9 @@ public:
 	ID3D12PipelineState* pipelinestate = nullptr;
 	ID3D12RootSignature* rootsignature = nullptr;
 	ID3D12DescriptorHeap* mainDescHeap;
+
+	ID3D12DescriptorHeap* subDescHeap;
+
 	ID3D12DescriptorHeap* dsvHeap = nullptr;
 	D3D12_VERTEX_BUFFER_VIEW vbView = {};
 
@@ -61,10 +66,12 @@ public:
 private:
 	Camera* c;
 	XMMATRIX matWorld = XMMatrixIdentity();
-	XMMATRIX matView;
 	ID3D12Resource* constBuff = nullptr;
-	XMMATRIX matProjection;
-	MatrocesDate* constMap;
+	MatrocesDate* constMap = nullptr;
+
+	ID3D12Resource* constBuff2 = nullptr;
+	MatrocesDate* constMap2 = nullptr;
+
 	Vertex vertices[4] =
 	{
 		{{-1.0f,-1.0f,0},{0.0f,10.0f}},
