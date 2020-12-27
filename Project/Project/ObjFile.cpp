@@ -14,51 +14,33 @@ ObjFile::ObjFile()
 ObjFile::~ObjFile()
 {
 	
-	dev->Release();
+	//HRESULT result = dev->Release();
 		
-	
+	HRESULT result;
 
-	if (pipelinestate != nullptr);
+	if (pipelinestate);
 	{
-		pipelinestate->Release();
+		result = pipelinestate->Release();
+		pipelinestate = nullptr;
 	}
 
-	if (rootsignature != nullptr);
+	if (rootsignature);
 	{
-		rootsignature->Release();
+		result = rootsignature->Release();
+		rootsignature = nullptr;
 	}
 
-	if (mainDescHeap != nullptr);
+	if (mainDescHeap);
 	{
-		mainDescHeap->Release();
+		result = mainDescHeap->Release();
 	}
-
-	if (subDescHeap != nullptr);
-	{
-	//	subDescHeap->Release();
-	}
-
-	//if (constMap0 != nullptr);
-	//{
-	//	delete &constMap0->viewproj;
-	//	delete &constMap0->world;
-
-	//}
+	result = constBuffB0.Get()->Release();
+	result = constBuffB1->Release();
+	result = vertBuff->Release();
+	result = indexBuff->Release();
+	result = texbuff->Release();
 
 
-
-	//if (subconstMap0 != nullptr);
-	//{
-	//	delete(subconstMap0);
-	//}
-
-	//delete(pipelinestate);
-	//delete(rootsignature);
-	//delete(mainDescHeap);
-	//delete(subDescHeap);
-	//delete(constMap0);
-	//delete(constMap1);
-	//delete(subconstMap0);
 }
 
 void ObjFile::Initialize()
@@ -134,7 +116,6 @@ void ObjFile::Draw(ID3D12GraphicsCommandList * cmdList)
 	cmdList->SetGraphicsRootDescriptorTable(2, GcbvHandle1);
 
 	cmdList->DrawInstanced((UINT)vertices.size(), 1, 0, 0);
-
 
 }
 
@@ -538,7 +519,7 @@ void ObjFile::LoadObj(std::string name)
 	}
 
 	// 頂点バッファへのデータ転送
-	Vertex* vertMap = nullptr;
+	vertMap = nullptr;
 	result = vertBuff->Map(0, nullptr, (void**)&vertMap);
 	if (SUCCEEDED(result)) {
 		//	memcpy(vertMap, vertices, sizeof(vertices));
@@ -547,7 +528,7 @@ void ObjFile::LoadObj(std::string name)
 	}
 
 	// インデックスバッファへのデータ転送
-	unsigned short* indexMap = nullptr;
+	indexMap = nullptr;
 	result = indexBuff->Map(0, nullptr, (void**)&indexMap);
 	if (SUCCEEDED(result)) {
 

@@ -89,8 +89,9 @@ private:
 	ID3D12DescriptorHeap* mainDescHeap;
 	ID3D12DescriptorHeap* subDescHeap;
 	std::vector<Vertex>vertices;
-	 std::vector<unsigned short>indices;
-
+	std::vector<unsigned short>indices;
+	Vertex* vertMap;
+	unsigned short* indexMap;
 	D3D12_VERTEX_BUFFER_VIEW vbView {};
 
 	D3D12_INDEX_BUFFER_VIEW ibView{};
@@ -110,13 +111,13 @@ private:
 	XMMATRIX matTrans;
 	//ワールド行列マップ
 	ConstBufferDataB0* constMap0;
-	ConstBufferDataB0* subconstMap0;
+	
 
 	//Objデータ定数マップ
 	ConstBufferDataB1* constMap1;
 
 	ComPtr<ID3D12Resource> constBuffB0;
-	ComPtr<ID3D12Resource> subconstBuffB0;
+	
 	// 定数バッファ
 	ComPtr<ID3D12Resource> constBuffB1; // 定数バッファ
 

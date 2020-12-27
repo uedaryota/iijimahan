@@ -135,23 +135,31 @@ void DirectXDevice::Update()
 
 	DirectXDevice::cmdList->RSSetScissorRects(1, &scissorrect);
 	//ここからUpdate
+	input->Update();
 
+	if (input->PushKey(DIK_P))
+	{
+		sound->PlayRoop();
+	}
 	Camera::Update();
 	tower->Update();
 //	sound->Update();
 	
-	tower->Draw(DirectXDevice::cmdList);
+	
 	enemy->SetScale(XMFLOAT3{ 10,10,10 });
 	manager->Update();
-	manager->Draw(DirectXDevice::cmdList);
 	//enemy->Update();
 	//enemy->Draw(DirectXDevice::cmdList);
 	/*back->Update();
 	back->Draw();
 	*/
 	stage->Update();
-	stage->Draw();
+
 	bat->Update();
+	
+	tower->Draw(DirectXDevice::cmdList);
+	manager->Draw(DirectXDevice::cmdList);
+	stage->Draw();
 	bat->Draw();
 
 	//if (input->PushKey(DIK_Q))//実験用→実験結果成功　＊座標の変更を行えます。
@@ -167,7 +175,7 @@ void DirectXDevice::Update()
 		enemy->EnemyDamege(1);
 		//enemy2->EnemyDamege(0.5);
 	}
-	CollisionUpdate();
+
 	//DirectXDevice::cmdList->RSSetViewports(1, &viewport2);
 	//
 	//tower->Draw(DirectXDevice::cmdList);
@@ -178,12 +186,7 @@ void DirectXDevice::Update()
 
 	//ここまで
 	DirectXDevice::cmdList->Close();
-	input->Update();
 
-	if (input->PushKey(DIK_P))
-	{
-		sound->PlayRoop();
-	}
 	
 
 	ID3D12CommandList* cmdLists[] = { DirectXDevice::cmdList };
@@ -204,6 +207,8 @@ void DirectXDevice::Update()
 	DirectXDevice::cmdList->Reset(cmdAllocator, nullptr);
 
 	DirectXDevice::swapchain->Present(1, 0);
+
+	CollisionUpdate();
 }
 void DirectXDevice::CreateGameWindow()
 {
@@ -471,8 +476,10 @@ void DirectXDevice::CollisionUpdate()
 		{
 			if (collider->CircleToCircle(*bat->bulletList[a]->col, *enemy->col))
 			{
-				//enemy->EnemyDamege(bat->damage);
-		//		delete(bat->bulletList[a]);
+				enemy->EnemyDamege(bat->damage);
+				delete(bat->bulletList[a]);
+				bat->bulletList.erase(bat->bulletList.begin() + a);
+
 			}
 		}
 	}
