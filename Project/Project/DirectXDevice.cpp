@@ -35,6 +35,8 @@ Enemy* enemy = new Enemy();
 EnemyAI* ai = new EnemyAI();
 EnemyManeger* manager = new EnemyManeger();
 Input* input = new Input();
+Sphere* sphere = new Sphere();
+Light* light = nullptr;
 
 LRESULT WindowProc1(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
@@ -65,8 +67,14 @@ void DirectXDevice::Initialize()
 	stage->Initialize();
 	manager->Add(enemy);
 	enemy->state = move1;
-	sound->LoadFile(L".\\Resources\\01.mp3");
+	sound->LoadFile(L"Resources01.mp3");
 	input->Initialize();
+	sphere->Initialize(DirectXDevice::dev);
+	Light::StaticInitialize(DirectXDevice::dev);
+	light = Light::Create();
+	light->SetLightColor({ 1, 1, 1 });
+	ObjFile::SetLight(light);
+
 }
 	
 void DirectXDevice::Update()
@@ -126,6 +134,8 @@ void DirectXDevice::Update()
 	stage->Draw();
 	manager->Update();
 	manager->Draw();
+	sphere->Update();
+	sphere->Draw(DirectXDevice::cmdList);
 	//enemy->Draw();
 	//manager->Draw();
 	DirectXDevice::cmdList->RSSetViewports(1, &viewport2);
@@ -144,6 +154,8 @@ void DirectXDevice::Update()
 	stage->Draw();
 	manager->Update();
 	manager->Draw();
+	sphere->Update();
+	sphere->Draw(DirectXDevice::cmdList);
 
 	//‚±‚±‚Ü‚Å
 	DirectXDevice::cmdList->Close();
@@ -153,6 +165,8 @@ void DirectXDevice::Update()
 	{
 		sound->PlayRoop();
 	}
+
+	light->Update();
 	
 
 	ID3D12CommandList* cmdLists[] = { DirectXDevice::cmdList };

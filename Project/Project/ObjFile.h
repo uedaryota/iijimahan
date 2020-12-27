@@ -5,6 +5,7 @@
 #include <d3d12.h>
 #include <DirectXMath.h>
 #include <d3dx12.h>
+#include "Light.h"
 using namespace DirectX;
 class ObjFile
 {
@@ -38,8 +39,9 @@ public: // サブクラス
 	};
 	struct ConstBufferDataB0
 	{
-		XMMATRIX world;
-		XMMATRIX viewproj;
+		XMMATRIX world;//ワールド行列
+		XMMATRIX viewproj;//ビュープロジェクション行列
+		XMFLOAT3 cameraPos;//追加//カメラ座標
 	};
 	struct Material
 	{
@@ -58,6 +60,15 @@ public: // サブクラス
 			alpha = 1.0f;
 		}
 	};
+
+	///<summary>
+	///ライトのセット
+	///</summary>
+	///<param name="light">ライト</param>
+	static void SetLight(Light* light)
+	{
+		ObjFile::light = light;
+	}
 
 public:
 	ObjFile();
@@ -78,8 +89,8 @@ private:
 
 	ID3D12Device* dev;
 
-	ID3D12PipelineState* pipelinestate = nullptr;
-	ID3D12RootSignature* rootsignature = nullptr;
+	ComPtr<ID3D12PipelineState> pipelinestate;
+	ComPtr<ID3D12RootSignature> rootsignature;
 	ID3D12DescriptorHeap* mainDescHeap;
 
 	 std::vector<Vertex>vertices;
@@ -110,18 +121,20 @@ private:
 	ComPtr<ID3D12Resource> constBuffB0; // 定数バッファ
 	ComPtr<ID3D12Resource> constBuffB1; // 定数バッファ
 
-	Material material;
+	static Material material;
 
-	D3D12_CPU_DESCRIPTOR_HANDLE CsrvHandle;
-	D3D12_CPU_DESCRIPTOR_HANDLE CcbvHandle0;
-	D3D12_CPU_DESCRIPTOR_HANDLE CcbvHandle1;
+	//D3D12_CPU_DESCRIPTOR_HANDLE CPUsrvHandle;
+	//D3D12_CPU_DESCRIPTOR_HANDLE CPUcbvHandle0;
+	//D3D12_CPU_DESCRIPTOR_HANDLE CPUcbvHandle1;
+	CD3DX12_CPU_DESCRIPTOR_HANDLE CPUsrvHandle;
 
-	D3D12_GPU_DESCRIPTOR_HANDLE GsrvHandle;
-	D3D12_GPU_DESCRIPTOR_HANDLE GcbvHandle0;
-	D3D12_GPU_DESCRIPTOR_HANDLE GcbvHandle1;
+	//D3D12_GPU_DESCRIPTOR_HANDLE GPUsrvHandle;
+	//D3D12_GPU_DESCRIPTOR_HANDLE GPUcbvHandle0;
+	//D3D12_GPU_DESCRIPTOR_HANDLE GPUcbvHandle1;
+	CD3DX12_GPU_DESCRIPTOR_HANDLE GPUsrvHandle;
 
-
-
+	//ライト
+	static Light* light;
 
 };
 

@@ -90,6 +90,12 @@
     <ClCompile Include="Tower.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Sphere.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Light.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Block.h">
@@ -150,6 +156,12 @@
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
     <ClInclude Include="Tower.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Sphere.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Light.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
   </ItemGroup>
