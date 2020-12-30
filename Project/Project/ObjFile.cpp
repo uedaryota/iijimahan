@@ -33,9 +33,10 @@ ObjFile::~ObjFile()
 	if (mainDescHeap);
 	{
 		result = mainDescHeap->Release();
+		mainDescHeap = nullptr;
 	}
 	result = constBuffB0.Get()->Release();
-	result = constBuffB1->Release();
+	//result = constBuffB1->Release();
 	result = vertBuff->Release();
 	result = indexBuff->Release();
 	result = texbuff->Release();
@@ -77,16 +78,14 @@ void ObjFile::Update()
 	
 	constBuffB0->Unmap(0, nullptr);
 
-	constMap1 = nullptr;
-	result = constBuffB1->Map(0, nullptr, (void**)&constMap1);
-	constMap1->ambient = material.ambient;
-	constMap1->diffuse = material.diffuse;
-	constMap1->specular = material.specular;
-	constMap1->alpha = material.alpha;
+	//constMap1 = nullptr;
+	//result = constBuffB1->Map(0, nullptr, (void**)&constMap1);
+	//constMap1->ambient = material.ambient;
+	//constMap1->diffuse = material.diffuse;
+	//constMap1->specular = material.specular;
+	//constMap1->alpha = material.alpha;
 
-	
-
-	constBuffB1->Unmap(0, nullptr);
+	//constBuffB1->Unmap(0, nullptr);
 }
 
 void ObjFile::Draw(ID3D12GraphicsCommandList * cmdList)
@@ -99,12 +98,7 @@ void ObjFile::Draw(ID3D12GraphicsCommandList * cmdList)
 	constBuffB0->Unmap(0, nullptr);
 
 
-	D3D12_GPU_DESCRIPTOR_HANDLE handle = mainDescHeap->GetGPUDescriptorHandleForHeapStart();
-	GsrvHandle = handle;
-	handle.ptr += dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	GcbvHandle0 = handle;
-	handle.ptr += dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	GcbvHandle1 = handle;
+	
 	cmdList->SetPipelineState(pipelinestate);
 	cmdList->SetGraphicsRootSignature(rootsignature);
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -113,10 +107,18 @@ void ObjFile::Draw(ID3D12GraphicsCommandList * cmdList)
 	cmdList->SetDescriptorHeaps(1, &mainDescHeap);
 	cmdList->SetGraphicsRootDescriptorTable(0, GsrvHandle);
 	cmdList->SetGraphicsRootDescriptorTable(1, GcbvHandle0);
-	cmdList->SetGraphicsRootDescriptorTable(2, GcbvHandle1);
-
-	cmdList->DrawInstanced((UINT)vertices.size(), 1, 0, 0);
-
+	cmdList->SetDescriptorHeaps(1, &materialDescHeap);
+	//cmdList->SetGraphicsRootDescriptorTable(2, GmaterialHandles[0]);
+	//cmdList->DrawInstanced((UINT)vertices.size(), 1, 0, 0);
+	UINT start = 0;
+	for (int a = 0; a < usematerials.size(); a++)
+	{
+		
+		cmdList->SetGraphicsRootDescriptorTable(2, GmaterialHandles[a]);
+		cmdList->DrawInstanced((UINT)usematerials[a].indicesCount, 1, start, 0);
+		start += usematerials[a].indicesCount;
+	}
+	
 }
 
 void ObjFile::CreatePipeline()
@@ -328,7 +330,7 @@ void ObjFile::CreateMainHeap()
 
 	descHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	descHeapDesc.NodeMask = 0;
-	descHeapDesc.NumDescriptors = 3;
+	descHeapDesc.NumDescriptors = 2;
 	descHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 
 	result = dev->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(&mainDescHeap));
@@ -337,33 +339,48 @@ void ObjFile::CreateMainHeap()
 	CsrvHandle = HeapHandle;
 	HeapHandle.ptr += dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 	CcbvHandle0 = HeapHandle;
-	HeapHandle.ptr += dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	CcbvHandle1 = HeapHandle;
 
+
+	D3D12_GPU_DESCRIPTOR_HANDLE handle = mainDescHeap->GetGPUDescriptorHandleForHeapStart();
+	GsrvHandle = handle;
+	handle.ptr += dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	GcbvHandle0 = handle;
 
 }
 
-void ObjFile::CreateSubHeap()
+void ObjFile::CreateMaterialHeap()
 {
 	HRESULT result;
-	mainDescHeap = nullptr;
+	materialDescHeap = nullptr;
+	CmatrialHandles.clear();
+	GmaterialHandles.clear();
 	D3D12_DESCRIPTOR_HEAP_DESC descHeapDesc = {};
-
+	
 	descHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	descHeapDesc.NodeMask = 0;
-	descHeapDesc.NumDescriptors = 3;
+	descHeapDesc.NumDescriptors = usematerials.size();
 	descHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 
-	result = dev->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(&mainDescHeap));
+	result = dev->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(&materialDescHeap));
 
-	D3D12_CPU_DESCRIPTOR_HANDLE HeapHandle = mainDescHeap->GetCPUDescriptorHandleForHeapStart();
-	CsrvHandle = HeapHandle;
-	HeapHandle.ptr += dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	CcbvHandle0 = HeapHandle;
-	HeapHandle.ptr += dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	CcbvHandle1 = HeapHandle;
+	D3D12_CPU_DESCRIPTOR_HANDLE HeapHandle = materialDescHeap->GetCPUDescriptorHandleForHeapStart();
 
+	for (int a = 0; a < usematerials.size(); a++)
+	{
+		CmatrialHandles.emplace_back(HeapHandle);
+		HeapHandle.ptr += dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	}
+
+	D3D12_GPU_DESCRIPTOR_HANDLE handle = materialDescHeap->GetGPUDescriptorHandleForHeapStart();
+	//handle.ptr += dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	for (int a = 0; a < usematerials.size(); a++)
+	{
+		GmaterialHandles.emplace_back(handle);
+		handle.ptr += dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	}
 }
+
+
 
 void ObjFile::SetPos(XMFLOAT3 pos)
 {
@@ -393,8 +410,13 @@ void ObjFile::LoadObj(std::string name)
 	vector<XMFLOAT3>positions;
 	vector<XMFLOAT3>normals;
 	vector<XMFLOAT2>texcoords;
-
+	vertices.clear();
+	usematerials.clear();
+	materialsDate.clear();
 	string line;
+	Material material;
+	int materialNum = 0;
+	//int indicesCount = 0;
 	while (getline(file, line))
 	{
 		std::istringstream line_stream(line);
@@ -417,6 +439,7 @@ void ObjFile::LoadObj(std::string name)
 			int count = 0;
 			while (getline(line_stream, index_string, ' '))
 			{
+				usematerials[materialNum - 1].indicesCount += 1;
 				++count;
 				line_stream;
 				std::istringstream index_stream(index_string);
@@ -436,6 +459,7 @@ void ObjFile::LoadObj(std::string name)
 			
 				if (count == 4)
 				{
+					usematerials[materialNum-1].indicesCount += 2;
 					vertex.pos = vertices[vertices.size() - 2].pos;
 					vertex.normal = vertices[vertices.size() - 2].normal;
 					vertex.uv = vertices[vertices.size() - 2].uv;
@@ -473,6 +497,20 @@ void ObjFile::LoadObj(std::string name)
 
 			normals.emplace_back(normal);
 
+		}
+		if (key == "usemtl")
+		{
+			getline(line_stream, key, ' ');
+			for (int a = 0; a < materialsDate.size(); a++)
+			{
+				if (key == materialsDate[a].name)
+				{
+					material = materialsDate[a];
+				}
+			}
+			usematerials.emplace_back(material);
+			usematerials[materialNum].indicesCount = 0;
+			materialNum += 1;
 		}
 		if (key == "mtllib")
 		{
@@ -594,15 +632,19 @@ void ObjFile::LoadObj(std::string name)
 		nullptr,
 		IID_PPV_ARGS(&constBuffB0)
 	);
+	constBuffB1.resize(usematerials.size());
+	for (int a = 0; a < usematerials.size(); a++)
+	{
+		result = dev->CreateCommittedResource(
+			&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+			D3D12_HEAP_FLAG_NONE,
+			&CD3DX12_RESOURCE_DESC::Buffer(((sizeof(ConstBufferDataB1) + 0xff)&~0xff)),
+			D3D12_RESOURCE_STATE_GENERIC_READ,
+			nullptr,
+			IID_PPV_ARGS(&constBuffB1[a])
+		);
 
-	result = dev->CreateCommittedResource(
-		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-		D3D12_HEAP_FLAG_NONE,
-		&CD3DX12_RESOURCE_DESC::Buffer((sizeof(ConstBufferDataB1) + 0xff)&~0xff),
-		D3D12_RESOURCE_STATE_GENERIC_READ,
-		nullptr,
-		IID_PPV_ARGS(&constBuffB1)
-	);
+	}
 
 	//定数バッファビュー生成
 
@@ -619,21 +661,27 @@ void ObjFile::LoadObj(std::string name)
 
 	constBuffB0->Unmap(0, nullptr);
 
-	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc1 = {};
-	cbvDesc1.BufferLocation = constBuffB1->GetGPUVirtualAddress();
-	cbvDesc1.SizeInBytes = constBuffB1->GetDesc().Width;
-	dev->CreateConstantBufferView(&cbvDesc1, CcbvHandle1);
+	CreateMaterialHeap();
 
-	constMap1 = nullptr;
-	result = constBuffB1->Map(0, nullptr, (void**)&constMap1);
-	constMap1->ambient = material.ambient;
-	constMap1->diffuse = material.diffuse;
-	constMap1->specular = material.specular;
-	constMap1->alpha = material.alpha;
+	materialMaps.clear();
+	for (int a = 0; a <usematerials.size(); a++)
+	{
+		D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc1 = {};
+		cbvDesc1.BufferLocation = constBuffB1[a]->GetGPUVirtualAddress();
+		cbvDesc1.SizeInBytes = constBuffB1[a]->GetDesc().Width;
+		dev->CreateConstantBufferView(&cbvDesc1, CmatrialHandles[a]);
+		materialMaps.resize(usematerials.size());
+		materialMaps[a] = nullptr;
+		result = constBuffB1[a]->Map(0, nullptr, (void**)&materialMaps[a]);
+		materialMaps[a]->ambient = usematerials[a].ambient;
+		materialMaps[a]->diffuse = usematerials[a].diffuse;
+		materialMaps[a]->specular = usematerials[a].specular;
+		materialMaps[a]->alpha = usematerials[a].alpha;
 
+		constBuffB1[a]->Unmap(0, nullptr);
 
+	}
 
-	constBuffB1->Unmap(0, nullptr);
 
 }
 
@@ -646,8 +694,10 @@ void ObjFile::LoadMaterial(const std::string & directorypath, const std::string 
 		assert(0);
 	}
 	string line;
+	Material material;
 	while (getline(file, line))
 	{
+		
 		std::istringstream line_stream(line);
 		string key;
 		getline(line_stream, key, ' ');
@@ -681,6 +731,7 @@ void ObjFile::LoadMaterial(const std::string & directorypath, const std::string 
 		{
 			line_stream >> material.textureFilename;
 			LoadTexture(directorypath, material.textureFilename);
+			materialsDate.emplace_back(material);
 		}
 	}
 	file.close();

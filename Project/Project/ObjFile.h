@@ -5,6 +5,8 @@
 #include <d3d12.h>
 #include <DirectXMath.h>
 #include <d3dx12.h>
+#include<vector>
+using namespace std;
 using namespace DirectX;
 class ObjFile
 {
@@ -48,8 +50,9 @@ public: // サブクラス
 		XMFLOAT3 diffuse;
 		XMFLOAT3 specular;
 		float alpha;
+		int indicesCount;
 		std::string textureFilename;
-
+		
 		Material()
 		{
 			ambient = { 0.3f,0.3f,0.3f };
@@ -67,7 +70,7 @@ public:
 	void Draw(ID3D12GraphicsCommandList * cmdList);
 	void CreatePipeline();
 	void CreateMainHeap();
-	void CreateSubHeap();
+	void CreateMaterialHeap();
 	void SetPos(XMFLOAT3 pos);
 	void SetRotate(XMFLOAT3 rotate);
 	void SetScale(XMFLOAT3 scale);
@@ -87,7 +90,9 @@ private:
 	ID3D12PipelineState* pipelinestate = nullptr;
 	ID3D12RootSignature* rootsignature = nullptr;
 	ID3D12DescriptorHeap* mainDescHeap;
-	ID3D12DescriptorHeap* subDescHeap;
+	ID3D12DescriptorHeap* materialDescHeap;
+
+//	ID3D12DescriptorHeap* subDescHeap;
 	std::vector<Vertex>vertices;
 	std::vector<unsigned short>indices;
 	Vertex* vertMap;
@@ -114,22 +119,23 @@ private:
 	
 
 	//Objデータ定数マップ
-	ConstBufferDataB1* constMap1;
+	vector<ConstBufferDataB1*> materialMaps;
 
 	ComPtr<ID3D12Resource> constBuffB0;
 	
 	// 定数バッファ
-	ComPtr<ID3D12Resource> constBuffB1; // 定数バッファ
+	vector<ComPtr<ID3D12Resource>> constBuffB1; // 定数バッファ
 
-	Material material;
+	vector<Material> materialsDate;
+	vector<Material> usematerials;
 
 	D3D12_CPU_DESCRIPTOR_HANDLE CsrvHandle;
 	D3D12_CPU_DESCRIPTOR_HANDLE CcbvHandle0;
-	D3D12_CPU_DESCRIPTOR_HANDLE CcbvHandle1;
+	vector<D3D12_CPU_DESCRIPTOR_HANDLE> CmatrialHandles;
 
 	D3D12_GPU_DESCRIPTOR_HANDLE GsrvHandle;
 	D3D12_GPU_DESCRIPTOR_HANDLE GcbvHandle0;
-	D3D12_GPU_DESCRIPTOR_HANDLE GcbvHandle1;
+	vector<D3D12_GPU_DESCRIPTOR_HANDLE> GmaterialHandles;
 
 
 

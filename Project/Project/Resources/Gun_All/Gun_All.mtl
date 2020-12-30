@@ -7,7 +7,7 @@ Ni 1.00
 map_Kd whitetex.png
 newmtl lambert8SG
 illum 4
-Kd 0.50 0.50 0.50
+Kd 0.03 0.03 0.03
 Ka 0.00 0.00 0.00
 Tf 1.00 1.00 1.00
 Ni 1.00
