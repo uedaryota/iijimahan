@@ -104,7 +104,7 @@ private:
 	// インデックスバッファ
 	ComPtr<ID3D12Resource> indexBuff;
 
-	ComPtr<ID3D12Resource> texbuff;
+	vector<ComPtr<ID3D12Resource>> texbuffs;
 
 	
 	XMMATRIX matWorld = XMMatrixIdentity();

@@ -49,7 +49,7 @@ void Battery::Initialize()
 	input = new Input();
 	input->Initialize();
 	obj->Initialize();
-	obj->LoadObj("Gun_All");
+	obj->LoadObj("Rhino");
 	col = new CircleCollision();
 	col->length = 1000;
 	SetScale({ 10,10,10 });
