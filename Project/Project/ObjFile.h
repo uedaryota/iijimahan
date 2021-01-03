@@ -78,7 +78,7 @@ public:
 	void LoadObj(const std::string name);
 	void LoadMaterial(const std::string&directorypath, const std::string& filename);
 	bool LoadTexture(const std::string&directorypath, const std::string& filename);
-
+	void SetObjData(const std::string name);
 	XMFLOAT3 position = { 0,0,0 };
 	XMFLOAT3 rotation = { 0,0,0 };
 	XMFLOAT3 scale = { 10.0f,10.0f,10.0f };
@@ -87,8 +87,8 @@ private:
 
 	ID3D12Device* dev;
 
-	ID3D12PipelineState* pipelinestate = nullptr;
-	ID3D12RootSignature* rootsignature = nullptr;
+	ID3D12PipelineState* pipelinestate;
+	ID3D12RootSignature* rootsignature;
 	ID3D12DescriptorHeap* mainDescHeap;
 	ID3D12DescriptorHeap* materialDescHeap;
 
@@ -108,9 +108,7 @@ private:
 
 	
 	XMMATRIX matWorld = XMMatrixIdentity();
-	XMMATRIX matView;
 
-	XMMATRIX matProjection;
 	XMMATRIX matScale;
 	XMMATRIX matRot;
 	XMMATRIX matTrans;

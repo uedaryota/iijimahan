@@ -6,6 +6,7 @@
 #include<string>
 #include<vector>
 #include"DirectXDevice.h"
+#include"ObjDate.h"
 ObjFile::ObjFile()
 {
 	
@@ -60,9 +61,6 @@ void ObjFile::Update()
 	constMap0 = nullptr;
 	HRESULT result = constBuffB0->Map(0, nullptr, (void**)&constMap0);
 
-	matView = XMMatrixLookAtLH(
-		XMLoadFloat3(&Camera::MainCameraPos()), XMLoadFloat3(&Camera::Target()), XMLoadFloat3(&Camera::Up())
-	);
 
 
 	matScale = XMMatrixScaling(scale.x, scale.y, scale.z);
@@ -77,7 +75,7 @@ void ObjFile::Update()
 	matWorld *= matTrans;
 
 	constMap0->world = matWorld;
-	constMap0->viewproj = matView * matProjection;
+	constMap0->viewproj = Camera::ReturnCameraState()->matView * Camera::ReturnCameraState()->matProjection;
 	
 	constBuffB0->Unmap(0, nullptr);
 
@@ -354,40 +352,40 @@ void ObjFile::CreateMainHeap()
 
 void ObjFile::CreateMaterialHeap()
 {
-	HRESULT result;
-	materialDescHeap = nullptr;
-	CmatrialHandles.clear();
-	GmaterialHandles.clear();
-	D3D12_DESCRIPTOR_HEAP_DESC descHeapDesc = {};
-	
-	descHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-	descHeapDesc.NodeMask = 0;
-	descHeapDesc.NumDescriptors = usematerials.size() * 2;
-	descHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+	//HRESULT result;
+	//materialDescHeap = nullptr;
+	//CmatrialHandles.clear();
+	//GmaterialHandles.clear();
+	//D3D12_DESCRIPTOR_HEAP_DESC descHeapDesc = {};
+	//
+	//descHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+	//descHeapDesc.NodeMask = 0;
+	//descHeapDesc.NumDescriptors = usematerials.size() * 2;
+	//descHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 
-	result = dev->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(&materialDescHeap));
+	//result = dev->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(&materialDescHeap));
 
-	D3D12_CPU_DESCRIPTOR_HANDLE HeapHandle = materialDescHeap->GetCPUDescriptorHandleForHeapStart();
+	//D3D12_CPU_DESCRIPTOR_HANDLE HeapHandle = materialDescHeap->GetCPUDescriptorHandleForHeapStart();
 
-	for (int a = 0; a < usematerials.size(); a++)
-	{
-		CmatrialHandles.emplace_back(HeapHandle);
-		HeapHandle.ptr += dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-		CmatrialHandles.emplace_back(HeapHandle);
-		HeapHandle.ptr += dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	//for (int a = 0; a < usematerials.size(); a++)
+	//{
+	//	CmatrialHandles.emplace_back(HeapHandle);
+	//	HeapHandle.ptr += dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	//	CmatrialHandles.emplace_back(HeapHandle);
+	//	HeapHandle.ptr += dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
-	}
+	//}
 
-	D3D12_GPU_DESCRIPTOR_HANDLE handle = materialDescHeap->GetGPUDescriptorHandleForHeapStart();
-	//handle.ptr += dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	for (int a = 0; a < usematerials.size(); a++)
-	{
-		GmaterialHandles.emplace_back(handle);
-		handle.ptr += dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-		GmaterialHandles.emplace_back(handle);
-		handle.ptr += dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	//D3D12_GPU_DESCRIPTOR_HANDLE handle = materialDescHeap->GetGPUDescriptorHandleForHeapStart();
+	////handle.ptr += dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	//for (int a = 0; a < usematerials.size(); a++)
+	//{
+	//	GmaterialHandles.emplace_back(handle);
+	//	handle.ptr += dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	//	GmaterialHandles.emplace_back(handle);
+	//	handle.ptr += dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
-	}
+	//}
 }
 
 
@@ -408,199 +406,6 @@ void ObjFile::SetScale(XMFLOAT3 scale)
 
 void ObjFile::LoadObj(std::string name)
 {
-	std::ifstream file;
-	const string modelname = name;
-	const string filename = modelname + ".obj";
-	const string directorypath = "Resources/" + modelname + "/";
-	const string Texdirectorypath = "Resources/";
-
-	file.open(directorypath + filename);
-	if (file.fail())
-	{
-		assert(0);
-	}
-	vector<XMFLOAT3>positions;
-	vector<XMFLOAT3>normals;
-	vector<XMFLOAT2>texcoords;
-	vertices.clear();
-	usematerials.clear();
-	materialsDate.clear();
-	string line;
-	Material material;
-	int materialNum = 0;
-	//int indicesCount = 0;
-	while (getline(file, line))
-	{
-		std::istringstream line_stream(line);
-		string key;
-		getline(line_stream, key, ' ');
-		if (key == "v")
-		{
-			XMFLOAT3 position{};
-			line_stream >> position.x;
-			line_stream >> position.y;
-			line_stream >> position.z;
-
-			positions.emplace_back(position);
-
-
-		}
-		if (key == "f")
-		{
-			string index_string;
-			int count = 0;
-			while (getline(line_stream, index_string, ' '))
-			{
-				usematerials[materialNum - 1].indicesCount += 1;
-				++count;
-				line_stream;
-				std::istringstream index_stream(index_string);
-				unsigned short indexPosition, indexTexcoord, indexNormal;
-				index_stream >> indexPosition;
-				index_stream.seekg(1, ios_base::cur);
-				index_stream >> indexTexcoord;
-				index_stream.seekg(1, ios_base::cur);
-				index_stream >> indexNormal;
-
-				Vertex vertex{};
-				vertex.pos = positions[indexPosition - 1];
-				vertex.normal = normals[indexNormal - 1];
-				vertex.uv = texcoords[indexTexcoord - 1];
-				vertices.emplace_back(vertex);
-				indices.emplace_back(indices.size());
-			
-				if (count == 4)
-				{
-					usematerials[materialNum-1].indicesCount += 2;
-					vertex.pos = vertices[vertices.size() - 2].pos;
-					vertex.normal = vertices[vertices.size() - 2].normal;
-					vertex.uv = vertices[vertices.size() - 2].uv;
-					vertices.emplace_back(vertex);
-					indices.emplace_back(indices.size());
-
-					//直前にインデックスが増えているのでー５
-					vertex.pos = vertices[vertices.size() - 5].pos;
-					vertex.normal = vertices[vertices.size() - 5].normal;
-					vertex.uv = vertices[vertices.size() - 5].uv;
-					vertices.emplace_back(vertex);
-					indices.emplace_back(indices.size());
-				}
-			}
-
-
-		}
-		if (key == "vt")
-		{
-			XMFLOAT2 texcoord{};
-			line_stream >> texcoord.x;
-			line_stream >> texcoord.y;
-			texcoord.y = 1.0f - texcoord.y;
-
-			texcoords.emplace_back(texcoord);
-
-		}
-		if (key == "vn")
-		{
-			XMFLOAT3 normal{};
-			line_stream >> normal.x;
-			line_stream >> normal.y;
-			line_stream >> normal.z;
-
-
-			normals.emplace_back(normal);
-
-		}
-		if (key == "usemtl")
-		{
-			getline(line_stream, key, ' ');
-			for (int a = 0; a < materialsDate.size(); a++)
-			{
-				if (key == materialsDate[a].name)
-				{
-					material = materialsDate[a];
-				}
-			}
-			usematerials.emplace_back(material);
-			usematerials[materialNum].indicesCount = 0;
-			materialNum += 1;
-		}
-		if (key == "mtllib")
-		{
-			string filename;
-			line_stream >> filename;
-			LoadMaterial(directorypath, filename);
-		}
-	}
-
-
-	HRESULT result = S_FALSE;
-
-
-	UINT sizeVB = static_cast<UINT>(sizeof(Vertex)*vertices.size());
-	UINT sizeIB = static_cast<UINT>(sizeof(unsigned short)*indices.size());
-
-
-	// 頂点バッファ生成
-
-	
-	result = dev->CreateCommittedResource(
-		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-		D3D12_HEAP_FLAG_NONE,
-		&CD3DX12_RESOURCE_DESC::Buffer(sizeVB),
-		D3D12_RESOURCE_STATE_GENERIC_READ,
-		nullptr,
-		IID_PPV_ARGS(&vertBuff));
-	if (FAILED(result)) {
-		assert(0);
-		return;
-	}
-
-	// インデックスバッファ生成
-	result = dev->CreateCommittedResource(
-		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-		D3D12_HEAP_FLAG_NONE,
-		&CD3DX12_RESOURCE_DESC::Buffer(sizeIB),
-		D3D12_RESOURCE_STATE_GENERIC_READ,
-		nullptr,
-		IID_PPV_ARGS(&indexBuff));
-	if (FAILED(result)) {
-		assert(0);
-		return;
-	}
-
-	// 頂点バッファへのデータ転送
-	vertMap = nullptr;
-	result = vertBuff->Map(0, nullptr, (void**)&vertMap);
-	if (SUCCEEDED(result)) {
-		//	memcpy(vertMap, vertices, sizeof(vertices));
-		std::copy(vertices.begin(), vertices.end(), vertMap);
-		vertBuff->Unmap(0, nullptr);
-	}
-
-	// インデックスバッファへのデータ転送
-	indexMap = nullptr;
-	result = indexBuff->Map(0, nullptr, (void**)&indexMap);
-	if (SUCCEEDED(result)) {
-
-		// 全インデックスに対して
-		//for (int i = 0; i < _countof(indices); i++)
-		//{
-		//	indexMap[i] = indices[i];	// インデックスをコピー
-		//}
-		std::copy(indices.begin(), indices.end(), indexMap);
-
-		indexBuff->Unmap(0, nullptr);
-	}
-
-	// 頂点バッファビューの作成
-	vbView.BufferLocation = vertBuff->GetGPUVirtualAddress();
-	vbView.SizeInBytes = sizeVB;
-	vbView.StrideInBytes = sizeof(vertices[0]);
-
-	// インデックスバッファビューの作成
-	ibView.BufferLocation = indexBuff->GetGPUVirtualAddress();
-	ibView.Format = DXGI_FORMAT_R16_UINT;
-	ibView.SizeInBytes = sizeIB;
 
 	matWorld.r[0].m128_f32[0] = 2.0f / Camera::window_width;
 	matWorld.r[1].m128_f32[1] = -2.0f / Camera::window_height;
@@ -623,20 +428,7 @@ void ObjFile::LoadObj(std::string name)
 	matWorld *= matTrans;
 
 
-	matView = XMMatrixLookAtLH(
-		XMLoadFloat3(&Camera::MainCameraPos()), XMLoadFloat3(&Camera::Target()), XMLoadFloat3(&Camera::Up())
-	);
-
-
-
-	matProjection = XMMatrixPerspectiveFovLH(
-		XM_PIDIV2,
-		static_cast<float>(Camera::window_width) / static_cast<float>(Camera::window_height),
-		1.0f,
-		1000.0f
-	);
-
-	result = dev->CreateCommittedResource(
+	HRESULT result = dev->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
 		D3D12_HEAP_FLAG_NONE,
 		&CD3DX12_RESOURCE_DESC::Buffer((sizeof(ConstBufferDataB0) + 0xff)&~0xff),
@@ -644,19 +436,6 @@ void ObjFile::LoadObj(std::string name)
 		nullptr,
 		IID_PPV_ARGS(&constBuffB0)
 	);
-	constBuffB1.resize(usematerials.size());
-	for (int a = 0; a < usematerials.size(); a++)
-	{
-		result = dev->CreateCommittedResource(
-			&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-			D3D12_HEAP_FLAG_NONE,
-			&CD3DX12_RESOURCE_DESC::Buffer(((sizeof(ConstBufferDataB1) + 0xff)&~0xff)),
-			D3D12_RESOURCE_STATE_GENERIC_READ,
-			nullptr,
-			IID_PPV_ARGS(&constBuffB1[a])
-		);
-
-	}
 
 	//定数バッファビュー生成
 
@@ -669,104 +448,361 @@ void ObjFile::LoadObj(std::string name)
 	result = constBuffB0->Map(0, nullptr, (void**)&constMap0);
 
 	constMap0->world = matWorld;
-	constMap0->viewproj = matView * matProjection;
+	constMap0->viewproj = Camera::ReturnCameraState()->matView * Camera::ReturnCameraState()->matProjection;
 
 	constBuffB0->Unmap(0, nullptr);
 
-	CreateMaterialHeap();
-
-	materialMaps.clear();
-	materialMaps.resize(usematerials.size());
-	texbuffs.clear();
-	texbuffs.resize(usematerials.size());
-	for (int a = 0; a < usematerials.size() * 2; a += 2)
-	{
-		D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc1 = {};
-		cbvDesc1.BufferLocation = constBuffB1[a / 2]->GetGPUVirtualAddress();
-		cbvDesc1.SizeInBytes = constBuffB1[a / 2]->GetDesc().Width;
-		dev->CreateConstantBufferView(&cbvDesc1, CmatrialHandles[a]);
-		
-		materialMaps[a / 2] = nullptr;
-		result = constBuffB1[a / 2]->Map(0, nullptr, (void**)&materialMaps[a / 2]);
-		materialMaps[a / 2]->ambient = usematerials[a / 2].ambient;
-		materialMaps[a / 2]->diffuse = usematerials[a / 2].diffuse;
-		materialMaps[a / 2]->specular = usematerials[a / 2].specular;
-		materialMaps[a / 2]->alpha = usematerials[a / 2].alpha;
-
-		constBuffB1[a / 2]->Unmap(0, nullptr);
-		///////////////////////
-		result = S_FALSE;
-		string filepath = directorypath + usematerials[a / 2].textureFilename;
-		wchar_t wfilepath[128];
-		if (usematerials[a / 2].textureFilename == "whitetex.png")
-		{
-			filepath = Texdirectorypath + usematerials[a / 2].textureFilename;
-			int iBufferSize = MultiByteToWideChar(CP_ACP, 0, filepath.c_str(), -1, wfilepath, _countof(wfilepath));
-			Texdirectorypath + usematerials[a / 2].textureFilename;
-
-		}
-		else
-		{
-			filepath = directorypath + usematerials[a / 2].textureFilename;
-			int iBufferSize = MultiByteToWideChar(CP_ACP, 0, filepath.c_str(), -1, wfilepath, _countof(wfilepath));
-			directorypath + usematerials[a / 2].textureFilename;
-		}
-
-		// WICテクスチャのロード
-		TexMetadata metadata{};
-		ScratchImage scratchImg{};
-
-		result = LoadFromWICFile(
-			wfilepath, WIC_FLAGS_NONE,
-			&metadata, scratchImg);
-
-		const Image* img = scratchImg.GetImage(0, 0, 0); // 生データ抽出
-
-		// リソース設定
-		CD3DX12_RESOURCE_DESC texresDesc = CD3DX12_RESOURCE_DESC::Tex2D(
-			metadata.format,
-			metadata.width,
-			(UINT)metadata.height,
-			(UINT16)metadata.arraySize,
-			(UINT16)metadata.mipLevels
-		);
-
-		// テクスチャ用バッファの生成
-		result = dev->CreateCommittedResource(
-			&CD3DX12_HEAP_PROPERTIES(D3D12_CPU_PAGE_PROPERTY_WRITE_BACK, D3D12_MEMORY_POOL_L0),
-			D3D12_HEAP_FLAG_NONE,
-			&texresDesc,
-			D3D12_RESOURCE_STATE_GENERIC_READ, // テクスチャ用指定
-			nullptr,
-			IID_PPV_ARGS(&texbuffs[a / 2]));
-
-		// テクスチャバッファにデータ転送
-		result = texbuffs[a / 2]->WriteToSubresource(
-			0,
-			nullptr, // 全領域へコピー
-			img->pixels,    // 元データアドレス
-			(UINT)img->rowPitch,  // 1ラインサイズ
-			(UINT)img->slicePitch // 1枚サイズ
-		);
-
-		// シェーダリソースビュー作成
-
-		D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{}; // 設定構造体
-		D3D12_RESOURCE_DESC resDesc = texbuffs[a / 2]->GetDesc();
-
-		srvDesc.Format = resDesc.Format;
-		srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;//2Dテクスチャ
-		srvDesc.Texture2D.MipLevels = 1;
-
-		dev->CreateShaderResourceView(texbuffs[a / 2].Get(), //ビューと関連付けるバッファ
-			&srvDesc, //テクスチャ設定情報
-			CmatrialHandles[a + 1]
-		);
-	}
-
+	SetObjData(name);
 
 }
+//void ObjFile::LoadObj(std::string name)
+//{
+//	std::ifstream file;
+//	const string modelname = name;
+//	const string filename = modelname + ".obj";
+//	const string directorypath = "Resources/" + modelname + "/";
+//	const string Texdirectorypath = "Resources/";
+//
+//	file.open(directorypath + filename);
+//	if (file.fail())
+//	{
+//		assert(0);
+//	}
+//	vector<XMFLOAT3>positions;
+//	vector<XMFLOAT3>normals;
+//	vector<XMFLOAT2>texcoords;
+//	vertices.clear();
+//	usematerials.clear();
+//	materialsDate.clear();
+//	string line;
+//	Material material;
+//	int materialNum = 0;
+//	//int indicesCount = 0;
+//	while (getline(file, line))
+//	{
+//		std::istringstream line_stream(line);
+//		string key;
+//		getline(line_stream, key, ' ');
+//		if (key == "v")
+//		{
+//			XMFLOAT3 position{};
+//			line_stream >> position.x;
+//			line_stream >> position.y;
+//			line_stream >> position.z;
+//
+//			positions.emplace_back(position);
+//
+//
+//		}
+//		if (key == "f")
+//		{
+//			string index_string;
+//			int count = 0;
+//			while (getline(line_stream, index_string, ' '))
+//			{
+//				usematerials[materialNum - 1].indicesCount += 1;
+//				++count;
+//				line_stream;
+//				std::istringstream index_stream(index_string);
+//				unsigned short indexPosition, indexTexcoord, indexNormal;
+//				index_stream >> indexPosition;
+//				index_stream.seekg(1, ios_base::cur);
+//				index_stream >> indexTexcoord;
+//				index_stream.seekg(1, ios_base::cur);
+//				index_stream >> indexNormal;
+//
+//				Vertex vertex{};
+//				vertex.pos = positions[indexPosition - 1];
+//				vertex.normal = normals[indexNormal - 1];
+//				vertex.uv = texcoords[indexTexcoord - 1];
+//				vertices.emplace_back(vertex);
+//				indices.emplace_back(indices.size());
+//
+//				if (count == 4)
+//				{
+//					usematerials[materialNum - 1].indicesCount += 2;
+//					vertex.pos = vertices[vertices.size() - 2].pos;
+//					vertex.normal = vertices[vertices.size() - 2].normal;
+//					vertex.uv = vertices[vertices.size() - 2].uv;
+//					vertices.emplace_back(vertex);
+//					indices.emplace_back(indices.size());
+//
+//					//直前にインデックスが増えているのでー５
+//					vertex.pos = vertices[vertices.size() - 5].pos;
+//					vertex.normal = vertices[vertices.size() - 5].normal;
+//					vertex.uv = vertices[vertices.size() - 5].uv;
+//					vertices.emplace_back(vertex);
+//					indices.emplace_back(indices.size());
+//				}
+//			}
+//
+//
+//		}
+//		if (key == "vt")
+//		{
+//			XMFLOAT2 texcoord{};
+//			line_stream >> texcoord.x;
+//			line_stream >> texcoord.y;
+//			texcoord.y = 1.0f - texcoord.y;
+//
+//			texcoords.emplace_back(texcoord);
+//
+//		}
+//		if (key == "vn")
+//		{
+//			XMFLOAT3 normal{};
+//			line_stream >> normal.x;
+//			line_stream >> normal.y;
+//			line_stream >> normal.z;
+//
+//
+//			normals.emplace_back(normal);
+//
+//		}
+//		if (key == "usemtl")
+//		{
+//			getline(line_stream, key, ' ');
+//			for (int a = 0; a < materialsDate.size(); a++)
+//			{
+//				if (key == materialsDate[a].name)
+//				{
+//					material = materialsDate[a];
+//				}
+//			}
+//			usematerials.emplace_back(material);
+//			usematerials[materialNum].indicesCount = 0;
+//			materialNum += 1;
+//		}
+//		if (key == "mtllib")
+//		{
+//			string filename;
+//			line_stream >> filename;
+//			LoadMaterial(directorypath, filename);
+//		}
+//	}
+//
+//
+//	HRESULT result = S_FALSE;
+//
+//
+//	UINT sizeVB = static_cast<UINT>(sizeof(Vertex)*vertices.size());
+//	UINT sizeIB = static_cast<UINT>(sizeof(unsigned short)*indices.size());
+//
+//
+//	// 頂点バッファ生成
+//
+//
+//	result = dev->CreateCommittedResource(
+//		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+//		D3D12_HEAP_FLAG_NONE,
+//		&CD3DX12_RESOURCE_DESC::Buffer(sizeVB),
+//		D3D12_RESOURCE_STATE_GENERIC_READ,
+//		nullptr,
+//		IID_PPV_ARGS(&vertBuff));
+//	if (FAILED(result)) {
+//		assert(0);
+//		return;
+//	}
+//
+//	// インデックスバッファ生成
+//	result = dev->CreateCommittedResource(
+//		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+//		D3D12_HEAP_FLAG_NONE,
+//		&CD3DX12_RESOURCE_DESC::Buffer(sizeIB),
+//		D3D12_RESOURCE_STATE_GENERIC_READ,
+//		nullptr,
+//		IID_PPV_ARGS(&indexBuff));
+//	if (FAILED(result)) {
+//		assert(0);
+//		return;
+//	}
+//
+//	// 頂点バッファへのデータ転送
+//	vertMap = nullptr;
+//	result = vertBuff->Map(0, nullptr, (void**)&vertMap);
+//	if (SUCCEEDED(result)) {
+//		//	memcpy(vertMap, vertices, sizeof(vertices));
+//		std::copy(vertices.begin(), vertices.end(), vertMap);
+//		vertBuff->Unmap(0, nullptr);
+//	}
+//
+//	// インデックスバッファへのデータ転送
+//	indexMap = nullptr;
+//	result = indexBuff->Map(0, nullptr, (void**)&indexMap);
+//	if (SUCCEEDED(result)) {
+//
+//		// 全インデックスに対して
+//		//for (int i = 0; i < _countof(indices); i++)
+//		//{
+//		//	indexMap[i] = indices[i];	// インデックスをコピー
+//		//}
+//		std::copy(indices.begin(), indices.end(), indexMap);
+//
+//		indexBuff->Unmap(0, nullptr);
+//	}
+//
+//	// 頂点バッファビューの作成
+//	vbView.BufferLocation = vertBuff->GetGPUVirtualAddress();
+//	vbView.SizeInBytes = sizeVB;
+//	vbView.StrideInBytes = sizeof(vertices[0]);
+//
+//	// インデックスバッファビューの作成
+//	ibView.BufferLocation = indexBuff->GetGPUVirtualAddress();
+//	ibView.Format = DXGI_FORMAT_R16_UINT;
+//	ibView.SizeInBytes = sizeIB;
+//
+//	matWorld.r[0].m128_f32[0] = 2.0f / Camera::window_width;
+//	matWorld.r[1].m128_f32[1] = -2.0f / Camera::window_height;
+//	matWorld.r[3].m128_f32[0] = -1.0f;
+//	matWorld.r[3].m128_f32[1] = 1.0f;
+//
+//	matScale = XMMatrixScaling(scale.x, scale.y, scale.z);
+//	matRot = XMMatrixIdentity();
+//	matRot *= XMMatrixRotationX(rotation.x);
+//	matRot *= XMMatrixRotationY(rotation.y);
+//	matRot *= XMMatrixRotationZ(rotation.z);
+//	matTrans = XMMatrixTranslation(position.x, position.y, position.z);
+//	matWorld = XMMatrixIdentity();
+//	matWorld.r[0].m128_f32[0] = 2.0f / Camera::window_width;
+//	matWorld.r[1].m128_f32[1] = -2.0f / Camera::window_height;
+//	matWorld.r[3].m128_f32[0] = -1.0f;
+//	matWorld.r[3].m128_f32[1] = 1.0f;
+//	matWorld *= matScale;
+//	matWorld *= matRot;
+//	matWorld *= matTrans;
+//
+//
+//	result = dev->CreateCommittedResource(
+//		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+//		D3D12_HEAP_FLAG_NONE,
+//		&CD3DX12_RESOURCE_DESC::Buffer((sizeof(ConstBufferDataB0) + 0xff)&~0xff),
+//		D3D12_RESOURCE_STATE_GENERIC_READ,
+//		nullptr,
+//		IID_PPV_ARGS(&constBuffB0)
+//	);
+//	constBuffB1.resize(usematerials.size());
+//	for (int a = 0; a < usematerials.size(); a++)
+//	{
+//		result = dev->CreateCommittedResource(
+//			&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+//			D3D12_HEAP_FLAG_NONE,
+//			&CD3DX12_RESOURCE_DESC::Buffer(((sizeof(ConstBufferDataB1) + 0xff)&~0xff)),
+//			D3D12_RESOURCE_STATE_GENERIC_READ,
+//			nullptr,
+//			IID_PPV_ARGS(&constBuffB1[a])
+//		);
+//
+//	}
+//
+//	//定数バッファビュー生成
+//
+//	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc0 = {};
+//	cbvDesc0.BufferLocation = constBuffB0->GetGPUVirtualAddress();
+//	cbvDesc0.SizeInBytes = constBuffB0->GetDesc().Width;
+//	dev->CreateConstantBufferView(&cbvDesc0, CcbvHandle0);
+//
+//	constMap0 = nullptr;
+//	result = constBuffB0->Map(0, nullptr, (void**)&constMap0);
+//
+//	constMap0->world = matWorld;
+//	constMap0->viewproj = Camera::ReturnCameraState()->matView * Camera::ReturnCameraState()->matProjection;
+//
+//	constBuffB0->Unmap(0, nullptr);
+//
+//	CreateMaterialHeap();
+//
+//	materialMaps.clear();
+//	materialMaps.resize(usematerials.size());
+//	texbuffs.clear();
+//	texbuffs.resize(usematerials.size());
+//	for (int a = 0; a < usematerials.size() * 2; a += 2)
+//	{
+//		D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc1 = {};
+//		cbvDesc1.BufferLocation = constBuffB1[a / 2]->GetGPUVirtualAddress();
+//		cbvDesc1.SizeInBytes = constBuffB1[a / 2]->GetDesc().Width;
+//		dev->CreateConstantBufferView(&cbvDesc1, CmatrialHandles[a]);
+//
+//		materialMaps[a / 2] = nullptr;
+//		result = constBuffB1[a / 2]->Map(0, nullptr, (void**)&materialMaps[a / 2]);
+//		materialMaps[a / 2]->ambient = usematerials[a / 2].ambient;
+//		materialMaps[a / 2]->diffuse = usematerials[a / 2].diffuse;
+//		materialMaps[a / 2]->specular = usematerials[a / 2].specular;
+//		materialMaps[a / 2]->alpha = usematerials[a / 2].alpha;
+//
+//		constBuffB1[a / 2]->Unmap(0, nullptr);
+//		///////////////////////
+//		result = S_FALSE;
+//		string filepath = directorypath + usematerials[a / 2].textureFilename;
+//		wchar_t wfilepath[128];
+//		if (usematerials[a / 2].textureFilename == "whitetex.png")
+//		{
+//			filepath = Texdirectorypath + usematerials[a / 2].textureFilename;
+//			int iBufferSize = MultiByteToWideChar(CP_ACP, 0, filepath.c_str(), -1, wfilepath, _countof(wfilepath));
+//			Texdirectorypath + usematerials[a / 2].textureFilename;
+//
+//		}
+//		else
+//		{
+//			filepath = directorypath + usematerials[a / 2].textureFilename;
+//			int iBufferSize = MultiByteToWideChar(CP_ACP, 0, filepath.c_str(), -1, wfilepath, _countof(wfilepath));
+//			directorypath + usematerials[a / 2].textureFilename;
+//		}
+//
+//		// WICテクスチャのロード
+//		TexMetadata metadata{};
+//		ScratchImage scratchImg{};
+//
+//		result = LoadFromWICFile(
+//			wfilepath, WIC_FLAGS_NONE,
+//			&metadata, scratchImg);
+//
+//		const Image* img = scratchImg.GetImage(0, 0, 0); // 生データ抽出
+//
+//		// リソース設定
+//		CD3DX12_RESOURCE_DESC texresDesc = CD3DX12_RESOURCE_DESC::Tex2D(
+//			metadata.format,
+//			metadata.width,
+//			(UINT)metadata.height,
+//			(UINT16)metadata.arraySize,
+//			(UINT16)metadata.mipLevels
+//		);
+//
+//		// テクスチャ用バッファの生成
+//		result = dev->CreateCommittedResource(
+//			&CD3DX12_HEAP_PROPERTIES(D3D12_CPU_PAGE_PROPERTY_WRITE_BACK, D3D12_MEMORY_POOL_L0),
+//			D3D12_HEAP_FLAG_NONE,
+//			&texresDesc,
+//			D3D12_RESOURCE_STATE_GENERIC_READ, // テクスチャ用指定
+//			nullptr,
+//			IID_PPV_ARGS(&texbuffs[a / 2]));
+//
+//		// テクスチャバッファにデータ転送
+//		result = texbuffs[a / 2]->WriteToSubresource(
+//			0,
+//			nullptr, // 全領域へコピー
+//			img->pixels,    // 元データアドレス
+//			(UINT)img->rowPitch,  // 1ラインサイズ
+//			(UINT)img->slicePitch // 1枚サイズ
+//		);
+//
+//		// シェーダリソースビュー作成
+//
+//		D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{}; // 設定構造体
+//		D3D12_RESOURCE_DESC resDesc = texbuffs[a / 2]->GetDesc();
+//
+//		srvDesc.Format = resDesc.Format;
+//		srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+//		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;//2Dテクスチャ
+//		srvDesc.Texture2D.MipLevels = 1;
+//
+//		dev->CreateShaderResourceView(texbuffs[a / 2].Get(), //ビューと関連付けるバッファ
+//			&srvDesc, //テクスチャ設定情報
+//			CmatrialHandles[a + 1]
+//		);
+//	}
+//
+//
+//}
 
 void ObjFile::LoadMaterial(const std::string & directorypath, const std::string & filename)
 {
@@ -797,11 +833,11 @@ void ObjFile::LoadMaterial(const std::string & directorypath, const std::string 
 				if (material.name != "whitetex.png")
 				{
 					//怪しい、要確認
-				/*	if (material.ambient.x == 0 && material.ambient.y == 0 && material.ambient.z == 0)
+					/*if (material.ambient.x == 0 && material.ambient.y == 0 && material.ambient.z == 0)
 					{
-						material.ambient.x = 1;
-						material.ambient.y = 1;
-						material.ambient.z = 1;
+						material.ambient.x = 0.1f;
+						material.ambient.y = 0.1f;
+						material.ambient.z = 0.1f;
 					}*/
 					if (material.diffuse.x == 0 && material.diffuse.y == 0 && material.diffuse.z == 0)
 					{
@@ -918,4 +954,31 @@ bool ObjFile::LoadTexture(const std::string&directorypath, const std::string& fi
 	//);
 
 	return true;
+}
+
+void ObjFile::SetObjData(const std::string name)
+{
+
+	std::copy(ObjDate::ObjDataList[name].CmatrialHandles.begin(),
+		ObjDate::ObjDataList[name].CmatrialHandles.end(), std::back_inserter(CmatrialHandles));
+	constBuffB1= ObjDate::ObjDataList[name].constBuffB1;
+	std::copy(ObjDate::ObjDataList[name].GmaterialHandles.begin(),
+		ObjDate::ObjDataList[name].GmaterialHandles.end(), std::back_inserter(GmaterialHandles));
+	ibView = ObjDate::ObjDataList[name].ibView;
+	indexBuff = ObjDate::ObjDataList[name].indexBuff;
+	indexMap = ObjDate::ObjDataList[name].indexMap;
+	indices = ObjDate::ObjDataList[name].indices;
+	materialDescHeap = ObjDate::ObjDataList[name].materialDescHeap;
+	std::copy(ObjDate::ObjDataList[name].materialMaps.begin(), 
+		ObjDate::ObjDataList[name].materialMaps.end(), std::back_inserter(materialMaps));
+	//ObjDate::ObjDataList[name].materialsDate;
+	std::copy(ObjDate::ObjDataList[name].texbuffs.begin(),
+		ObjDate::ObjDataList[name].texbuffs.end(), std::back_inserter(texbuffs));
+	std::copy(ObjDate::ObjDataList[name].usematerials.begin(),
+		ObjDate::ObjDataList[name].usematerials.end(), std::back_inserter(usematerials));
+	vbView = ObjDate::ObjDataList[name].vbView;
+	vertBuff = ObjDate::ObjDataList[name].vertBuff;
+	std::copy(ObjDate::ObjDataList[name].vertices.begin(),
+		ObjDate::ObjDataList[name].vertices.end(), std::back_inserter(vertices));
+	//std::copy(vertMap, ObjDate::ObjDataList[name].vertMap);
 }
