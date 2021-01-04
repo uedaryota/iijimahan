@@ -6,6 +6,7 @@
 #include"Stage2D.h"
 #include"Battery.h"
 #include"Collision.h"
+#include"ObjDate.h"
 ID3D12GraphicsCommandList* DirectXDevice::cmdList = nullptr;;
 ID3D12Device* DirectXDevice::dev = nullptr;
 IDXGIFactory6*  DirectXDevice::dxgifactory;
@@ -46,6 +47,7 @@ Texture* tex = new Texture();
 Battery* bat = new Battery();
 Collision* collider = new Collision();
 Spawn* spawn = new Spawn();
+ObjDate* objdata;
 LRESULT WindowProc1(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
 
@@ -67,6 +69,15 @@ void DirectXDevice::Initialize()
 	CreateDsv();
 	SetView_Scissor();
 	SetFence();
+	objdata = new ObjDate();
+	//objdata.LoadObj("Bear");
+	objdata->LoadObj("ball");
+	objdata->LoadObj("Rhino");
+	objdata->LoadObj("UFO");
+	objdata->LoadObj("Gun_All");
+	objdata->LoadObj("triangle_mat");
+	//objdata.LoadObj("triangle");
+
 	block->Initialize();
 	tower->Initialize(DirectXDevice::dev);
 	

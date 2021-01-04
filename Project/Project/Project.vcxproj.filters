@@ -109,6 +109,7 @@
     <ClCompile Include="Spawn.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
+    <ClCompile Include="ObjDate.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Block.h">
@@ -185,6 +186,7 @@
     <ClInclude Include="Spawn.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
+    <ClInclude Include="ObjDate.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="BasicShaderHeader.hlsli">
