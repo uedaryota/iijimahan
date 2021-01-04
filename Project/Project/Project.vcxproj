@@ -166,6 +166,7 @@
     <ClCompile Include="Point.cpp" />
     <ClCompile Include="Poly.cpp" />
     <ClCompile Include="Sound.cpp" />
+    <ClCompile Include="Spawn.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Stage.cpp" />
     <ClCompile Include="Stage2D.cpp" />
@@ -272,6 +273,7 @@
     <ClInclude Include="Point.h" />
     <ClInclude Include="Poly.h" />
     <ClInclude Include="Sound.h" />
+    <ClInclude Include="Spawn.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="Stage.h" />
     <ClInclude Include="Stage2D.h" />

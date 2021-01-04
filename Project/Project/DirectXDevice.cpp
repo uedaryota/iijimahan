@@ -45,6 +45,7 @@ Input* input = new Input();
 Texture* tex = new Texture();
 Battery* bat = new Battery();
 Collision* collider = new Collision();
+Spawn* spawn = new Spawn();
 LRESULT WindowProc1(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
 
@@ -74,6 +75,9 @@ void DirectXDevice::Initialize()
 	enemy->Initialize();
 	sound->Initialize();
 	stage->Initialize();
+	spawn->Initialize(DirectXDevice::dev);
+	spawn->SetSpawn(5, 10);
+	manager->Add2();
 	manager->Add(enemy);
 	//manager->Add(enemy2);
 	enemy->state = move1;
@@ -143,6 +147,7 @@ void DirectXDevice::Update()
 	}
 	Camera::Update();
 	tower->Update();
+	spawn->Update();
 //	sound->Update();
 	
 	
@@ -158,6 +163,7 @@ void DirectXDevice::Update()
 	bat->Update();
 	
 	tower->Draw(DirectXDevice::cmdList);
+	spawn->Draw(DirectXDevice::cmdList);
 	manager->Draw(DirectXDevice::cmdList);
 	stage->Draw();
 	bat->Draw();

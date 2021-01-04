@@ -23,6 +23,7 @@
 #pragma comment(lib,"d3dcompiler.lib")
 #include"Enemy.h"
 #include"EnemyManeger.h"
+#include"Spawn.h"
 
 using namespace std;
 using namespace DirectX;
