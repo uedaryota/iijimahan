@@ -18,6 +18,7 @@ public:
 	void Shot();
 	ObjFile* obj=nullptr;
 	CircleCollision* col = nullptr;
+	CircleCollision* clickcol = nullptr;
 	std::vector<Bullet*>bulletList;
 	XMFLOAT3 mainPos{};
 	XMFLOAT3 mainScale{};

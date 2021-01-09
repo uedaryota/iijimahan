@@ -54,7 +54,7 @@ bool Collision::MouseToCircle(Input* input, CircleCollision* circle)
 	//m = { m.x / len, m.y / len, m.z / len };
 	float b, c;
 	b = m.x*dir.x + m.y*dir.y + m.z*dir.z;
-	c =(m.x*m.x + m.y*m.y + m.z*m.z) - (circle->length*circle->length);
+	c =(m.x*m.x + m.y*m.y + m.z*m.z) - (circle->scale*circle->scale);
 
 	if (c > 0 && b > 0)
 	{
@@ -73,7 +73,7 @@ bool Collision::CircleToCircle(CircleCollision a, CircleCollision b)
 {
 	XMFLOAT3 v = { fabs(a.position.x - b.position.x), fabs(a.position.y - b.position.y), fabs(a.position.z - b.position.z) };
 	float len = sqrtf(v.x*v.x + v.y*v.y + v.z*v.z);
-	if (len < a.length + b.length)
+	if (len < a.scale + b.scale)
 	{
 		return true;
 	}

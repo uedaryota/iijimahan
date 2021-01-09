@@ -37,7 +37,7 @@ void Bullet::Initialize()
 
 	obj->LoadObj("ball");
 	col = new CircleCollision();
-	col->length = 10;
+	col->scale = 10;
 }
 
 void Bullet::SetVelocity(XMFLOAT3 velocity)

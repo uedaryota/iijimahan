@@ -31,6 +31,12 @@
     <FxCompile Include="TexVertexShader.hlsl">
       <Filter>シェーダファイル</Filter>
     </FxCompile>
+    <FxCompile Include="ColliderPS.hlsl">
+      <Filter>シェーダファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="ColliderVS.hlsl">
+      <Filter>シェーダファイル</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Block.cpp">
@@ -110,6 +116,7 @@
       <Filter>ソースファイル</Filter>
     </ClCompile>
     <ClCompile Include="ObjDate.cpp" />
+    <ClCompile Include="DefenderWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Block.h">
@@ -187,6 +194,7 @@
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
     <ClInclude Include="ObjDate.h" />
+    <ClInclude Include="DefenderWindow.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="BasicShaderHeader.hlsli">
@@ -202,6 +210,9 @@
       <Filter>シェーダファイル</Filter>
     </None>
     <None Include="TexShaderHeader.hlsli">
+      <Filter>シェーダファイル</Filter>
+    </None>
+    <None Include="Collider.hlsli">
       <Filter>シェーダファイル</Filter>
     </None>
   </ItemGroup>

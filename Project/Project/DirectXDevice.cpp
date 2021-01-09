@@ -503,6 +503,6 @@ void DirectXDevice::CollisionUpdate()
 	if (input->PushMouseLeft())
 	{
 		//int a = 0;
-		bool a = collider->MouseToCircle(input, bat->col);
+		bool a = collider->MouseToCircle(input, bat->clickcol);
 	}
 }
