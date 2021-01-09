@@ -6,6 +6,8 @@
 #include <DirectXMath.h>
 #include <d3dx12.h>
 #include "Light.h"
+#include<vector>
+using namespace std;
 using namespace DirectX;
 class ObjFile
 {
@@ -50,8 +52,9 @@ public: // サブクラス
 		XMFLOAT3 diffuse;
 		XMFLOAT3 specular;
 		float alpha;
+		int indicesCount;
 		std::string textureFilename;
-
+		
 		Material()
 		{
 			ambient = { 0.3f,0.3f,0.3f };
@@ -78,7 +81,7 @@ public:
 	void Draw(ID3D12GraphicsCommandList * cmdList);
 	void CreatePipeline();
 	void CreateMainHeap();
-	void CreateSubHeap();
+	void CreateMaterialHeap();
 	void SetPos(XMFLOAT3 pos);
 	void SetRotate(XMFLOAT3 rotate);
 	void SetScale(XMFLOAT3 scale);
@@ -86,7 +89,7 @@ public:
 	void LoadObj(const std::string name);
 	void LoadMaterial(const std::string&directorypath, const std::string& filename);
 	bool LoadTexture(const std::string&directorypath, const std::string& filename);
-
+	void SetObjData(const std::string name);
 	XMFLOAT3 position = { 0,0,0 };
 	XMFLOAT3 rotation = { 0,0,0 };
 	XMFLOAT3 scale = { 10.0f,10.0f,10.0f };
@@ -95,51 +98,59 @@ private:
 
 	ID3D12Device* dev;
 
-	ID3D12PipelineState* pipelinestate = nullptr;
-	ID3D12RootSignature* rootsignature = nullptr;
+	ID3D12PipelineState* pipelinestate;
+	ID3D12RootSignature* rootsignature;
 	ID3D12DescriptorHeap* mainDescHeap;
 	ID3D12DescriptorHeap* subDescHeap;
 	std::vector<Vertex>vertices;
 	std::vector<unsigned short>indices;
 
 	D3D12_VERTEX_BUFFER_VIEW vbView{};
+	ID3D12DescriptorHeap* materialDescHeap;
+
+//	ID3D12DescriptorHeap* subDescHeap;
+	std::vector<Vertex>vertices;
+	std::vector<unsigned short>indices;
+	Vertex* vertMap;
+	unsigned short* indexMap;
+	D3D12_VERTEX_BUFFER_VIEW vbView {};
 
 	D3D12_INDEX_BUFFER_VIEW ibView{};
 	ComPtr<ID3D12Resource> vertBuff;
 	// インデックスバッファ
 	ComPtr<ID3D12Resource> indexBuff;
 
-	ComPtr<ID3D12Resource> texbuff;
+	vector<ComPtr<ID3D12Resource>> texbuffs;
 
 
 	XMMATRIX matWorld = XMMatrixIdentity();
-	XMMATRIX matView;
 
-	XMMATRIX matProjection;
 	XMMATRIX matScale;
 	XMMATRIX matRot;
 	XMMATRIX matTrans;
 	//ワールド行列マップ
 	ConstBufferDataB0* constMap0;
-	ConstBufferDataB0* subconstMap0;
+	
 
 	//Objデータ定数マップ
-	ConstBufferDataB1* constMap1;
+	vector<ConstBufferDataB1*> materialMaps;
 
 	ComPtr<ID3D12Resource> constBuffB0;
-	ComPtr<ID3D12Resource> subconstBuffB0;
+	
 	// 定数バッファ
-	ComPtr<ID3D12Resource> constBuffB1; // 定数バッファ
+	vector<ComPtr<ID3D12Resource>> constBuffB1; // 定数バッファ
 
 	static Material material;
+	vector<Material> materialsDate;
+	vector<Material> usematerials;
 
 	D3D12_CPU_DESCRIPTOR_HANDLE CsrvHandle;
 	D3D12_CPU_DESCRIPTOR_HANDLE CcbvHandle0;
-	D3D12_CPU_DESCRIPTOR_HANDLE CcbvHandle1;
+	vector<D3D12_CPU_DESCRIPTOR_HANDLE> CmatrialHandles;
 
 	D3D12_GPU_DESCRIPTOR_HANDLE GsrvHandle;
 	D3D12_GPU_DESCRIPTOR_HANDLE GcbvHandle0;
-	D3D12_GPU_DESCRIPTOR_HANDLE GcbvHandle1;
+	vector<D3D12_GPU_DESCRIPTOR_HANDLE> GmaterialHandles;
 
 	//ライト
 	static Light* light;

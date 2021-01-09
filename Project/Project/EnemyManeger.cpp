@@ -14,6 +14,26 @@ void EnemyManeger::Add(Enemy* enemy)
 	boxcount++;
 }
 
+void EnemyManeger::Add2()
+{
+	if (spawn->GetAmount() < 0)
+	{
+		return;
+	}
+	else
+	{
+		for (int i = 0; i > spawn->GetAmount();)
+		{
+			enemybox[boxcount] = spawn->enemyamount();
+			enemybox[boxcount]->Initialize();
+			enemybox[boxcount]->SetScale(XMFLOAT3(2, 2, 2));
+			enemybox[boxcount]->SetPos(XMFLOAT3(60, 60, 60));
+			boxcount++;
+		}
+	}
+	
+}
+
 void EnemyManeger::Create()
 {
 	for (int i = 0; i < boxcount; i++)
@@ -26,6 +46,7 @@ void EnemyManeger::Create()
 
 void EnemyManeger::Destory()
 {
+	
 }
 
 void EnemyManeger::Draw(ID3D12GraphicsCommandList * cmdList)
