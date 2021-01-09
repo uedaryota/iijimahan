@@ -18,7 +18,7 @@ public:
 	XMFLOAT3 GetPosition();
 	void SetPoisition(XMFLOAT3 position);
 	void Stop();
-	void SetSpawn(float amount, float time);
+	void SetSpawn(int amount, int time);
 	Enemy* enemyamount();
 	int GetAmount();
 private:
@@ -27,8 +27,10 @@ private:
 	ObjFile* obj = new ObjFile();
 	Texture* tex = new Texture();
 	int amount;
+	int* backamount;
 	float time = 0;
 	float timer = 0;
 	bool stop = false;
+	int Cnt = 0;
 	Enemy* enemy[100];
 };

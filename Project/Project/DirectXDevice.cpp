@@ -48,6 +48,11 @@ Battery* bat = new Battery();
 Collision* collider = new Collision();
 Spawn* spawn = new Spawn();
 ObjDate* objdata;
+
+float timer = 0;
+float spawntime = 10;
+int EneMax = 3;
+int EneNow = 0;
 LRESULT WindowProc1(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
 
@@ -86,19 +91,20 @@ void DirectXDevice::Initialize()
 	enemy->Initialize();
 	sound->Initialize();
 	stage->Initialize();
-	/*spawn->Initialize(DirectXDevice::dev);
-	spawn->SetSpawn(5, 10);*/
+	spawn->Initialize(DirectXDevice::dev);
+	//Set = &SetAd;
+	spawn->SetSpawn(10, 10);
 	manager->Add2();
 	manager->Add(enemy);
 	//manager->Add(enemy2);
 	enemy->state = move1;
-
+	timer = 0;
 	tex->Initialize();
 	back->Initialize();
 	back->ResetTex(L"img/Blueback.png");
 	back->SetScale(XMFLOAT3(300, 300, 300));
 	back->SetPos(XMFLOAT3(0, 0, 500));
-	enemy->SetTower(tower);
+	manager->SetTowerEnemy(tower);
 	bat->Initialize();
 	//enemy->SetTarget(&tower->GetPosition);
 	enemy2->state = move1;
@@ -158,8 +164,20 @@ void DirectXDevice::Update()
 	}
 	Camera::Update();
 	tower->Update();
-//	spawn->Update();
+	spawn->Update();
 //	sound->Update();
+	if (EneNow < EneMax)
+	{
+		timer++;
+		if (timer / 60 > spawntime)
+		{
+			manager->Add2();
+			manager->ReAncerSet(XMFLOAT3{ -100,1,-100 }, XMFLOAT3{ 500,500,500 });
+			manager->SetTowerEnemy(tower);
+			timer = 0;
+			EneNow++;
+		}
+	}
 	
 	
 	enemy->SetScale(XMFLOAT3{ 10,10,10 });
@@ -499,10 +517,5 @@ void DirectXDevice::CollisionUpdate()
 
 			}
 		}
-	}
-	if (input->PushMouseLeft())
-	{
-		//int a = 0;
-		bool a = collider->MouseToCircle(input, bat->clickcol);
 	}
 }
