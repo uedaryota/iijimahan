@@ -43,6 +43,8 @@ public:
 	bool Serch();
 	State Bank;
 
+	void SetTowerEnemy(Tower* tow);
+
 private:
 	Enemy* enemybox[999];
 	int boxcount = 0;

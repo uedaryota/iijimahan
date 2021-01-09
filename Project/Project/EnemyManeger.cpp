@@ -26,6 +26,7 @@ void EnemyManeger::Add2()
 			enemybox[boxcount]->Initialize();
 			enemybox[boxcount]->SetScale(XMFLOAT3(2, 2, 2));
 			enemybox[boxcount]->SetPos(XMFLOAT3(60, 60, 60));
+			enemybox[boxcount]->ActionRiset();
 			boxcount++;
 			Cnt++;
 	}
@@ -61,7 +62,7 @@ void EnemyManeger::Update()
 	{
 		enemybox[i]->Update();
 	}
-	Serch();
+	//Serch();
 }
 
 ///<summary>
@@ -106,7 +107,7 @@ void EnemyManeger::ReAncerSet(XMFLOAT3 anc1, XMFLOAT3 anc2)
 {
 	for (int i = 0; i < boxcount; i++)
 	{
-		enemybox[i]->ActionRiset();
+		
 		enemybox[i]->SetAncer1(anc1);
 		enemybox[i]->SetAncer2(anc2);
 	}
@@ -137,4 +138,12 @@ bool EnemyManeger::Serch()
 		}
 	}
 	return false;
+}
+
+void EnemyManeger::SetTowerEnemy(Tower* tow)
+{
+	for (int i = 0; i < boxcount; i++)
+	{
+		enemybox[i]->SetTower(tow);
+	}
 }
