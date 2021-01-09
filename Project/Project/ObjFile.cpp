@@ -6,17 +6,21 @@
 #include<string>
 #include<vector>
 #include"DirectXDevice.h"
+
+ObjFile::Material ObjFile::material;
+Light* ObjFile::light = nullptr;
+
 ObjFile::ObjFile()
 {
-	
+
 }
 
 ObjFile::~ObjFile()
 {
-	
+
 	dev->Release();
-		
-	
+
+
 
 	if (pipelinestate != nullptr);
 	{
@@ -35,7 +39,7 @@ ObjFile::~ObjFile()
 
 	if (subDescHeap != nullptr);
 	{
-	//	subDescHeap->Release();
+		//	subDescHeap->Release();
 	}
 
 	//if (constMap0 != nullptr);
@@ -63,7 +67,7 @@ ObjFile::~ObjFile()
 
 void ObjFile::Initialize()
 {
-	
+
 	this->dev = DirectXDevice::dev;
 	CreatePipeline();
 	CreateMainHeap();
@@ -78,7 +82,6 @@ void ObjFile::Update()
 		XMLoadFloat3(&Camera::MainCameraPos()), XMLoadFloat3(&Camera::Target()), XMLoadFloat3(&Camera::Up())
 	);
 
-
 	matScale = XMMatrixScaling(scale.x, scale.y, scale.z);
 	matRot = XMMatrixIdentity();
 	matRot *= XMMatrixRotationX(rotation.x);
@@ -92,7 +95,7 @@ void ObjFile::Update()
 
 	constMap0->world = matWorld;
 	constMap0->viewproj = matView * matProjection;
-	
+
 	constBuffB0->Unmap(0, nullptr);
 
 	constMap1 = nullptr;
@@ -102,7 +105,7 @@ void ObjFile::Update()
 	constMap1->specular = material.specular;
 	constMap1->alpha = material.alpha;
 
-	
+
 
 	constBuffB1->Unmap(0, nullptr);
 }
@@ -113,8 +116,9 @@ void ObjFile::Draw(ID3D12GraphicsCommandList * cmdList)
 
 	constMap0->world = matWorld;
 	constMap0->viewproj = Camera::ReturnCameraState()->matView *  Camera::ReturnCameraState()->matProjection;
-	
+
 	constBuffB0->Unmap(0, nullptr);
+
 
 
 	D3D12_GPU_DESCRIPTOR_HANDLE handle = mainDescHeap->GetGPUDescriptorHandleForHeapStart();
@@ -133,8 +137,10 @@ void ObjFile::Draw(ID3D12GraphicsCommandList * cmdList)
 	cmdList->SetGraphicsRootDescriptorTable(1, GcbvHandle0);
 	cmdList->SetGraphicsRootDescriptorTable(2, GcbvHandle1);
 
-	cmdList->DrawInstanced((UINT)vertices.size(), 1, 0, 0);
+	//ライトの描画
+	light->Draw(cmdList, 3);
 
+	cmdList->DrawInstanced((UINT)vertices.size(), 1, 0, 0);
 
 }
 
@@ -246,14 +252,14 @@ void ObjFile::CreatePipeline()
 
 	gpipeline.DepthStencilState.DepthEnable = true;
 	gpipeline.DepthStencilState.StencilEnable = false;
-	
+
 	gpipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
 	gpipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
 
 	gpipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;
 
 
-	
+
 	D3D12_ROOT_SIGNATURE_DESC rootSigunatureDesc = {};
 	rootSigunatureDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 	///////////////////////////////
@@ -277,8 +283,13 @@ void ObjFile::CreatePipeline()
 	descTblRange[2].BaseShaderRegister = 1;//b1に送る
 	descTblRange[2].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
+	//descTblRange[3].NumDescriptors = 1;
+	//descTblRange[3].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;//定数タイプ
+	//descTblRange[3].BaseShaderRegister = 2;//b2に送る
+	//descTblRange[3].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
-	D3D12_ROOT_PARAMETER rootparam[3] = {};
+
+	D3D12_ROOT_PARAMETER rootparam[4] = {};
 
 	rootparam[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
 	rootparam[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;//ALL
@@ -286,7 +297,7 @@ void ObjFile::CreatePipeline()
 	rootparam[0].DescriptorTable.NumDescriptorRanges = 1;
 
 	rootparam[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-	rootparam[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;//ALL
+	rootparam[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//ALL
 	rootparam[1].DescriptorTable.pDescriptorRanges = &descTblRange[1];
 	rootparam[1].DescriptorTable.NumDescriptorRanges = 1;
 
@@ -295,9 +306,15 @@ void ObjFile::CreatePipeline()
 	rootparam[2].DescriptorTable.pDescriptorRanges = &descTblRange[2];
 	rootparam[2].DescriptorTable.NumDescriptorRanges = 1;
 
+	rootparam[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	rootparam[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;//ALL
+	rootparam[3].Constants.ShaderRegister = 2;
+	rootparam[3].Constants.RegisterSpace = 0;
+	//rootparam[3].DescriptorTable.pDescriptorRanges = &descTblRange[3];
+	//rootparam[3].DescriptorTable.NumDescriptorRanges = 1;
 
 	rootSigunatureDesc.pParameters = rootparam;
-	rootSigunatureDesc.NumParameters = 3;
+	rootSigunatureDesc.NumParameters = _countof(rootparam);
 
 	D3D12_STATIC_SAMPLER_DESC samplerDesc = {};
 
@@ -391,6 +408,7 @@ void ObjFile::SetPos(XMFLOAT3 pos)
 
 void ObjFile::SetRotate(XMFLOAT3 rotate)
 {
+	rotation = rotate;
 }
 
 void ObjFile::SetScale(XMFLOAT3 scale)
@@ -452,7 +470,7 @@ void ObjFile::LoadObj(std::string name)
 				vertex.uv = texcoords[indexTexcoord - 1];
 				vertices.emplace_back(vertex);
 				indices.emplace_back(indices.size());
-			
+
 				if (count == 4)
 				{
 					vertex.pos = vertices[vertices.size() - 2].pos;
@@ -511,7 +529,7 @@ void ObjFile::LoadObj(std::string name)
 
 	// 頂点バッファ生成
 
-	
+
 	result = dev->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
 		D3D12_HEAP_FLAG_NONE,
@@ -707,7 +725,7 @@ void ObjFile::LoadMaterial(const std::string & directorypath, const std::string 
 
 bool ObjFile::LoadTexture(const std::string&directorypath, const std::string& filename)
 {
-	
+
 	HRESULT result = S_FALSE;
 
 	string filepath = directorypath + filename;
@@ -762,7 +780,7 @@ bool ObjFile::LoadTexture(const std::string&directorypath, const std::string& fi
 	}
 
 	// シェーダリソースビュー作成
-	
+
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{}; // 設定構造体
 	D3D12_RESOURCE_DESC resDesc = texbuff->GetDesc();
 

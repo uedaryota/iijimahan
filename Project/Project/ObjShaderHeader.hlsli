@@ -9,10 +9,10 @@ cbuffer cbuff0 : register(b0)
 };
 cbuffer cbuff1 : register(b1)
 {
-	float3 m_ambient:packoffset(c0); // アンビエント係数
-	float3 m_diffuse:packoffset(c1); // ディフューズ係数
-	float3 m_specular:packoffset(c2); // スペキュラー係数
-	float m_alpha : packoffset(c2.w); // アルファ
+	float3 m_ambient:packoffset(c0);
+	float3 m_diffuse:packoffset(c1);
+	float3 m_specular:packoffset(c2);
+	float m_alpha : packoffset(c2.w);
 };
 
 cbuffer cbuff2 : register(b2)
@@ -28,6 +28,6 @@ struct VSOutput
 	float3 normal :NORMAL; // 法線ベクトル
 	float2 uv  :TEXCOORD; // uv値
 
-	//float4 color : COLOR; // 色
+
 	float4 worldpos : POSITION;// ワールド座標
 };

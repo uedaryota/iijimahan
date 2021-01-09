@@ -41,7 +41,7 @@ public: // サブクラス
 	{
 		XMMATRIX world;//ワールド行列
 		XMMATRIX viewproj;//ビュープロジェクション行列
-		XMFLOAT3 cameraPos;//追加//カメラ座標
+		XMFLOAT3 cameraPos;//カメラ座標
 	};
 	struct Material
 	{
@@ -95,14 +95,14 @@ private:
 
 	ID3D12Device* dev;
 
-	ComPtr<ID3D12PipelineState> pipelinestate;
-	ComPtr<ID3D12RootSignature> rootsignature;
+	ID3D12PipelineState* pipelinestate = nullptr;
+	ID3D12RootSignature* rootsignature = nullptr;
 	ID3D12DescriptorHeap* mainDescHeap;
 	ID3D12DescriptorHeap* subDescHeap;
 	std::vector<Vertex>vertices;
-	 std::vector<unsigned short>indices;
+	std::vector<unsigned short>indices;
 
-	D3D12_VERTEX_BUFFER_VIEW vbView {};
+	D3D12_VERTEX_BUFFER_VIEW vbView{};
 
 	D3D12_INDEX_BUFFER_VIEW ibView{};
 	ComPtr<ID3D12Resource> vertBuff;
@@ -111,7 +111,7 @@ private:
 
 	ComPtr<ID3D12Resource> texbuff;
 
-	
+
 	XMMATRIX matWorld = XMMatrixIdentity();
 	XMMATRIX matView;
 
@@ -133,15 +133,13 @@ private:
 
 	static Material material;
 
-	//D3D12_CPU_DESCRIPTOR_HANDLE CPUsrvHandle;
-	//D3D12_CPU_DESCRIPTOR_HANDLE CPUcbvHandle0;
-	//D3D12_CPU_DESCRIPTOR_HANDLE CPUcbvHandle1;
-	CD3DX12_CPU_DESCRIPTOR_HANDLE CPUsrvHandle;
+	D3D12_CPU_DESCRIPTOR_HANDLE CsrvHandle;
+	D3D12_CPU_DESCRIPTOR_HANDLE CcbvHandle0;
+	D3D12_CPU_DESCRIPTOR_HANDLE CcbvHandle1;
 
-	//D3D12_GPU_DESCRIPTOR_HANDLE GPUsrvHandle;
-	//D3D12_GPU_DESCRIPTOR_HANDLE GPUcbvHandle0;
-	//D3D12_GPU_DESCRIPTOR_HANDLE GPUcbvHandle1;
-	CD3DX12_GPU_DESCRIPTOR_HANDLE GPUsrvHandle;
+	D3D12_GPU_DESCRIPTOR_HANDLE GsrvHandle;
+	D3D12_GPU_DESCRIPTOR_HANDLE GcbvHandle0;
+	D3D12_GPU_DESCRIPTOR_HANDLE GcbvHandle1;
 
 	//ライト
 	static Light* light;

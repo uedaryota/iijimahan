@@ -6,6 +6,7 @@
 #include"Stage2D.h"
 #include"Battery.h"
 #include"Collision.h"
+#include "Sphere.h"
 ID3D12GraphicsCommandList* DirectXDevice::cmdList = nullptr;;
 ID3D12Device* DirectXDevice::dev = nullptr;
 IDXGIFactory6*  DirectXDevice::dxgifactory;
@@ -45,6 +46,9 @@ Input* input = new Input();
 Texture* tex = new Texture();
 Battery* bat = new Battery();
 Collision* collider = new Collision();
+Light* light = nullptr;
+Sphere* sphere = new Sphere();
+XMFLOAT3 rot = {0, 0, 0};
 LRESULT WindowProc1(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
 
@@ -90,12 +94,23 @@ void DirectXDevice::Initialize()
 	enemy2->SetTower(tower);
 	sound->LoadFile(L".\\Resources\\01.mp3");
 	input->Initialize();
+
+
+	sphere->Initialize(DirectXDevice::dev);
+
+	Light::StaticInitialize(DirectXDevice::dev);
+	//ライト生成
+	light = Light::Create();
+	//ライトの色を設定
+	light->SetLightColor({ 1, 1, 1 });
+	//3Dオブジェクトにライトをセット
+	ObjFile::SetLight(light);
 }
 	
 void DirectXDevice::Update()
 {
 	HRESULT result;
-	result = DirectXDevice::cmdAllocator->Reset();
+	//result = DirectXDevice::cmdAllocator->Reset();
 	UINT bbIdx = DirectXDevice::swapchain->GetCurrentBackBufferIndex();
 	rtvH = DirectXDevice::rtvHeaps->GetCPUDescriptorHandleForHeapStart();
 	rtvH.ptr += bbIdx * DirectXDevice::dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
@@ -119,10 +134,6 @@ void DirectXDevice::Update()
 	DirectXDevice::cmdList->ClearDepthStencilView(dsvH, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 	
 	DirectXDevice::cmdList->ClearRenderTargetView(rtvH, clearColor, 0, nullptr);
-	
-	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
-	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
-	DirectXDevice::cmdList->ResourceBarrier(1, &barrierDesc);
 
 	viewport2.Width = Camera::window_width/3;
 	viewport2.Height = Camera::window_height/3;
@@ -153,6 +164,13 @@ void DirectXDevice::Update()
 	stage->Draw();
 	bat->Update();
 	bat->Draw();
+	
+	light->Update();
+
+	rot.y += 0.1f;
+	sphere->SetRot(rot);
+	sphere->Update();
+	sphere->Draw(DirectXDevice::cmdList);
 
 	//if (input->PushKey(DIK_Q))//実験用→実験結果成功　＊座標の変更を行えます。
 	//{
@@ -176,8 +194,6 @@ void DirectXDevice::Update()
 	//stage->Draw();
 	//manager->Draw();
 
-	//ここまで
-	DirectXDevice::cmdList->Close();
 	input->Update();
 
 	if (input->PushKey(DIK_P))
@@ -185,6 +201,13 @@ void DirectXDevice::Update()
 		sound->PlayRoop();
 	}
 	
+
+	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
+	DirectXDevice::cmdList->ResourceBarrier(1, &barrierDesc);
+
+	//ここまで
+	DirectXDevice::cmdList->Close();
 
 	ID3D12CommandList* cmdLists[] = { DirectXDevice::cmdList };
 	cmdQueue->ExecuteCommandLists(1, cmdLists);
@@ -240,6 +263,15 @@ void DirectXDevice::CreateGameWindow()
 }
 void DirectXDevice::CreateDevice()
 {
+
+#ifdef _DEBUG
+	ComPtr<ID3D12Debug> debugController;
+	//デバッグレイヤーをオンに	
+	if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController))))
+	{
+		debugController->EnableDebugLayer();
+	}
+#endif
 
 	D3D_FEATURE_LEVEL levels[] =
 	{
@@ -316,7 +348,7 @@ void DirectXDevice::CreateSwapchain()
 
 	swapchainDesc.Width = Camera::window_width;
 	swapchainDesc.Height = Camera::window_height;
-	swapchainDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+	swapchainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	swapchainDesc.Stereo = false;
 	swapchainDesc.SampleDesc.Count = 1;
 	swapchainDesc.SampleDesc.Quality = 0;
@@ -359,7 +391,7 @@ void DirectXDevice::CreateRTV()
 		DirectXDevice::rtvHeaps->GetCPUDescriptorHandleForHeapStart();
 
 	D3D12_RENDER_TARGET_VIEW_DESC rtvDesc = {};
-	rtvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+	rtvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
 
 	for (int idx = 0; idx < swcDesc.BufferCount; ++idx)
