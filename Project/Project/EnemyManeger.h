@@ -42,8 +42,12 @@ public:
 
 	bool Serch();
 	State Bank;
+
 private:
 	Enemy* enemybox[999];
 	int boxcount = 0;
 	Spawn* spawn=new Spawn();
+	int amount;
+	float timer = 0;
+	int Cnt = 0;
 };

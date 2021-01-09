@@ -48,6 +48,8 @@ Battery* bat = new Battery();
 Collision* collider = new Collision();
 Spawn* spawn = new Spawn();
 ObjDate* objdata;
+int* Set;
+int SetAd = 5;
 LRESULT WindowProc1(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
 
@@ -87,7 +89,8 @@ void DirectXDevice::Initialize()
 	sound->Initialize();
 	stage->Initialize();
 	spawn->Initialize(DirectXDevice::dev);
-	spawn->SetSpawn(5, 10);
+	//Set = &SetAd;
+	spawn->SetSpawn(10, 10);
 	manager->Add2();
 	manager->Add(enemy);
 	//manager->Add(enemy2);

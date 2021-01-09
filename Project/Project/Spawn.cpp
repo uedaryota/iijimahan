@@ -79,21 +79,24 @@ void Spawn::Stop()
 	}
 }
 
-void Spawn::SetSpawn(float x, float y)
+void Spawn::SetSpawn(int x, int y)
 {
 	amount = x;
+	backamount = &amount;
 	timer = y;
 }
 
 Enemy* Spawn::enemyamount()
 {
-	enemy[int(amount)] = new Enemy();
+	Cnt = Cnt + 1;
+	enemy[Cnt] = new Enemy();
 	//amount = amount - 1;
-	return enemy[int(amount) + 1];
+	return enemy[Cnt];
 }
 
 int Spawn::GetAmount()
 {
-	return amount;
+	amount = *backamount;
+	return int(amount);
 }
 

@@ -16,20 +16,18 @@ void EnemyManeger::Add(Enemy* enemy)
 
 void EnemyManeger::Add2()
 {
-	if (spawn->GetAmount() < 0)
+	if (Cnt > 10)
 	{
 		return;
 	}
 	else
 	{
-		for (int i = 0; i > spawn->GetAmount();)
-		{
 			enemybox[boxcount] = spawn->enemyamount();
 			enemybox[boxcount]->Initialize();
 			enemybox[boxcount]->SetScale(XMFLOAT3(2, 2, 2));
 			enemybox[boxcount]->SetPos(XMFLOAT3(60, 60, 60));
 			boxcount++;
-		}
+			Cnt++;
 	}
 	
 }
