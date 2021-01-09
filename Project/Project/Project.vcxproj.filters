@@ -106,10 +106,6 @@
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="DefenderSpawn.cpp" />
-    <ClCompile Include="Spawn.cpp">
-      <Filter>ソースファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="ObjDate.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Block.h">
@@ -183,10 +179,6 @@
     <ClInclude Include="Collision.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="DefenderSpawn.h" />
-    <ClInclude Include="Spawn.h">
-      <Filter>ヘッダーファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="ObjDate.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="BasicShaderHeader.hlsli">

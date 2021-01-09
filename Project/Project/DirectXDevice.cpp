@@ -7,7 +7,6 @@
 #include"Battery.h"
 #include"Collision.h"
 #include "Sphere.h"
-#include"ObjDate.h"
 ID3D12GraphicsCommandList* DirectXDevice::cmdList = nullptr;;
 ID3D12Device* DirectXDevice::dev = nullptr;
 IDXGIFactory6*  DirectXDevice::dxgifactory;
@@ -50,8 +49,6 @@ Collision* collider = new Collision();
 Light* light = nullptr;
 Sphere* sphere = new Sphere();
 XMFLOAT3 rot = {0, 0, 0};
-Spawn* spawn = new Spawn();
-ObjDate* objdata;
 LRESULT WindowProc1(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
 
@@ -73,15 +70,6 @@ void DirectXDevice::Initialize()
 	CreateDsv();
 	SetView_Scissor();
 	SetFence();
-	objdata = new ObjDate();
-	//objdata.LoadObj("Bear");
-	objdata->LoadObj("ball");
-	objdata->LoadObj("Rhino");
-	objdata->LoadObj("UFO");
-	objdata->LoadObj("Gun_All");
-	objdata->LoadObj("triangle_mat");
-	//objdata.LoadObj("triangle");
-
 	block->Initialize();
 	tower->Initialize(DirectXDevice::dev);
 	
@@ -90,9 +78,6 @@ void DirectXDevice::Initialize()
 	enemy->Initialize();
 	sound->Initialize();
 	stage->Initialize();
-	spawn->Initialize(DirectXDevice::dev);
-	spawn->SetSpawn(5, 10);
-	manager->Add2();
 	manager->Add(enemy);
 	//manager->Add(enemy2);
 	enemy->state = move1;
@@ -161,33 +146,23 @@ void DirectXDevice::Update()
 
 	DirectXDevice::cmdList->RSSetScissorRects(1, &scissorrect);
 	//‚±‚±‚©‚çUpdate
-	input->Update();
 
-	if (input->PushKey(DIK_P))
-	{
-		sound->PlayRoop();
-	}
 	Camera::Update();
 	tower->Update();
-	spawn->Update();
 //	sound->Update();
 	
-	
+	tower->Draw(DirectXDevice::cmdList);
 	enemy->SetScale(XMFLOAT3{ 10,10,10 });
 	manager->Update();
+	manager->Draw(DirectXDevice::cmdList);
 	//enemy->Update();
 	//enemy->Draw(DirectXDevice::cmdList);
 	/*back->Update();
 	back->Draw();
 	*/
 	stage->Update();
-
-	bat->Update();
-	
-	tower->Draw(DirectXDevice::cmdList);
-	spawn->Draw(DirectXDevice::cmdList);
-	manager->Draw(DirectXDevice::cmdList);
 	stage->Draw();
+	bat->Update();
 	bat->Draw();
 	
 	light->Update();
@@ -210,7 +185,7 @@ void DirectXDevice::Update()
 		enemy->EnemyDamege(1);
 		//enemy2->EnemyDamege(0.5);
 	}
-
+	CollisionUpdate();
 	//DirectXDevice::cmdList->RSSetViewports(1, &viewport2);
 	//
 	//tower->Draw(DirectXDevice::cmdList);
@@ -221,6 +196,10 @@ void DirectXDevice::Update()
 
 	input->Update();
 
+	if (input->PushKey(DIK_P))
+	{
+		sound->PlayRoop();
+	}
 	
 
 	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
@@ -248,8 +227,6 @@ void DirectXDevice::Update()
 	DirectXDevice::cmdList->Reset(cmdAllocator, nullptr);
 
 	DirectXDevice::swapchain->Present(1, 0);
-
-	CollisionUpdate();
 }
 void DirectXDevice::CreateGameWindow()
 {
@@ -526,10 +503,8 @@ void DirectXDevice::CollisionUpdate()
 		{
 			if (collider->CircleToCircle(*bat->bulletList[a]->col, *enemy->col))
 			{
-				enemy->EnemyDamege(bat->damage);
-				delete(bat->bulletList[a]);
-				bat->bulletList.erase(bat->bulletList.begin() + a);
-
+				//enemy->EnemyDamege(bat->damage);
+		//		delete(bat->bulletList[a]);
 			}
 		}
 	}

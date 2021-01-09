@@ -24,7 +24,6 @@
 #include"Enemy.h"
 #include"EnemyManeger.h"
 #include "Light.h"
-#include"Spawn.h"
 
 using namespace std;
 using namespace DirectX;
