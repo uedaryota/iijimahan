@@ -86,8 +86,8 @@ void DirectXDevice::Initialize()
 	enemy->Initialize();
 	sound->Initialize();
 	stage->Initialize();
-	spawn->Initialize(DirectXDevice::dev);
-	spawn->SetSpawn(5, 10);
+	/*spawn->Initialize(DirectXDevice::dev);
+	spawn->SetSpawn(5, 10);*/
 	manager->Add2();
 	manager->Add(enemy);
 	//manager->Add(enemy2);
@@ -158,7 +158,7 @@ void DirectXDevice::Update()
 	}
 	Camera::Update();
 	tower->Update();
-	spawn->Update();
+//	spawn->Update();
 //	sound->Update();
 	
 	
@@ -174,7 +174,7 @@ void DirectXDevice::Update()
 	bat->Update();
 	
 	tower->Draw(DirectXDevice::cmdList);
-	spawn->Draw(DirectXDevice::cmdList);
+	//spawn->Draw(DirectXDevice::cmdList);
 	manager->Draw(DirectXDevice::cmdList);
 	stage->Draw();
 	bat->Draw();
@@ -499,5 +499,10 @@ void DirectXDevice::CollisionUpdate()
 
 			}
 		}
+	}
+	if (input->PushMouseLeft())
+	{
+		//int a = 0;
+		bool a = collider->MouseToCircle(input, bat->col);
 	}
 }

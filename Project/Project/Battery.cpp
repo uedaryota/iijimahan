@@ -22,6 +22,7 @@ void Battery::Update()
 	{
 		Shot();
 	}
+
 	if (bulletList.size() != 0)
 	{
 		for (int a = 0; a < bulletList.size(); a++)
@@ -51,7 +52,8 @@ void Battery::Initialize()
 	obj->Initialize();
 	obj->LoadObj("Rhino");
 	col = new CircleCollision();
-	col->length = 1000;
+	col->length = 30;
+	
 	SetScale({ 10,10,10 });
 	SetPos({ 100, 0, 100 });
 }

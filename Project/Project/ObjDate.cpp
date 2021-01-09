@@ -180,7 +180,11 @@ void ObjDate::LoadObj(const std::string name)
 	result = send.vertBuff->Map(0, nullptr, (void**)&send.vertMap);
 	if (SUCCEEDED(result)) {
 		//	memcpy(send.vertMap, send.vertices, sizeof(send.vertices));
-		std::copy(send.vertices.begin(), send.vertices.end(), send.vertMap);
+		for (int a = 0; a < send.vertices.size(); a++)
+		{
+			send.vertMap[a] = send.vertices[a];
+		}
+	//	std::copy(send.vertices.begin(), send.vertices.end(), send.vertMap);
 		send.vertBuff->Unmap(0, nullptr);
 	}
 
