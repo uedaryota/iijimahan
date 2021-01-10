@@ -1,23 +1,25 @@
 #include"Enemy.h"
 #include"EnemyAI.h"
 #include"Poly.h"
+#include"Spawn.h"
 
 class EnemyManeger
 {
 public:
 	void Initialize();//初期化
 	void Add(Enemy* enemy);//マネージャーに登録
+	void Add2();//マネージャーに登録
 	void Create();//マネージャーで作成
 	void Destory();//削除
 	void Draw(ID3D12GraphicsCommandList * cmdList);//描画
 	void Update();//更新処理
 
-    ///<summary>
+	///<summary>
 	///第1第2ポイントまとめての移動目標の全体設定
 	///<param name="anc1">第1移動地点</param>
 	///<param name="anc2">第2移動地点</param>
 	///</summary>
-	void AncerSet(XMFLOAT3 anc1,XMFLOAT3 anc2);
+	void AncerSet(XMFLOAT3 anc1, XMFLOAT3 anc2);
 
 	///<summary>
 	///第1ポイントの全体設定
@@ -43,4 +45,5 @@ public:
 private:
 	Enemy* enemybox[999];
 	int boxcount = 0;
+	Spawn* spawn = new Spawn();
 };
