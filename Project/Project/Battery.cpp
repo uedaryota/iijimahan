@@ -12,10 +12,6 @@ Battery::~Battery()
 
 void Battery::Update()
 {
-	Input* T = new Input();
-	T->Initialize();
-	T->Update();
-	delete(T);
 	obj->Update();
 	input->Update();
 	if (input->TriggerKey(DIK_T))
@@ -45,11 +41,11 @@ void Battery::Draw()
 
 void Battery::Initialize()
 {
-	obj = new ObjFile();
-	input = new Input();
-	input->Initialize();
+		obj = new ObjFile();
+		input = new Input();
+		input->Initialize();
 	obj->Initialize();
-	obj->LoadObj("Rhino");
+	obj->LoadObj("Gun_All");
 	col = new CircleCollision();
 	col->length = 1000;
 	SetScale({ 10,10,10 });
