@@ -24,7 +24,7 @@ void EnemyManeger::Add2()
 	{
 			enemybox[boxcount] = spawn->enemyamount();
 			enemybox[boxcount]->Initialize();
-			enemybox[boxcount]->SetScale(XMFLOAT3(2, 2, 2));
+			enemybox[boxcount]->SetScale(XMFLOAT3(10, 10, 10));
 			enemybox[boxcount]->SetPos(XMFLOAT3(60, 60, 60));
 			enemybox[boxcount]->ActionRiset();
 			boxcount++;
