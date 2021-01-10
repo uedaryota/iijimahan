@@ -30,7 +30,7 @@ void EnemyManeger::Add2()
 			boxcount++;
 			Cnt++;
 	}
-	
+
 }
 
 void EnemyManeger::Create()
@@ -45,7 +45,7 @@ void EnemyManeger::Create()
 
 void EnemyManeger::Destory()
 {
-	
+
 }
 
 void EnemyManeger::Draw(ID3D12GraphicsCommandList * cmdList)
@@ -117,7 +117,7 @@ bool EnemyManeger::Serch()
 {
 	float hitX = 0.5f;
 	float hitZ = 0.5f;
-	
+
 	for (int i = 0; i < boxcount; i++)
 	{
 		for (int x = 0; x < boxcount; x++)

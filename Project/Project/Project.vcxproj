@@ -161,6 +161,7 @@
     <ClCompile Include="Floor.cpp" />
     <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="Input.cpp" />
+    <ClCompile Include="Light.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ObjDate.cpp" />
     <ClCompile Include="ObjFile.cpp" />
@@ -284,6 +285,7 @@
     <ClInclude Include="Floor.h" />
     <ClInclude Include="GameScene.h" />
     <ClInclude Include="Input.h" />
+    <ClInclude Include="Light.h" />
     <ClInclude Include="ObjDate.h" />
     <ClInclude Include="ObjFile.h" />
     <ClInclude Include="PMDClass.h" />

@@ -117,6 +117,7 @@
     </ClCompile>
     <ClCompile Include="ObjDate.cpp" />
     <ClCompile Include="DefenderWindow.cpp" />
+    <ClCompile Include="Light.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Block.h">
@@ -195,6 +196,7 @@
     </ClInclude>
     <ClInclude Include="ObjDate.h" />
     <ClInclude Include="DefenderWindow.h" />
+    <ClInclude Include="Light.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="BasicShaderHeader.hlsli">

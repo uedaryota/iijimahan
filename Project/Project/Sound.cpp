@@ -126,7 +126,7 @@ void Sound::LoadFile(const wchar_t* filename)
 
 	pGraphBuilder->QueryInterface(IID_IMediaControl, (LPVOID *)&pMediaControl);
 	pGraphBuilder->QueryInterface(IID_IMediaPosition, (LPVOID *)&pMediaPosition);
-
+	
 	BSTR soundfile = ::SysAllocString(filename);
 	pMediaControl->RenderFile(soundfile);
 }

@@ -7,6 +7,9 @@
 #include<vector>
 #include"DirectXDevice.h"
 #include"ObjDate.h"
+
+Light* ObjFile::light = nullptr;
+
 ObjFile::ObjFile()
 {
 	
@@ -104,13 +107,17 @@ void ObjFile::Draw(ID3D12GraphicsCommandList * cmdList)
 	cmdList->SetGraphicsRootSignature(rootsignature);
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	cmdList->IASetVertexBuffers(0, 1, &vbView);
-	cmdList->IASetIndexBuffer(&ibView);
+	//cmdList->IASetIndexBuffer(&ibView);
 	cmdList->SetDescriptorHeaps(1, &mainDescHeap);
 //	cmdList->SetGraphicsRootDescriptorTable(0, GsrvHandle);
 	cmdList->SetGraphicsRootDescriptorTable(1, GcbvHandle0);
 	cmdList->SetDescriptorHeaps(1, &materialDescHeap);
 	//cmdList->SetGraphicsRootDescriptorTable(2, GmaterialHandles[0]);
 	//cmdList->DrawInstanced((UINT)vertices.size(), 1, 0, 0);
+
+	//ƒ‰ƒCƒg‚Ì•`‰æ
+	light->Draw(cmdList, 3);
+
 	UINT start = 0;
 	for (int a = 0; a < usematerials.size() * 2; a += 2)
 	{
@@ -120,6 +127,7 @@ void ObjFile::Draw(ID3D12GraphicsCommandList * cmdList)
 		cmdList->DrawInstanced((UINT)usematerials[a / 2].indicesCount, 1, start, 0);
 		start += usematerials[a / 2].indicesCount;
 	}
+
 	
 }
 
@@ -263,7 +271,7 @@ void ObjFile::CreatePipeline()
 	descTblRange[2].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
 
-	D3D12_ROOT_PARAMETER rootparam[3] = {};
+	D3D12_ROOT_PARAMETER rootparam[4] = {};
 
 	rootparam[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
 	rootparam[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;//ALL
@@ -271,7 +279,7 @@ void ObjFile::CreatePipeline()
 	rootparam[0].DescriptorTable.NumDescriptorRanges = 1;
 
 	rootparam[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-	rootparam[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;//ALL
+	rootparam[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//ALL
 	rootparam[1].DescriptorTable.pDescriptorRanges = &descTblRange[1];
 	rootparam[1].DescriptorTable.NumDescriptorRanges = 1;
 
@@ -280,9 +288,13 @@ void ObjFile::CreatePipeline()
 	rootparam[2].DescriptorTable.pDescriptorRanges = &descTblRange[2];
 	rootparam[2].DescriptorTable.NumDescriptorRanges = 1;
 
+	rootparam[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	rootparam[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;//ALL
+	rootparam[3].Constants.ShaderRegister = 2;
+	rootparam[3].Constants.RegisterSpace = 0;
 
 	rootSigunatureDesc.pParameters = rootparam;
-	rootSigunatureDesc.NumParameters = 3;
+	rootSigunatureDesc.NumParameters = _countof(rootparam);
 
 	D3D12_STATIC_SAMPLER_DESC samplerDesc = {};
 
@@ -332,7 +344,7 @@ void ObjFile::CreateMainHeap()
 
 	descHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	descHeapDesc.NodeMask = 0;
-	descHeapDesc.NumDescriptors = 2;
+	descHeapDesc.NumDescriptors = 3;
 	descHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 
 	result = dev->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(&mainDescHeap));

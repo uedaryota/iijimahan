@@ -514,13 +514,13 @@ void Floor::CreateMainHeap(ID3D12Device * dev)
 	matWorld *= matScale;
 	matWorld *= matRot;
 	matWorld *= matTrans;
+	constBuff->Unmap(0, nullptr);
 */
 
 	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc = {};
 	cbvDesc.BufferLocation = constBuff->GetGPUVirtualAddress();
 	cbvDesc.SizeInBytes = constBuff->GetDesc().Width;
 	dev->CreateConstantBufferView(&cbvDesc, HeapHandle);
-	constBuff->Unmap(0, nullptr);
 
 	HeapHandle.ptr += dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 

@@ -6,6 +6,7 @@
 #include <DirectXMath.h>
 #include <d3dx12.h>
 #include<vector>
+#include "Light.h"
 using namespace std;
 using namespace DirectX;
 class ObjFile
@@ -42,6 +43,7 @@ public: // サブクラス
 	{
 		XMMATRIX world;
 		XMMATRIX viewproj;
+		XMFLOAT3 cameraPos;
 	};
 	struct Material
 	{
@@ -61,6 +63,15 @@ public: // サブクラス
 			alpha = 1.0f;
 		}
 	};
+
+	///<summary>
+	///ライトのセット
+	///</summary>
+	///<param name="light">ライト</param>
+	static void SetLight(Light* light)
+	{
+		ObjFile::light = light;
+	}
 
 public:
 	ObjFile();
@@ -135,7 +146,8 @@ private:
 	D3D12_GPU_DESCRIPTOR_HANDLE GcbvHandle0;
 	vector<D3D12_GPU_DESCRIPTOR_HANDLE> GmaterialHandles;
 
-
+	//ライト
+	static Light* light;
 
 
 };

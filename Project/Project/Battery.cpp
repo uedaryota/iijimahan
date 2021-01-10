@@ -12,10 +12,6 @@ Battery::~Battery()
 
 void Battery::Update()
 {
-	Input* T = new Input();
-	T->Initialize();
-	T->Update();
-	delete(T);
 	obj->Update();
 	input->Update();
 	col->Update();
@@ -51,11 +47,11 @@ void Battery::Draw()
 
 void Battery::Initialize()
 {
-	obj = new ObjFile();
-	input = new Input();
-	input->Initialize();
+		obj = new ObjFile();
+		input = new Input();
+		input->Initialize();
 	obj->Initialize();
-	obj->LoadObj("Rhino");
+	obj->LoadObj("Gun_All");
 	col = new CircleCollision();
 	col->scale = 100;
 	clickcol = new CircleCollision();
