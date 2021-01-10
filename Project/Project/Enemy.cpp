@@ -16,7 +16,7 @@ void Enemy::Initialize()
 {
 	col = new CircleCollision();
 	col->scale= 10;
-	col->length = 10;
+	//col->length = 10;
 	pol->Initialize();
 	ai.Initialize();
 	SetState();

@@ -54,7 +54,6 @@ float spawntime = 10;
 int EneMax = 3;
 int EneNow = 0;
 Light* light = nullptr;
->>>>>>> origin/ueda
 LRESULT WindowProc1(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
 
