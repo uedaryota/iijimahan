@@ -155,10 +155,12 @@
     <ClCompile Include="DefenderSpawn.cpp" />
     <ClCompile Include="DefenderWindow.cpp" />
     <ClCompile Include="DirectXDevice.cpp" />
+    <ClCompile Include="End.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="EnemyAI.cpp" />
     <ClCompile Include="EnemyManeger.cpp" />
     <ClCompile Include="Floor.cpp" />
+    <ClCompile Include="GamePlay.cpp" />
     <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="main.cpp" />
@@ -278,10 +280,12 @@
     <ClInclude Include="DefenderSpawn.h" />
     <ClInclude Include="DefenderWindow.h" />
     <ClInclude Include="DirectXDevice.h" />
+    <ClInclude Include="End.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="EnemyAI.h" />
     <ClInclude Include="EnemyManeger.h" />
     <ClInclude Include="Floor.h" />
+    <ClInclude Include="GamePlay.h" />
     <ClInclude Include="GameScene.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="ObjDate.h" />

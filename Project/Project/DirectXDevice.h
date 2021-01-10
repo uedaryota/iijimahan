@@ -7,24 +7,11 @@
 #include<vector>
 #include<DirectXMath.h>
 #include<d3dcompiler.h>
-#include"Texture.h"
-#include"PMDClass.h"
-#include"Floor.h"
 #include"Camera.h"
-#include"Poly.h"
-#include"Sprite.h"
-#include"Block.h"
-#include"Tower.h"
-#include"Sound.h"
 
-#include"Stage.h"
 #pragma comment(lib,"d3d12.lib")
 #pragma comment(lib,"dxgi.lib")
 #pragma comment(lib,"d3dcompiler.lib")
-#include"Enemy.h"
-#include"EnemyManeger.h"
-#include"Spawn.h"
-
 using namespace std;
 using namespace DirectX;
 

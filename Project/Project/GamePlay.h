@@ -1,12 +1,12 @@
 #pragma once
 #include"GameScene.h"
-class Title:public GameScene
+class GamePlay:public GameScene
 {
 public:
-	Title();
+	GamePlay();
 	void Draw() override;
 	void Update() override;
 	void Initialize() override;
-
+	void CollisionUpdate();
 };
 

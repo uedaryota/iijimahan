@@ -62,6 +62,8 @@ void ObjFile::Update()
 	HRESULT result = constBuffB0->Map(0, nullptr, (void**)&constMap0);
 
 
+	rotation.x += 0.01f;
+	rotation.z += 0.01f;
 
 	matScale = XMMatrixScaling(scale.x, scale.y, scale.z);
 	matRot = XMMatrixIdentity();
@@ -104,7 +106,7 @@ void ObjFile::Draw(ID3D12GraphicsCommandList * cmdList)
 	cmdList->SetGraphicsRootSignature(rootsignature);
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	cmdList->IASetVertexBuffers(0, 1, &vbView);
-	cmdList->IASetIndexBuffer(&ibView);
+//	cmdList->IASetIndexBuffer(&ibView);
 	cmdList->SetDescriptorHeaps(1, &mainDescHeap);
 //	cmdList->SetGraphicsRootDescriptorTable(0, GsrvHandle);
 	cmdList->SetGraphicsRootDescriptorTable(1, GcbvHandle0);

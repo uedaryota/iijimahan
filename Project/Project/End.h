@@ -1,9 +1,9 @@
 #pragma once
 #include"GameScene.h"
-class Title:public GameScene
+class End:public GameScene
 {
 public:
-	Title();
+	End();
 	void Draw() override;
 	void Update() override;
 	void Initialize() override;

@@ -1,9 +1,10 @@
 #pragma once
 class GameScene
 {
-private:
+public:
 	virtual void Update();
 	virtual void Draw();
-	 bool endFlag;
+	virtual void Initialize();
+	bool endFlag = false;
 };
 

@@ -12,10 +12,7 @@ Battery::~Battery()
 
 void Battery::Update()
 {
-	Input* T = new Input();
-	T->Initialize();
-	T->Update();
-	delete(T);
+	
 	obj->Update();
 	input->Update();
 	col->Update();
