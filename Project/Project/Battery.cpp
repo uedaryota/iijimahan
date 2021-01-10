@@ -18,10 +18,14 @@ void Battery::Update()
 	delete(T);
 	obj->Update();
 	input->Update();
+	col->Update();
+	clickcol->Update();
+
 	if (input->TriggerKey(DIK_T))
 	{
 		Shot();
 	}
+
 	if (bulletList.size() != 0)
 	{
 		for (int a = 0; a < bulletList.size(); a++)
@@ -41,6 +45,8 @@ void Battery::Draw()
 			bulletList[a]->Draw();
 		}
 	}
+	//col->Draw();
+	clickcol->Draw();
 }
 
 void Battery::Initialize()
@@ -51,7 +57,11 @@ void Battery::Initialize()
 	obj->Initialize();
 	obj->LoadObj("Rhino");
 	col = new CircleCollision();
-	col->length = 1000;
+	col->scale = 100;
+	clickcol = new CircleCollision();
+	clickcol->scale = 30;
+	clickcol->color = { 1,0,0,0.5 };
+	//cloickcol->color={}
 	SetScale({ 10,10,10 });
 	SetPos({ 100, 0, 100 });
 }
@@ -66,6 +76,8 @@ void Battery::SetPos(XMFLOAT3 pos)
 	mainPos = pos;
 	obj->SetPos(mainPos);
 	col->position = mainPos;
+//	col->position.z += 10;
+	clickcol->position = col->position;
 }
 
 void Battery::SetScale(XMFLOAT3 scale)

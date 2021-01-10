@@ -19,3 +19,7 @@ void DefenderSpawn::Draw()
 void DefenderSpawn::Initialize()
 {
 }
+
+void DefenderSpawn::CreateBattery()
+{
+}

@@ -20,6 +20,7 @@ public:
 
 	ObjFile* obj;
 	CircleCollision* col;
+	
 	XMFLOAT3* targetPos = nullptr;
 	float speed=3;
 
