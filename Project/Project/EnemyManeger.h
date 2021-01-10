@@ -14,12 +14,12 @@ public:
 	void Draw(ID3D12GraphicsCommandList * cmdList);//描画
 	void Update();//更新処理
 
-    ///<summary>
+	///<summary>
 	///第1第2ポイントまとめての移動目標の全体設定
 	///<param name="anc1">第1移動地点</param>
 	///<param name="anc2">第2移動地点</param>
 	///</summary>
-	void AncerSet(XMFLOAT3 anc1,XMFLOAT3 anc2);
+	void AncerSet(XMFLOAT3 anc1, XMFLOAT3 anc2);
 
 	///<summary>
 	///第1ポイントの全体設定

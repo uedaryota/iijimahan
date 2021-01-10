@@ -117,12 +117,9 @@
     </ClCompile>
     <ClCompile Include="ObjDate.cpp" />
     <ClCompile Include="DefenderWindow.cpp" />
-    <ClCompile Include="End.cpp">
-      <Filter>ソースファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="GamePlay.cpp">
-      <Filter>ソースファイル</Filter>
-    </ClCompile>
+    <ClCompile Include="Light.cpp" />
+    <ClCompile Include="End.cpp" />
+    <ClCompile Include="GamePlay.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Block.h">
@@ -201,12 +198,9 @@
     </ClInclude>
     <ClInclude Include="ObjDate.h" />
     <ClInclude Include="DefenderWindow.h" />
-    <ClInclude Include="End.h">
-      <Filter>ヘッダーファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="GamePlay.h">
-      <Filter>ヘッダーファイル</Filter>
-    </ClInclude>
+    <ClInclude Include="Light.h" />
+    <ClInclude Include="End.h" />
+    <ClInclude Include="GamePlay.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="BasicShaderHeader.hlsli">

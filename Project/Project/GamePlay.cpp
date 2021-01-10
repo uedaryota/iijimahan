@@ -19,7 +19,6 @@
 #include"Enemy.h"
 #include"EnemyManeger.h"
 #include"Spawn.h"
-
 Camera* c = new Camera();
 PMDClass* pmd = new PMDClass();
 Floor* floor1 = new Floor();
@@ -33,14 +32,13 @@ Stage2D* stage = new Stage2D();
 Enemy* enemy = new Enemy();
 Enemy* enemy2 = new Enemy();
 EnemyAI* ai = new EnemyAI();
-EnemyManeger* manager;
+EnemyManeger* manager = new EnemyManeger();
 Sprite* back = new Sprite();
 Input* input = new Input();
 Texture* tex = new Texture();
 Battery* bat = new Battery();
 Collision* collider = new Collision();
-//Spawn* spawn = new Spawn();
-//ObjDate* objdata;
+Spawn* spawn = new Spawn();
 
 float timer = 0;
 float spawntime = 10;
@@ -56,7 +54,7 @@ void GamePlay::Update()
 	}
 	Camera::Update();
 	tower->Update();
-//	spawn->Update();
+	spawn->Update();
 	//	sound->Update();
 	if (EneNow < EneMax)
 	{
@@ -98,6 +96,7 @@ void GamePlay::Update()
 		//enemy2->EnemyDamege(0.5);
 	}
 
+	CollisionUpdate();
 }
 GamePlay::GamePlay()
 {
@@ -112,16 +111,17 @@ void GamePlay::Draw()
 }
 void GamePlay::Initialize()
 {
-	manager = new EnemyManeger();
+	block->Initialize();
 	tower->Initialize(DirectXDevice::dev);
 
+	floor1->Initialize(DirectXDevice::dev);
 	manager->Initialize();
 	enemy->Initialize();
 	sound->Initialize();
 	stage->Initialize();
-	//spawn->Initialize(DirectXDevice::dev);
+	spawn->Initialize(DirectXDevice::dev);
 	//Set = &SetAd;
-//	spawn->SetSpawn(10, 10);
+	spawn->SetSpawn(10, 10);
 	manager->Add2();
 	manager->Add(enemy);
 	//manager->Add(enemy2);
@@ -133,11 +133,16 @@ void GamePlay::Initialize()
 	back->SetScale(XMFLOAT3(300, 300, 300));
 	back->SetPos(XMFLOAT3(0, 0, 500));
 	manager->SetTowerEnemy(tower);
+	//back->Initialize();
+	//back->ResetTex(L"img/Blueback.png");
+	//back->SetScale(XMFLOAT3(300, 300, 300));
+	//back->SetPos(XMFLOAT3(0, 0, 500));
+	enemy->SetTower(tower);
 	bat->Initialize();
 	//enemy->SetTarget(&tower->GetPosition);
 	enemy2->state = move1;
 	enemy2->SetTower(tower);
-	sound->LoadFile(L".\\Resources\\01.mp3");
+	sound->LoadFile(L".\\Resources\\TDBGM2.mp3");
 	input->Initialize();
 }
 

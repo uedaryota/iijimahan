@@ -3,7 +3,7 @@
 #include<sstream>
 #include"DirectXDevice.h"
 using namespace std;
-
+using namespace DirectX;
 map<std::string, ObjDate::SendData>ObjDate::ObjDataList;
 ObjDate::ObjDate()
 {

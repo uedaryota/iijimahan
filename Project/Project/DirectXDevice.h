@@ -1,19 +1,23 @@
 
+#pragma once
 #include<Windows.h>
+#ifdef _DEBUG
 #include<iostream>
+#endif
 #include<d3d12.h>
 #include <wrl.h>
 #include<dxgi1_6.h>
 #include<vector>
 #include<DirectXMath.h>
 #include<d3dcompiler.h>
-#include"Camera.h"
-
+#include<DirectXTex.h>
 #pragma comment(lib,"d3d12.lib")
 #pragma comment(lib,"dxgi.lib")
 #pragma comment(lib,"d3dcompiler.lib")
+
 using namespace std;
 using namespace DirectX;
+
 
 static class DirectXDevice
 {

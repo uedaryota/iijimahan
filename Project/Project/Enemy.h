@@ -5,7 +5,6 @@
 #include"Texture.h"
 #include"CircleCollision.h"
 using namespace DirectX;
-
 enum State {
 	move1, move2, move3, atack1, special1, Destory, Stay, 
 };
