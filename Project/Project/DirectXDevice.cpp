@@ -48,6 +48,7 @@ Battery* bat = new Battery();
 Collision* collider = new Collision();
 Spawn* spawn = new Spawn();
 ObjDate* objdata;
+Light* light = nullptr;
 LRESULT WindowProc1(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
 
@@ -94,23 +95,32 @@ void DirectXDevice::Initialize()
 	enemy->state = move1;
 
 	tex->Initialize();
-	back->Initialize();
-	back->ResetTex(L"img/Blueback.png");
-	back->SetScale(XMFLOAT3(300, 300, 300));
-	back->SetPos(XMFLOAT3(0, 0, 500));
+	//back->Initialize();
+	//back->ResetTex(L"img/Blueback.png");
+	//back->SetScale(XMFLOAT3(300, 300, 300));
+	//back->SetPos(XMFLOAT3(0, 0, 500));
 	enemy->SetTower(tower);
 	bat->Initialize();
 	//enemy->SetTarget(&tower->GetPosition);
 	enemy2->state = move1;
 	enemy2->SetTower(tower);
-	sound->LoadFile(L".\\Resources\\01.mp3");
+	sound->LoadFile(L".\\Resources\\TDBGM2.mp3");
 	input->Initialize();
+
+	Light::StaticInitialize(DirectXDevice::dev);
+	//ライト生成
+	light = Light::Create();
+	//ライトの色を設定
+	light->SetLightColor({ 1,1,1 });
+	//3Dオブジェクトにライトをセット
+	ObjFile::SetLight(light);
+
 }
 	
 void DirectXDevice::Update()
 {
 	HRESULT result;
-	result = DirectXDevice::cmdAllocator->Reset();
+	//result = DirectXDevice::cmdAllocator->Reset();
 	UINT bbIdx = DirectXDevice::swapchain->GetCurrentBackBufferIndex();
 	rtvH = DirectXDevice::rtvHeaps->GetCPUDescriptorHandleForHeapStart();
 	rtvH.ptr += bbIdx * DirectXDevice::dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
@@ -135,9 +145,6 @@ void DirectXDevice::Update()
 	
 	DirectXDevice::cmdList->ClearRenderTargetView(rtvH, clearColor, 0, nullptr);
 	
-	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
-	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
-	DirectXDevice::cmdList->ResourceBarrier(1, &barrierDesc);
 
 	viewport2.Width = Camera::window_width/3;
 	viewport2.Height = Camera::window_height/3;
@@ -172,9 +179,10 @@ void DirectXDevice::Update()
 	stage->Update();
 
 	bat->Update();
+	light->Update();
 	
 	tower->Draw(DirectXDevice::cmdList);
-	spawn->Draw(DirectXDevice::cmdList);
+	//spawn->Draw(DirectXDevice::cmdList);
 	manager->Draw(DirectXDevice::cmdList);
 	stage->Draw();
 	bat->Draw();
@@ -201,6 +209,9 @@ void DirectXDevice::Update()
 	//stage->Draw();
 	//manager->Draw();
 
+	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
+	DirectXDevice::cmdList->ResourceBarrier(1, &barrierDesc);
 	//ここまで
 	DirectXDevice::cmdList->Close();
 
@@ -262,6 +273,14 @@ void DirectXDevice::CreateGameWindow()
 }
 void DirectXDevice::CreateDevice()
 {
+#ifdef _DEBUG
+	ComPtr<ID3D12Debug> debugController;
+	//デバッグレイヤーをオンに	
+	if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController))))
+	{
+		debugController->EnableDebugLayer();
+	}
+#endif
 
 	D3D_FEATURE_LEVEL levels[] =
 	{
@@ -338,7 +357,7 @@ void DirectXDevice::CreateSwapchain()
 
 	swapchainDesc.Width = Camera::window_width;
 	swapchainDesc.Height = Camera::window_height;
-	swapchainDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+	swapchainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	swapchainDesc.Stereo = false;
 	swapchainDesc.SampleDesc.Count = 1;
 	swapchainDesc.SampleDesc.Quality = 0;
@@ -381,7 +400,7 @@ void DirectXDevice::CreateRTV()
 		DirectXDevice::rtvHeaps->GetCPUDescriptorHandleForHeapStart();
 
 	D3D12_RENDER_TARGET_VIEW_DESC rtvDesc = {};
-	rtvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+	rtvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
 
 	for (int idx = 0; idx < swcDesc.BufferCount; ++idx)
