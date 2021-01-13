@@ -27,6 +27,7 @@ void EnemyManeger::Add2(XMFLOAT3 x)
 			enemybox[boxcount]->SetScale(XMFLOAT3(10, 10, 10));
 			enemybox[boxcount]->SetPos(x);
 			enemybox[boxcount]->ActionRiset();
+			enemybox[boxcount]->state = move1;
 			boxcount++;
 			Cnt++;
 	}

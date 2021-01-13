@@ -23,8 +23,8 @@ Camera* c = new Camera();
 PMDClass* pmd = new PMDClass();
 Floor* floor1 = new Floor();
 Tower* tower = new Tower();
-XMFLOAT3 pointA = { 15,15,15 };
-XMFLOAT3 pointB = { -15,-15,-15 };
+XMFLOAT3 pointA = { 0,0,30 };
+XMFLOAT3 pointB = { 120,0,170 };
 Block* block = new Block();
 Sound* sound = new Sound();
 //Stage* stage = new Stage();
@@ -67,7 +67,7 @@ void GamePlay::Update()
 		if (timer / 60 > spawntime)
 		{
 			manager->Add2(spawn->GetPosition());
-			manager->ReAncerSet(XMFLOAT3{ -100,1,-100 }, XMFLOAT3{ 500,500,500 });
+			manager->ReAncerSet(pointA, pointB);
 			manager->SetTowerEnemy(tower);
 			timer = 0;
 			EneNow++;
@@ -80,7 +80,7 @@ void GamePlay::Update()
 
 	stage->Update();
 
-	bat->Update();
+	//bat->Update();
 
 
 	//if (input->PushKey(DIK_Q))//実験用→実験結果成功　＊座標の変更を行えます。
@@ -122,6 +122,7 @@ void GamePlay::Initialize()
 	stage->Initialize();
 	spawn->Initialize(DirectXDevice::dev);
 	//Set = &SetAd;
+	spawn->SetPoisition({-170,0,-150});
 	spawn->SetSpawn(10, 10);
 	manager->Add2(spawn->GetPosition());
 	//manager->Add(enemy);
@@ -134,6 +135,7 @@ void GamePlay::Initialize()
 	back->SetScale(XMFLOAT3(300, 300, 300));
 	back->SetPos(XMFLOAT3(0, 0, 500));
 	manager->SetTowerEnemy(tower);
+	manager->ReAncerSet(pointA, pointB);
 	//back->Initialize();
 	//back->ResetTex(L"img/Blueback.png");
 	//back->SetScale(XMFLOAT3(300, 300, 300));

@@ -29,7 +29,7 @@ public:
 	float Hp;
 	float Speed;
 	float Power;
-	XMFLOAT3 vel = {-0.1, 0, -0.1};
+	XMFLOAT3 vel = {0.1, 0, -0.1};
 	bool NextX = false;
 	bool NextZ = false;
 	float Floar2 = 110.0f;
