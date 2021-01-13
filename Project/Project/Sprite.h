@@ -53,7 +53,7 @@ public:
 
 	XMFLOAT3 position = { 0,0,0 };
 	XMFLOAT3 rotation = { 0,0,0 };
-	XMFLOAT3 scale = { 100.0f,100.0f,100.0f };
+	XMFLOAT3 scale = { 1.0f,1.0f,1.0f };
 	
 private:
 	XMMATRIX matWorld = XMMatrixIdentity();
