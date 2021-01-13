@@ -23,8 +23,8 @@
 #include<vector>
 Camera* c = new Camera();
 Tower* tower = new Tower();
-XMFLOAT3 pointA = { 15,15,15 };
-XMFLOAT3 pointB = { -15,-15,-15 };
+XMFLOAT3 pointA = { 0,0,30 };
+XMFLOAT3 pointB = { 120,0,170 };
 Sound* sound = new Sound();
 //Stage* stage = new Stage();
 Stage2D* stage = new Stage2D();
@@ -67,7 +67,7 @@ void GamePlay::Update()
 		if (timer / 60 > spawntime)
 		{
 			manager->Add2(spawn->GetPosition());
-			manager->ReAncerSet(XMFLOAT3{ -100,1,-100 }, XMFLOAT3{ 500,500,500 });
+			manager->ReAncerSet(pointA, pointB);
 			manager->SetTowerEnemy(tower);
 			timer = 0;
 			EneNow++;
@@ -125,6 +125,7 @@ void GamePlay::Initialize()
 	spawn->Initialize(DirectXDevice::dev);
 	//Set = &SetAd;
 	spawn->SetSpawn(10, 10);
+	spawn->SetPoisition({ -170, 0, -150 });
 	manager->Add2(spawn->GetPosition());
 	//manager->Add(enemy);
 	//manager->Add(enemy2);
