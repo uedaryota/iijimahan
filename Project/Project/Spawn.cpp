@@ -21,6 +21,7 @@ void Spawn::Initialize(ID3D12Device* dev)
 	obj->LoadObj("Enemy_Base");
 	obj->position.y = 10;
 	obj->SetScale({ 10,10,10 });
+	obj->rotation.y =4.6;
 }
 
 void Spawn::Update()

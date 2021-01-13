@@ -119,11 +119,11 @@ void Enemy::PositionUpdate(XMFLOAT3 pointA, XMFLOAT3 pointB, XMFLOAT3 tower)//エ
 		case move1://第1移動
 #pragma region
 			if (pol->position.x - pointA.x > 0.5f) {
-				pol->position.x = pol->position.x + vel.x;
+				pol->position.x = pol->position.x + vel.z;
 			}
 			else if (pol->position.x - pointA.x < -0.5f)
-			{
-				pol->position.x = pol->position.x + vel.z;
+			{				
+				pol->position.x = pol->position.x + vel.x;
 			}
 			else
 			{
@@ -132,12 +132,11 @@ void Enemy::PositionUpdate(XMFLOAT3 pointA, XMFLOAT3 pointB, XMFLOAT3 tower)//エ
 			if (NextX) {
 				if (pol->position.z - pointA.z > 0.5f)
 				{
-					pol->position.z = pol->position.z + vel.x;
+					pol->position.z = pol->position.z + vel.z;
 				}
 				else if (pol->position.z - pointA.z < -0.5)
 				{
-					pol->position.x = pol->position.x + vel.z;
-					NextZ = true;
+					pol->position.z = pol->position.z + vel.x;
 				}
 				else
 				{
@@ -154,36 +153,34 @@ void Enemy::PositionUpdate(XMFLOAT3 pointA, XMFLOAT3 pointB, XMFLOAT3 tower)//エ
 #pragma endregion
 		case move2://第2移動
 #pragma region
-			if (NextZ) {
-				if (pol->position.x - pointA.x > 0.5f) {
-					pol->position.x = pol->position.x + vel.x;
-				}
-				else if (pol->position.x - pointA.x < -0.5f)
-				{
-					pol->position.x = pol->position.x + vel.z;
-				}
-				else
-				{
-					NextX = true;
-				}
-			}
-			if (pol->position.z - pointA.z > 0.5f)
-			{
-				pol->position.z = pol->position.z + vel.x;
-			}
-			else if (pol->position.z - pointA.z < -0.5)
-			{
+			if (pol->position.x - pointB.x > 0.5f) {
 				pol->position.x = pol->position.x + vel.z;
-				NextZ = true;
+			}
+			else if (pol->position.x - pointB.x < -0.5f)
+			{
+				pol->position.x = pol->position.x + vel.x;
 			}
 			else
 			{
-				NextZ = true;
+				NextX = true;
+			}
+			if (NextX) {
+				if (pol->position.z - pointB.z > 0.5f)
+				{
+					pol->position.z = pol->position.z + vel.z;
+				}
+				else if (pol->position.z - pointB.z < -0.5)
+				{
+					pol->position.z = pol->position.z + vel.x;
+				}
+				else
+				{
+					NextZ = true;
+				}
 			}
 			if (NextX == true, NextZ == true)
 			{
 				state = move3;
-				//pol->position.y = pol->position.y - Floar2;
 				NextX = false;
 				NextZ = false;
 			}
@@ -193,7 +190,7 @@ void Enemy::PositionUpdate(XMFLOAT3 pointA, XMFLOAT3 pointB, XMFLOAT3 tower)//エ
 #pragma region
 			if (!NextX) {
 				if (pol->position.x - tower.x > 0.5f) {
-					pol->position.x = pol->position.x + vel.x;
+					pol->position.x = pol->position.x + vel.z;
 				}
 				else if (pol->position.x - tower.x < -0.5f)
 				{
@@ -211,7 +208,7 @@ void Enemy::PositionUpdate(XMFLOAT3 pointA, XMFLOAT3 pointB, XMFLOAT3 tower)//エ
 				}
 				else if (pol->position.z - tower.z < -0.5f)
 				{
-					pol->position.z = pol->position.z - vel.z;
+					pol->position.z = pol->position.z - vel.x;
 				}
 				else
 				{

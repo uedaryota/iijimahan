@@ -201,6 +201,7 @@
     <ClInclude Include="Light.h" />
     <ClInclude Include="End.h" />
     <ClInclude Include="GamePlay.h" />
+    <ClInclude Include="StageRoder.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="BasicShaderHeader.hlsli">
