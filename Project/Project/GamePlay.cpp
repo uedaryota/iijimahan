@@ -80,7 +80,7 @@ void GamePlay::Update()
 
 	stage->Update();
 
-	//bat->Update();
+	bat->Update();
 
 
 	//if (input->PushKey(DIK_Q))//実験用→実験結果成功　＊座標の変更を行えます。
