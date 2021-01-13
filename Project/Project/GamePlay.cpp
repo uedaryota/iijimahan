@@ -46,6 +46,11 @@ int EneMax = 3;
 int EneNow = 0;
 void GamePlay::Update()
 {
+
+	Camera::ReturnCameraState()->cameraPos = XMFLOAT3(0, 65, -175);
+	Camera::ReturnCameraState()->target = XMFLOAT3(0, 0, 0);
+	Camera::ReturnCameraState()->up = XMFLOAT3(0, 1, 0);
+
 	input->Update();
 
 	if (input->PushKey(DIK_P))

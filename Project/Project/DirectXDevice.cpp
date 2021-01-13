@@ -5,7 +5,7 @@
 #include "Input.h"
 #include"GamePlay.h"
 #include"Camera.h"
-
+#include"Title.h"
 template<class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 
 ID3D12GraphicsCommandList* DirectXDevice::cmdList = nullptr;;
@@ -30,6 +30,7 @@ WNDCLASSEX DirectXDevice::w{};
 
 ObjDate* objdata;
 GamePlay* gameplay;
+Title* title;
 Light* light = nullptr;
 LRESULT WindowProc1(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
@@ -67,10 +68,13 @@ void DirectXDevice::Initialize()
 	objdata->LoadObj("UFO");
 	objdata->LoadObj("Gun_All");
 	objdata->LoadObj("triangle_mat");
+	objdata->LoadObj("BackSphere");
+
 	//objdata.LoadObj("triangle");
 	gameplay = new GamePlay();
 	gameplay->Initialize();
-	
+	title = new Title();
+	title->Initialize();
 
 
 
@@ -117,8 +121,28 @@ void DirectXDevice::Update()
 	DirectXDevice::cmdList->RSSetScissorRects(1, &scissorrect);
 	//‚±‚±‚©‚çUpdate
 	light->Update();
-	gameplay->Update();
-	gameplay->Draw();
+	if (!title->endFlag)
+	{
+		title->Update();
+		title->Draw();
+	}
+	else if (title->endFlag && !gameplay->endFlag)
+	{
+
+		gameplay->Update();
+		gameplay->Draw();
+	}
+	/*else if (title->endFlag && gameplay->endFlag && !endscene->endFlag)
+	{
+		endscene->Update();
+		endscene->Draw();
+	}*/
+	else if (title->endFlag && gameplay->endFlag)
+	{
+		title->Initialize();
+		gameplay->Initialize();
+		//endscene->Initialize();
+	}
 	//DirectXDevice::cmdList->RSSetViewports(1, &viewport2);
 	//
 	//tower->Draw(DirectXDevice::cmdList);

@@ -80,7 +80,7 @@ void Sprite::CreatePipeline()
 	gpipeline.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID; // ポリゴン内塗りつぶし
 	gpipeline.RasterizerState.DepthClipEnable = true; // 深度クリッピングを有効に
 
-	gpipeline.BlendState.AlphaToCoverageEnable = false;
+	gpipeline.BlendState.AlphaToCoverageEnable = true;
 	gpipeline.BlendState.IndependentBlendEnable = false;
 	// レンダーターゲットのブレンド設定(8 個あるがいまは一つしか使わない) 
 	D3D12_RENDER_TARGET_BLEND_DESC blenddesc{};
@@ -89,7 +89,7 @@ void Sprite::CreatePipeline()
 	blenddesc.BlendOpAlpha = D3D12_BLEND_OP_ADD;
 	blenddesc.SrcBlendAlpha = D3D12_BLEND_ONE;
 	blenddesc.DestBlendAlpha = D3D12_BLEND_ZERO;
-
+	
 	blenddesc.BlendOp = D3D12_BLEND_OP_MIN;  // 加算
 	blenddesc.SrcBlend = D3D12_BLEND_SRC_ALPHA;  // ソースのアルファ値
 	blenddesc.DestBlend = D3D12_BLEND_INV_SRC_ALPHA; // 1.0f-ソースのアルファ値 
@@ -588,9 +588,13 @@ void Sprite::Update()
 {
 
 
-	XMVECTOR eyePos = XMLoadFloat3(&Camera::MainCameraPos());
-	XMVECTOR targetPos = XMLoadFloat3(&Camera::ReturnCameraState()->target);
-	XMVECTOR upVector = XMLoadFloat3(&Camera::ReturnCameraState()->up);
+	//XMVECTOR eyePos = XMLoadFloat3(&Camera::MainCameraPos());
+	//XMVECTOR targetPos = XMLoadFloat3(&Camera::ReturnCameraState()->target);
+	//XMVECTOR upVector = XMLoadFloat3(&Camera::ReturnCameraState()->up);
+
+	XMVECTOR eyePos = { 0,0,-1 };
+	XMVECTOR targetPos = { 0,0,1 };
+	XMVECTOR upVector = { 0,1,0 };
 
 	XMVECTOR cameraAxisZ = XMVectorSubtract(targetPos, eyePos);
 	//
