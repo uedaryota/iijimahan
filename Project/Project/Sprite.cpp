@@ -85,7 +85,7 @@ void Sprite::CreatePipeline()
 	// レンダーターゲットのブレンド設定(8 個あるがいまは一つしか使わない) 
 	D3D12_RENDER_TARGET_BLEND_DESC blenddesc{};
 	blenddesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL; // 標準設定
-	blenddesc.BlendEnable = true;
+	blenddesc.BlendEnable = false;
 	blenddesc.BlendOpAlpha = D3D12_BLEND_OP_ADD;
 	blenddesc.SrcBlendAlpha = D3D12_BLEND_ONE;
 	blenddesc.DestBlendAlpha = D3D12_BLEND_ZERO;

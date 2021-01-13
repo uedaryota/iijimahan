@@ -47,7 +47,7 @@ int EneNow = 0;
 void GamePlay::Update()
 {
 
-	Camera::ReturnCameraState()->cameraPos = XMFLOAT3(0, 65, -175);
+	Camera::ReturnCameraState()->cameraPos = XMFLOAT3(0, 135, -175);
 	Camera::ReturnCameraState()->target = XMFLOAT3(0, 0, 0);
 	Camera::ReturnCameraState()->up = XMFLOAT3(0, 1, 0);
 
@@ -77,11 +77,7 @@ void GamePlay::Update()
 
 	enemy->SetScale(XMFLOAT3{ 10,10,10 });
 	manager->Update();
-	//enemy->Update();
-	//enemy->Draw(DirectXDevice::cmdList);
-	/*back->Update();
-	back->Draw();
-	*/
+
 	stage->Update();
 
 	bat->Update();
@@ -144,6 +140,7 @@ void GamePlay::Initialize()
 	//back->SetPos(XMFLOAT3(0, 0, 500));
 	enemy->SetTower(tower);
 	bat->Initialize();
+	bat->SetPos({ -100, 0, -100 });
 	//enemy->SetTarget(&tower->GetPosition);
 	enemy2->state = move1;
 	enemy2->SetTower(tower);
@@ -153,27 +150,40 @@ void GamePlay::Initialize()
 
 void GamePlay::CollisionUpdate()
 {
-	if (collider->CircleToCircle(*bat->col, *enemy->col))
+	bool targetFlag = false;
+	for (int a = 0; a < manager->boxcount; a++)
 	{
-		if (bat->targetPos == nullptr)
+		if (collider->CircleToCircle(*bat->col, *manager->enemybox[a]->col))
 		{
-			bat->SetTarget(&enemy->col->position);
-
-			bat->Shot();
-		}
-
-	}
-	if (bat->bulletList.size() != 0)
-	{
-		for (int a = 0; a < bat->bulletList.size(); a++)
-		{
-			if (collider->CircleToCircle(*bat->bulletList[a]->col, *enemy->col))
+			targetFlag = true;
+			if (bat->targetPos == nullptr)
 			{
-				enemy->EnemyDamege(bat->damage);
-				delete(bat->bulletList[a]);
-				bat->bulletList.erase(bat->bulletList.begin() + a);
+				bat->SetTarget(&manager->enemybox[a]->col->position);
+				//bat->Shot();
+			}
+			if (manager->enemybox[a]->Hp <= 0)
+			{
+				bat->SetTarget(nullptr);
+			}
+		}
+		
 
+		if (bat->bulletList.size() != 0)
+		{
+			for (int b = 0; b < bat->bulletList.size(); b++)
+			{
+				if (collider->CircleToCircle(*bat->bulletList[b]->col, *manager->enemybox[a]->col))
+				{
+					manager->enemybox[a]->EnemyDamege(bat->damage);
+					delete(bat->bulletList[b]);
+					bat->bulletList.erase(bat->bulletList.begin() + b);
+				}
 			}
 		}
 	}
+	if(!targetFlag)
+	{
+		bat->SetTarget(nullptr);
+	}
+	
 }

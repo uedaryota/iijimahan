@@ -8,6 +8,7 @@ Battery::Battery()
 Battery::~Battery()
 {
 	delete(obj);
+	delete(input);
 }
 
 void Battery::Update()
@@ -18,8 +19,11 @@ void Battery::Update()
 	col->Update();
 	clickcol->Update();
 
-	if (input->TriggerKey(DIK_T))
+	interval--;
+	
+	if (interval <= 0 && targetPos != nullptr)
 	{
+		interval = startval;
 		Shot();
 	}
 
