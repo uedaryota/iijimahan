@@ -4,12 +4,16 @@
 #include"DefenderWindow.h"
 class DefenderSpawn
 {
+public:
 	DefenderSpawn();
 	~DefenderSpawn();
 	void Update();
 	void Draw();
 	void Initialize();
 	void CreateBattery();
-	Battery* battery;
+	void SetPos(XMFLOAT3 pos);
+	Battery* battery = nullptr;
+	CircleCollision* col = nullptr;
+	XMFLOAT3 position;
 };
 

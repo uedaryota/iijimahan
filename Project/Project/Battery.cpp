@@ -64,7 +64,7 @@ void Battery::Initialize()
 	clickcol->color = { 1,0,0,0.5 };
 	//cloickcol->color={}
 	SetScale({ 10,10,10 });
-	SetPos({ 100, 0, 100 });
+	//SetPos({ 100, 0, 100 });
 }
 
 void Battery::SetTarget(XMFLOAT3* targetpos)

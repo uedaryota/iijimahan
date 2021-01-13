@@ -129,7 +129,6 @@ void DirectXDevice::Update()
 	}
 	else if (title->endFlag && !gameplay->endFlag)
 	{
-
 		gameplay->Update();
 		gameplay->Draw();
 	}
