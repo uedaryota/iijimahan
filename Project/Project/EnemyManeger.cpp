@@ -61,6 +61,7 @@ void EnemyManeger::Update()
 	for (int i = 0; i < boxcount; i++)
 	{
 		enemybox[i]->Update();
+	
 	}
 	//Serch();
 }

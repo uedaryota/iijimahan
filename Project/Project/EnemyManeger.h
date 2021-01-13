@@ -45,9 +45,10 @@ public:
 
 	void SetTowerEnemy(Tower* tow);
 
-private:
 	Enemy* enemybox[999];
 	int boxcount = 0;
+private:
+	
 	Spawn* spawn=new Spawn();
 	int amount;
 	float timer = 0;

@@ -24,9 +24,11 @@ public:
 	XMFLOAT3 mainScale{};
 	XMFLOAT3 mainRotate{};
 	XMFLOAT3* targetPos = nullptr;
-	int interval;
-	int damage=1;
+	int interval = 60;
+	int damage = 1;
 	Input* input;
-
+private:
+	int startval = 60;
+	
 };
 
