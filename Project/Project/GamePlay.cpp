@@ -61,14 +61,14 @@ void GamePlay::Update()
 		timer++;
 		if (timer / 60 > spawntime)
 		{
-			manager->Add2();
+			manager->Add2(spawn->GetPosition());
 			manager->ReAncerSet(XMFLOAT3{ -100,1,-100 }, XMFLOAT3{ 500,500,500 });
 			manager->SetTowerEnemy(tower);
 			timer = 0;
 			EneNow++;
 		}
 	}
-
+	
 
 	enemy->SetScale(XMFLOAT3{ 10,10,10 });
 	manager->Update();
@@ -104,7 +104,7 @@ GamePlay::GamePlay()
 void GamePlay::Draw()
 {
 	tower->Draw(DirectXDevice::cmdList);
-	//spawn->Draw(DirectXDevice::cmdList);
+	spawn->Draw(DirectXDevice::cmdList);
 	manager->Draw(DirectXDevice::cmdList);
 	stage->Draw();
 	bat->Draw();
@@ -122,8 +122,8 @@ void GamePlay::Initialize()
 	spawn->Initialize(DirectXDevice::dev);
 	//Set = &SetAd;
 	spawn->SetSpawn(10, 10);
-	manager->Add2();
-	manager->Add(enemy);
+	manager->Add2(spawn->GetPosition());
+	//manager->Add(enemy);
 	//manager->Add(enemy2);
 	enemy->state = move1;
 	timer = 0;

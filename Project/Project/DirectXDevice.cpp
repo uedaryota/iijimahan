@@ -68,6 +68,7 @@ void DirectXDevice::Initialize()
 	objdata->LoadObj("Gun_All");
 	objdata->LoadObj("triangle_mat");
 	//objdata.LoadObj("triangle");
+	objdata->LoadObj("Enemy_Base");
 	gameplay = new GamePlay();
 	gameplay->Initialize();
 	

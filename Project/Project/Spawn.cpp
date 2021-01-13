@@ -20,7 +20,7 @@ void Spawn::Initialize(ID3D12Device* dev)
 	obj->Initialize();
 	obj->LoadObj("Enemy_Base");
 	obj->position.y = 10;
-	obj->SetScale({ 30,30,30 });
+	obj->SetScale({ 10,10,10 });
 }
 
 void Spawn::Update()
