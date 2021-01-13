@@ -391,7 +391,7 @@ void Floor::CreateMainHeap(ID3D12Device * dev)
 	TexMetadata metadate = {};
 	ScratchImage scratchImg = {};
 	result = LoadFromWICFile(
-		L"img/è∞.png",
+		L"img/stage1.png",
 		WIC_FLAGS_NONE,
 		&metadate,
 		scratchImg

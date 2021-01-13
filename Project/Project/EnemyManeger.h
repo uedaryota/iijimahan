@@ -52,4 +52,5 @@ private:
 	int amount;
 	float timer = 0;
 	int Cnt = 0;
+	vector<Enemy>enemybox2 = {};
 };

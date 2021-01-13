@@ -302,6 +302,7 @@
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="Stage.h" />
     <ClInclude Include="Stage2D.h" />
+    <ClInclude Include="StageRoder.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Title.h" />
     <ClInclude Include="Tower.h" />
