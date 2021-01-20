@@ -201,6 +201,9 @@ void GamePlay::CollisionUpdate()
 				defList[i]->CreateBattery();
 			}
 		}
+	}
+	for (int i = 0; i < defList.size(); i++)
+	{
 		for (int a = 0; a < manager->boxcount; a++)
 		{
 			if (defList[i]->battery != nullptr)
@@ -224,7 +227,6 @@ void GamePlay::CollisionUpdate()
 					//”ÍˆÍŠO‚È‚çnull
 					defList[i]->battery->SetTarget(nullptr);
 				}
-
 				if (defList[i]->battery->bulletList.size() != 0)
 				{
 					for (int b = 0; b < defList[i]->battery->bulletList.size(); b++)
@@ -237,11 +239,9 @@ void GamePlay::CollisionUpdate()
 						}
 					}
 				}
-
-
 				if (!targetFlag)
 				{
-					defList[i]->battery->SetTarget(nullptr);
+				//	defList[i]->battery->SetTarget(nullptr);
 				}
 			}
 		}
