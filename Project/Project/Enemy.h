@@ -17,6 +17,7 @@ class Enemy :EnemyAI
 public:
 	Enemy();
 	~Enemy();
+	Enemy(const Enemy *ene);
 	void Initialize();
 	void Update();
 	void Draw(ID3D12GraphicsCommandList * cmdList);
@@ -27,7 +28,7 @@ public:
 	void PositionUpdate(XMFLOAT3 pointA, XMFLOAT3 pointB, XMFLOAT3 tower);
 	EnemyAI ai;
 	float Hp;
-	float Speed;
+	float Speed=1;
 	float Power;
 	XMFLOAT3 vel = {0.1, 0, -0.1};
 	bool NextX = false;
@@ -55,6 +56,10 @@ public:
 	void ActionRiset();
 	XMFLOAT3 GetPosition();
 
+	float GetHp();
+	float GetSpeed();
+	void SetHp(float x);
+	void SetSpeed(float x);
 	CircleCollision* col;
 private:
 	Poly * pol = new Poly();

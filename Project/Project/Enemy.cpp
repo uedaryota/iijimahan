@@ -9,6 +9,10 @@ Enemy::~Enemy()
 	delete(pol);
 }
 
+Enemy::Enemy(const Enemy * ene)
+{
+}
+
 ///<summary>
 ///‰Šú‰»
 ///</summary>
@@ -89,7 +93,7 @@ void Enemy::Install(EnemyAI Ai)
 void Enemy::SetState()
 {
 	Hp = 5.0f;
-	Speed = ai.GetSpeed();
+	Speed = GetSpeed();
 	Power = ai.GetPower();
 }
 
@@ -105,6 +109,8 @@ void Enemy::PositionUpdate(XMFLOAT3 pointA, XMFLOAT3 pointB, XMFLOAT3 tower)//ƒG
 	{
 		state = Destory;
 	}
+	vel.x = vel.x*Speed/10;
+	vel.z = vel.z*Speed/10;
 	switch (state)
 	{
 	    case Destory:
@@ -378,4 +384,24 @@ void Enemy::ActionRiset()
 XMFLOAT3 Enemy::GetPosition()
 {
 	return obj->position;
+}
+float Enemy::GetHp()
+{
+	return Hp;
+}
+
+void Enemy::SetHp(float x)
+{
+	Hp = x;
+}
+
+float Enemy::GetSpeed()
+{
+	return Speed;
+}
+
+void Enemy::SetSpeed(float x)
+{
+	Speed = x;
+	Speed;
 }

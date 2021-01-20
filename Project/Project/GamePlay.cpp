@@ -21,10 +21,14 @@
 #include"Spawn.h"
 #include"DefenderSpawn.h"
 #include<vector>
+#include"EnemyCSVRoder.h"
+
 Camera* c = new Camera();
 Tower* tower = new Tower();
 XMFLOAT3 pointA = { 0,0,30 };
 XMFLOAT3 pointB = { 120,0,170 };
+float HpKari = 1;
+float SpeedKari = 1;
 Sound* sound = new Sound();
 //Stage* stage = new Stage();
 Stage2D* stage = new Stage2D();
@@ -69,6 +73,8 @@ void GamePlay::Update()
 			manager->Add2(spawn->GetPosition());
 			manager->ReAncerSet(pointA, pointB);
 			manager->SetTowerEnemy(tower);
+			manager->SetHp(HpKari);
+			manager->SetSpeed(SpeedKari);
 			timer = 0;
 			EneNow++;
 		}
@@ -146,6 +152,14 @@ void GamePlay::Initialize()
 	enemy2->SetTower(tower);
 	sound->LoadFile(L".\\Resources\\TDBGM2.mp3");
 	input->Initialize();
+	vector<DATA>DateTable = LoadData("Data/Enemy.csv");
+	for (auto date : DateTable)
+	{
+		pointA = date.FirstPos;
+		pointB = date.SecondPos;
+		HpKari = date.HP;
+		SpeedKari = date.SPEED;
+	}
 }
 
 void GamePlay::CollisionUpdate()

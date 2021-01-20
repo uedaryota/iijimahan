@@ -12,18 +12,15 @@ public:
 	void Initialize();	
 	void SetPos(XMFLOAT3 position);
 	void SetTarget(Tower tower);
-	float GetHp();
-	float GetSpeed();
+
 	float GetPower();
-	void SetHp(float x);
-	void SetSpeed(float x);
+
 	void SetPower(float x);
 	XMFLOAT3 position;
 	XMFLOAT3 velocity;
 	EnemyAI GetAI(EnemyAI ai);
 	Tower tower,pointA,pointB;
-	float Hp;
-	float Speed=1;
+
 	float Power=1;
 private:
 	Poly* pol = new Poly();
