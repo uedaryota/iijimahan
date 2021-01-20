@@ -81,7 +81,7 @@ void GamePlay::Update()
 	}
 	
 
-	enemy->SetScale(XMFLOAT3{ 10,10,10 });
+	//enemy->SetScale(XMFLOAT3{ 10,10,10 });
 	manager->Update();
 
 	stage->Update();
@@ -137,14 +137,14 @@ void GamePlay::Initialize()
 	manager->Add2(spawn->GetPosition());
 	//manager->Add(enemy);
 	//manager->Add(enemy2);
-	enemy->state = move1;
+	//enemy->state = move1;
 	timer = 0;
 	manager->SetTowerEnemy(tower);
 	//back->Initialize();
 	//back->ResetTex(L"img/Blueback.png");
 	//back->SetScale(XMFLOAT3(300, 300, 300));
 	//back->SetPos(XMFLOAT3(0, 0, 500));
-	enemy->SetTower(tower);
+	//enemy->SetTower(tower);
 	//–C‘äƒXƒ|ƒi[
 
 	DefenderSpawn* d1 = new DefenderSpawn();
@@ -184,8 +184,8 @@ void GamePlay::Initialize()
 
 	//enemy->SetTarget(&tower->GetPosition);
 	//“G
-	enemy2->state = move1;
-	enemy2->SetTower(tower);
+	//enemy2->state = move1;
+	//enemy2->SetTower(tower);
 	sound->LoadFile(L".\\Resources\\TDBGM2.mp3");
 	input->Initialize();
 	vector<DATA>DateTable = LoadData("Data/Enemy.csv");

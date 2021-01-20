@@ -30,7 +30,7 @@ public:
 	float Hp;
 	float Speed=1;
 	float Power;
-	XMFLOAT3 vel = {0.1, 0, -0.1};
+	XMFLOAT3 vel = {0.1 + (Speed / 50), 0, -0.1 - (Speed / 50) };
 	bool NextX = false;
 	bool NextZ = false;
 	float Floar2 = 110.0f;
@@ -56,6 +56,7 @@ public:
 	void ActionRiset();
 	XMFLOAT3 GetPosition();
 
+	void SpeedEne();
 	float GetHp();
 	float GetSpeed();
 	void SetHp(float x);
