@@ -21,15 +21,16 @@ public:
 	CircleCollision* col = nullptr;
 	CircleCollision* clickcol = nullptr;
 	std::vector<Bullet*>bulletList;
-	XMFLOAT3 mainPos{};
-	XMFLOAT3 mainScale{};
-	XMFLOAT3 mainRotate{};
+	XMFLOAT3 position;
+	XMFLOAT3 scale{};
+	XMFLOAT3 rotation{};
 	XMFLOAT3* targetPos = nullptr;
 	int interval = 60;
 	int damage = 1;
 	Input* input;
 	bool liveFlag;
 private:
+	void Setdir();
 	int startval = 60;
 	
 };

@@ -120,7 +120,6 @@
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="End.cpp" />
     <ClCompile Include="GamePlay.cpp" />
-    <ClCompile Include="Cost.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Block.h">
@@ -203,7 +202,7 @@
     <ClInclude Include="End.h" />
     <ClInclude Include="GamePlay.h" />
     <ClInclude Include="StageRoder.h" />
-    <ClInclude Include="Cost.h" />
+    <ClInclude Include="EnemyCSVRoder.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="BasicShaderHeader.hlsli">

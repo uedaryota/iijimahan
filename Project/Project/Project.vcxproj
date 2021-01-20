@@ -288,6 +288,7 @@
     <ClInclude Include="End.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="EnemyAI.h" />
+    <ClInclude Include="EnemyCSVRoder.h" />
     <ClInclude Include="EnemyManeger.h" />
     <ClInclude Include="Floor.h" />
     <ClInclude Include="GamePlay.h" />

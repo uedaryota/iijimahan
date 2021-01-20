@@ -27,26 +27,7 @@ void EnemyAI::SetTarget(Tower tow)
 	tower = tow;
 }
 
-float EnemyAI::GetHp()
-{
-	return Hp;
-}
 
-void EnemyAI::SetHp(float x)
-{
-	Hp = x;
-}
-
-float EnemyAI::GetSpeed()
-{
-	return Speed;
-}
-
-void EnemyAI::SetSpeed(float x)
-{
-	Speed = x;
-	Speed;
-}
 
 
 float EnemyAI::GetPower()

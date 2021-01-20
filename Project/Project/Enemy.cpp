@@ -9,6 +9,10 @@ Enemy::~Enemy()
 	delete(pol);
 }
 
+Enemy::Enemy(const Enemy * ene)
+{
+}
+
 ///<summary>
 ///èâä˙âª
 ///</summary>
@@ -24,6 +28,8 @@ void Enemy::Initialize()
 	obj->Initialize();
 	obj->LoadObj("UFO");
 	obj->position.y = 0;
+	vel.x = vel.x + (Speed / 50);
+	vel.z = vel.z + (Speed / 50);
 }
 
 ///<summary>
@@ -39,7 +45,7 @@ void Enemy::Update()
 	obj->Update();
 	obj->position = pol->position;
 	col->position = obj->position;
-	PositionUpdate(Ancer1, Ancer2, TargetTower);
+	PositionUpdate(Ancer1, Ancer2, mokuhyou->GetPosition());
 	GetState();
 	GetAlive();
 }
@@ -89,7 +95,7 @@ void Enemy::Install(EnemyAI Ai)
 void Enemy::SetState()
 {
 	Hp = 5.0f;
-	Speed = ai.GetSpeed();
+	Speed = GetSpeed();
 	Power = ai.GetPower();
 }
 
@@ -105,6 +111,7 @@ void Enemy::PositionUpdate(XMFLOAT3 pointA, XMFLOAT3 pointB, XMFLOAT3 tower)//ÉG
 	{
 		state = Destory;
 	}
+
 	switch (state)
 	{
 	    case Destory:
@@ -188,27 +195,25 @@ void Enemy::PositionUpdate(XMFLOAT3 pointA, XMFLOAT3 pointB, XMFLOAT3 tower)//ÉG
 #pragma endregion
 		case move3://ëÊ3à⁄ìÆ
 #pragma region
-			if (!NextX) {
-				if (pol->position.x - tower.x > 0.5f) {
-					pol->position.x = pol->position.x + vel.z;
-				}
-				else if (pol->position.x - tower.x < -0.5f)
-				{
-					pol->position.x = pol->position.x -  vel.x;
-				}
-				else
-				{
-					NextX = true;
-				}
+			if (pol->position.x - tower.x > 0.5f) {
+				pol->position.x = pol->position.x + vel.z;
 			}
-			if (!NextZ) {
+			else if (pol->position.x - tower.x < -0.5f)
+			{
+				pol->position.x = pol->position.x + vel.x;
+			}
+			else
+			{
+				NextX = true;
+			}
+			if (NextX) {
 				if (pol->position.z - tower.z > 0.5f)
 				{
 					pol->position.z = pol->position.z + vel.z;
 				}
-				else if (pol->position.z - tower.z < -0.5f)
+				else if (pol->position.z - tower.z < -0.5)
 				{
-					pol->position.z = pol->position.z - vel.x;
+					pol->position.z = pol->position.z + vel.x;
 				}
 				else
 				{
@@ -378,4 +383,28 @@ void Enemy::ActionRiset()
 XMFLOAT3 Enemy::GetPosition()
 {
 	return obj->position;
+}
+void Enemy::SpeedEne()
+{
+	vel = { 0.1f + (Speed / 10.0f), 0, -0.1f - (Speed / 10.0f) };
+}
+float Enemy::GetHp()
+{
+	return Hp;
+}
+
+void Enemy::SetHp(float x)
+{
+	Hp = x;
+}
+
+float Enemy::GetSpeed()
+{
+	return Speed;
+}
+
+void Enemy::SetSpeed(float x)
+{
+	Speed = x;
+	Speed;
 }
