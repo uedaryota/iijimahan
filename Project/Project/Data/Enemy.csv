@@ -1,0 +1,2 @@
+Enemy,FirstPosX,FirstPosY,FirstPosZ,SecondPosX,SecondPosY,SecondPosZ,HP,SPEED,Tag
+TypeOne,0,0,30,120,0,170,10,20,Enemy

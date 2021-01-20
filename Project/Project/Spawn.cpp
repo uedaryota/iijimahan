@@ -16,7 +16,7 @@ void Spawn::Initialize(ID3D12Device* dev)
 	tex->Initialize();
 	tex->position = { texPos.x, texPos.y / Camera::window_height, 0 };
 	tex->scale = { texSize.x / Camera::window_width,texSize.y / Camera::window_height,100.0f };
-
+	Cnt = 0;
 	obj->Initialize();
 	obj->LoadObj("Enemy_Base");
 	obj->position.y = 10;

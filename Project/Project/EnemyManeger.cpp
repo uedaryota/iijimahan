@@ -1,12 +1,14 @@
 #include "EnemyManeger.h"
-
+#include"EnemyAI.h"
 void EnemyManeger::Initialize()
 {
 	boxcount = 0;
+	
 }
 
 void EnemyManeger::Add(Enemy* enemy)
 {
+//	enemybox2.push_back(Enemy());
 	enemybox[boxcount] = enemy;
 	enemybox[boxcount]->Initialize();
 	enemybox[boxcount]->SetScale(XMFLOAT3(2, 2, 2));
@@ -22,12 +24,18 @@ void EnemyManeger::Add2(XMFLOAT3 x)
 	}
 	else
 	{
-			enemybox[boxcount] = spawn->enemyamount();
+		   // enemybox2.push_back(*new Enemy());
+			enemybox[boxcount] = spawn->enemyamount();		  
+			//enemybox2[boxcount].Initialize();
 			enemybox[boxcount]->Initialize();
 			enemybox[boxcount]->SetScale(XMFLOAT3(10, 10, 10));
+			//enemybox2[boxcount].SetScale(XMFLOAT3(10, 10, 10));
 			enemybox[boxcount]->SetPos(x);
+			//enemybox2[boxcount].SetPos(x);
 			enemybox[boxcount]->ActionRiset();
+			//enemybox2[boxcount].ActionRiset();
 			enemybox[boxcount]->state = move1;
+			//enemybox2[boxcount].state = move1;
 			boxcount++;
 			Cnt++;
 	}
@@ -54,6 +62,7 @@ void EnemyManeger::Draw(ID3D12GraphicsCommandList * cmdList)
 	for (int i = 0; i < boxcount; i++)
 	{
 		enemybox[i]->Draw(cmdList);
+		//enemybox2[i].Draw(cmdList);
 	}
 }
 
@@ -62,6 +71,7 @@ void EnemyManeger::Update()
 	for (int i = 0; i < boxcount; i++)
 	{
 		enemybox[i]->Update();
+		//enemybox2[i].Update();
 	
 	}
 	//Serch();
@@ -78,6 +88,8 @@ void EnemyManeger::AncerSet(XMFLOAT3 anc1, XMFLOAT3 anc2)
 	{
 		enemybox[i]->SetAncer1(anc1);
 		enemybox[i]->SetAncer2(anc2);
+		//enemybox2[i].SetAncer1(anc1);
+		//enemybox2[i].SetAncer2(anc2);
 	}
 }
 
@@ -111,7 +123,9 @@ void EnemyManeger::ReAncerSet(XMFLOAT3 anc1, XMFLOAT3 anc2)
 	{
 		
 		enemybox[i]->SetAncer1(anc1);
+		//enemybox2[i].SetAncer1(anc1);
 		enemybox[i]->SetAncer2(anc2);
+		//enemybox2[i].SetAncer2(anc2);
 	}
 }
 
@@ -147,5 +161,24 @@ void EnemyManeger::SetTowerEnemy(Tower* tow)
 	for (int i = 0; i < boxcount; i++)
 	{
 		enemybox[i]->SetTower(tow);
+		//enemybox2[i].SetTower(tow);
+	}
+}
+
+void EnemyManeger::SetHp(float x)
+{
+	for (int i = 0; i < boxcount; i++)
+	{
+		enemybox[i]->SetHp(x);
+		//enemybox2[i].SetHp(x);
+	}
+}
+
+void EnemyManeger::SetSpeed(float x)
+{
+	for (int i = 0; i < boxcount; i++)
+	{
+		enemybox[i]->SetSpeed(x);
+		//enemybox2[i].SetSpeed(x);
 	}
 }

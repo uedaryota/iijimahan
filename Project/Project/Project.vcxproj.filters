@@ -202,6 +202,7 @@
     <ClInclude Include="End.h" />
     <ClInclude Include="GamePlay.h" />
     <ClInclude Include="StageRoder.h" />
+    <ClInclude Include="EnemyCSVRoder.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="BasicShaderHeader.hlsli">

@@ -21,10 +21,14 @@
 #include"Spawn.h"
 #include"DefenderSpawn.h"
 #include<vector>
+#include"EnemyCSVRoder.h"
+
 Camera* c = new Camera();
 Tower* tower = new Tower();
 XMFLOAT3 pointA = { 0,0,30 };
 XMFLOAT3 pointB = { 120,0,170 };
+float HpKari = 1;
+float SpeedKari = 1;
 Sound* sound = new Sound();
 //Stage* stage = new Stage();
 Stage2D* stage = new Stage2D();
@@ -69,13 +73,15 @@ void GamePlay::Update()
 			manager->Add2(spawn->GetPosition());
 			manager->ReAncerSet(pointA, pointB);
 			manager->SetTowerEnemy(tower);
+			manager->SetHp(HpKari);
+			manager->SetSpeed(SpeedKari);
 			timer = 0;
 			EneNow++;
 		}
 	}
 	
 
-	enemy->SetScale(XMFLOAT3{ 10,10,10 });
+	//enemy->SetScale(XMFLOAT3{ 10,10,10 });
 	manager->Update();
 
 	stage->Update();
@@ -89,15 +95,15 @@ void GamePlay::Update()
 	//{
 	//	manager->AncerSet(XMFLOAT3{ 15,15,15 }, XMFLOAT3{ 15,15,15 });
 	//}
-	if (input->PushKey(DIK_SPACE))//実験用→実験結果成功　＊座標の変更を行えます。
-	{
-		manager->ReAncerSet(XMFLOAT3{ -100,1,-100 }, XMFLOAT3{ 500,500,500 });
-	}
-	if (input->TriggerKey(DIK_Z))
-	{
-		enemy->EnemyDamege(1);
-		//enemy2->EnemyDamege(0.5);
-	}
+	//if (input->PushKey(DIK_SPACE))//実験用→実験結果成功　＊座標の変更を行えます。
+	//{
+	//	manager->ReAncerSet(XMFLOAT3{ -100,1,-100 }, XMFLOAT3{ 500,500,500 });
+	//}
+	//if (input->TriggerKey(DIK_Z))
+	//{
+	//	enemy->EnemyDamege(1);
+	//	//enemy2->EnemyDamege(0.5);
+	//}
 
 	CollisionUpdate();
 }
@@ -131,14 +137,14 @@ void GamePlay::Initialize()
 	manager->Add2(spawn->GetPosition());
 	//manager->Add(enemy);
 	//manager->Add(enemy2);
-	enemy->state = move1;
+	//enemy->state = move1;
 	timer = 0;
 	manager->SetTowerEnemy(tower);
 	//back->Initialize();
 	//back->ResetTex(L"img/Blueback.png");
 	//back->SetScale(XMFLOAT3(300, 300, 300));
 	//back->SetPos(XMFLOAT3(0, 0, 500));
-	enemy->SetTower(tower);
+	//enemy->SetTower(tower);
 	//砲台スポナー
 
 	DefenderSpawn* d1 = new DefenderSpawn();
@@ -178,10 +184,18 @@ void GamePlay::Initialize()
 
 	//enemy->SetTarget(&tower->GetPosition);
 	//敵
-	enemy2->state = move1;
-	enemy2->SetTower(tower);
+	//enemy2->state = move1;
+	//enemy2->SetTower(tower);
 	sound->LoadFile(L".\\Resources\\TDBGM2.mp3");
 	input->Initialize();
+	vector<DATA>DateTable = LoadData("Data/Enemy.csv");
+	for (auto date : DateTable)
+	{
+		pointA = date.FirstPos;
+		pointB = date.SecondPos;
+		HpKari = date.HP;
+		SpeedKari = date.SPEED;
+	}
 	//背景
 	backSphere = new ObjFile();
 	backSphere->Initialize();
