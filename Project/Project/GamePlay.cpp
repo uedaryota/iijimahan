@@ -66,6 +66,7 @@ void GamePlay::Update()
 		timer++;
 		if (timer / 60 > spawntime)
 		{
+			//エネミー生成
 			manager->Add2(spawn->GetPosition());
 			manager->ReAncerSet(pointA, pointB);
 			manager->SetTowerEnemy(tower);

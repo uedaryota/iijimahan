@@ -153,6 +153,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CircleCollision.cpp" />
     <ClCompile Include="Collision.cpp" />
+    <ClCompile Include="Cost.cpp" />
     <ClCompile Include="DebugText.cpp" />
     <ClCompile Include="DefenderSpawn.cpp" />
     <ClCompile Include="DefenderWindow.cpp" />
@@ -279,6 +280,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CircleCollision.h" />
     <ClInclude Include="Collision.h" />
+    <ClInclude Include="Cost.h" />
     <ClInclude Include="DebugText.h" />
     <ClInclude Include="DefenderSpawn.h" />
     <ClInclude Include="DefenderWindow.h" />

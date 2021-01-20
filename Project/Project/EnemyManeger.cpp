@@ -7,6 +7,7 @@ void EnemyManeger::Initialize()
 
 void EnemyManeger::Add(Enemy* enemy)
 {
+	//単体で生成しているところ
 	enemybox[boxcount] = enemy;
 	enemybox[boxcount]->Initialize();
 	enemybox[boxcount]->SetScale(XMFLOAT3(2, 2, 2));
@@ -16,6 +17,7 @@ void EnemyManeger::Add(Enemy* enemy)
 
 void EnemyManeger::Add2(XMFLOAT3 x)
 {
+	//連続で生成しているところ：基本はこっちで生成している
 	if (Cnt > 200)
 	{
 		return;
