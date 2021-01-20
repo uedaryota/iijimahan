@@ -12,19 +12,26 @@ Bullet::~Bullet()
 
 void Bullet::Update()
 {
-	XMFLOAT3 v = { targetPos->x - position.x, targetPos->y - position.y, targetPos->z - position.z };
-	float len = sqrtf(v.x*v.x + v.y*v.y + v.z*v.z);
-	v = { v.x / len * speed, v.y / len * speed, v.z / len * speed };
-	velocity = v;
-	position = { position.x + velocity.x,position.y + velocity.y,position.z + velocity.z };
-	obj->SetPos(position);
-	col->position = position;
-	obj->Update();
+	if (targetPos != nullptr&&liveFlag)
+	 {
+		XMFLOAT3 v = { targetPos->x - position.x, targetPos->y - position.y, targetPos->z - position.z };
+		float len = sqrtf(v.x*v.x + v.y*v.y + v.z*v.z);
+		v = { v.x / len * speed, v.y / len * speed, v.z / len * speed };
+		velocity = v;
+		position = { position.x + velocity.x,position.y + velocity.y,position.z + velocity.z };
+		obj->SetPos(position);
+		col->position = position;
+		obj->Update();
+	}
+
 }
 
 void Bullet::Draw()
 {
-	obj->Draw(DirectXDevice::cmdList);
+	if (liveFlag)
+	{
+		obj->Draw(DirectXDevice::cmdList);
+	}
 }
 
 void Bullet::Initialize()
@@ -50,4 +57,10 @@ void Bullet::SetPos(XMFLOAT3 pos)
 	position = pos;
 	obj->SetPos(position);
 	col->position = position;
+}
+
+void Bullet::Reset()
+{
+	liveFlag = false;
+	targetPos = nullptr;
 }

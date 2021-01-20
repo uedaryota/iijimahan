@@ -37,9 +37,9 @@ Enemy* enemy2 = new Enemy();
 EnemyAI* ai = new EnemyAI();
 EnemyManeger* manager = new EnemyManeger();
 Input* input = new Input();
-//vector<Battery*> defList;
+//vector<Battery*> batL;
 vector<DefenderSpawn*> defList;
-
+ObjFile* backSphere;
 
 Collision* collider = new Collision();
 Spawn* spawn = new Spawn();
@@ -85,7 +85,7 @@ void GamePlay::Update()
 	manager->Update();
 
 	stage->Update();
-
+	backSphere->Update();
 	for (int a = 0; a < defList.size(); a++)
 	{
 		defList[a]->Update();
@@ -95,15 +95,15 @@ void GamePlay::Update()
 	//{
 	//	manager->AncerSet(XMFLOAT3{ 15,15,15 }, XMFLOAT3{ 15,15,15 });
 	//}
-	if (input->PushKey(DIK_SPACE))//実験用→実験結果成功　＊座標の変更を行えます。
-	{
-		manager->ReAncerSet(XMFLOAT3{ -100,1,-100 }, XMFLOAT3{ 500,500,500 });
-	}
-	if (input->TriggerKey(DIK_Z))
-	{
-		enemy->EnemyDamege(1);
-		//enemy2->EnemyDamege(0.5);
-	}
+	//if (input->PushKey(DIK_SPACE))//実験用→実験結果成功　＊座標の変更を行えます。
+	//{
+	//	manager->ReAncerSet(XMFLOAT3{ -100,1,-100 }, XMFLOAT3{ 500,500,500 });
+	//}
+	//if (input->TriggerKey(DIK_Z))
+	//{
+	//	enemy->EnemyDamege(1);
+	//	//enemy2->EnemyDamege(0.5);
+	//}
 
 	CollisionUpdate();
 }
@@ -120,10 +120,12 @@ void GamePlay::Draw()
 	{
 		defList[a]->Draw();
 	}
+	backSphere->Draw(DirectXDevice::cmdList);
 }
 void GamePlay::Initialize()
 {
 	tower->Initialize(DirectXDevice::dev);
+	tower->SetPoisition({ 130,0,180 });
 	manager->Initialize();
 	enemy->Initialize();
 	sound->Initialize();
@@ -143,11 +145,45 @@ void GamePlay::Initialize()
 	//back->SetScale(XMFLOAT3(300, 300, 300));
 	//back->SetPos(XMFLOAT3(0, 0, 500));
 	enemy->SetTower(tower);
+	//砲台スポナー
+
 	DefenderSpawn* d1 = new DefenderSpawn();
 	d1->Initialize();
 	d1->SetPos({ -40, 0, -90 });
 	defList.push_back(d1);
+
+	DefenderSpawn* d2 = new DefenderSpawn();
+	d2->Initialize();
+	d2->SetPos({ -70, 0, -190 });
+	defList.push_back(d2);
+
+	DefenderSpawn* d3 = new DefenderSpawn();
+	d3->Initialize();
+	d3->SetPos({ 50, 0, -110 });
+	defList.push_back(d3);
+
+	DefenderSpawn* d4 = new DefenderSpawn();
+	d4->Initialize();
+	d4->SetPos({ -20, 0, 30 });
+	defList.push_back(d4);
+
+	DefenderSpawn* d5 = new DefenderSpawn();
+	d5->Initialize();
+	d5->SetPos({ 70, 0, 60 });
+	defList.push_back(d5);
+
+	DefenderSpawn* d6 = new DefenderSpawn();
+	d6->Initialize();
+	d6->SetPos({ 170, 0, 110 });
+	defList.push_back(d6);
+
+	DefenderSpawn* d7 = new DefenderSpawn();
+	d7->Initialize();
+	d7->SetPos({ 170, 0, 25 });
+	defList.push_back(d7);
+
 	//enemy->SetTarget(&tower->GetPosition);
+	//敵
 	enemy2->state = move1;
 	enemy2->SetTower(tower);
 	sound->LoadFile(L".\\Resources\\TDBGM2.mp3");
@@ -160,6 +196,11 @@ void GamePlay::Initialize()
 		HpKari = date.HP;
 		SpeedKari = date.SPEED;
 	}
+	//背景
+	backSphere = new ObjFile();
+	backSphere->Initialize();
+	backSphere->LoadObj("BackSphere");
+	backSphere->scale = { 1000, 1000, 1000 };
 }
 
 void GamePlay::CollisionUpdate()
@@ -178,32 +219,35 @@ void GamePlay::CollisionUpdate()
 		{
 			if (defList[i]->battery != nullptr)
 			{
-
-
 				if (collider->CircleToCircle(*defList[i]->battery->col, *manager->enemybox[a]->col))
 				{
 					targetFlag = true;
 					if (defList[i]->battery->targetPos == nullptr)
 					{
+						//砲台にターゲットをセット
 						defList[i]->battery->SetTarget(&manager->enemybox[a]->col->position);
-						//defList[0]->Shot();
 					}
 					if (manager->enemybox[a]->Hp <= 0)
 					{
+						//HP0になったらターゲットnull
 						defList[i]->battery->SetTarget(nullptr);
 					}
 				}
-
+				else
+				{
+					//範囲外ならnull
+					defList[i]->battery->SetTarget(nullptr);
+				}
 
 				if (defList[i]->battery->bulletList.size() != 0)
 				{
 					for (int b = 0; b < defList[i]->battery->bulletList.size(); b++)
 					{
-						if (collider->CircleToCircle(*defList[i]->battery->bulletList[b]->col, *manager->enemybox[a]->col))
+						if (collider->CircleToCircle(*defList[i]->battery->bulletList[b]->col, *manager->enemybox[a]->col)
+							&& defList[i]->battery->bulletList[b]->liveFlag)
 						{
 							manager->enemybox[a]->EnemyDamege(defList[i]->battery->damage);
-							delete(defList[i]->battery->bulletList[b]);
-							defList[i]->battery->bulletList.erase(defList[i]->battery->bulletList.begin() + b);
+							defList[i]->battery->bulletList[b]->Reset();
 						}
 					}
 				}
