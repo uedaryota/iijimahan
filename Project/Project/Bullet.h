@@ -13,11 +13,13 @@ public:
 	void Initialize();
 	void SetVelocity(XMFLOAT3 velocity);
 	void SetPos(XMFLOAT3 pos);
+	void Reset();
 	XMFLOAT3 position{};
 	XMFLOAT3 velocity{};
 	XMFLOAT3 rotation{};
 	XMFLOAT3 scale{};
-
+	//“®‚¢‚Ä‚¢‚é‚©
+	bool liveFlag;
 	ObjFile* obj;
 	CircleCollision* col;
 	

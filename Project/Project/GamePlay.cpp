@@ -33,7 +33,7 @@ Enemy* enemy2 = new Enemy();
 EnemyAI* ai = new EnemyAI();
 EnemyManeger* manager = new EnemyManeger();
 Input* input = new Input();
-//vector<Battery*> defList;
+//vector<Battery*> batL;
 vector<DefenderSpawn*> defList;
 
 
@@ -164,8 +164,6 @@ void GamePlay::CollisionUpdate()
 		{
 			if (defList[i]->battery != nullptr)
 			{
-
-
 				if (collider->CircleToCircle(*defList[i]->battery->col, *manager->enemybox[a]->col))
 				{
 					targetFlag = true;
@@ -185,11 +183,11 @@ void GamePlay::CollisionUpdate()
 				{
 					for (int b = 0; b < defList[i]->battery->bulletList.size(); b++)
 					{
-						if (collider->CircleToCircle(*defList[i]->battery->bulletList[b]->col, *manager->enemybox[a]->col))
+						if (collider->CircleToCircle(*defList[i]->battery->bulletList[b]->col, *manager->enemybox[a]->col)
+							&& defList[i]->battery->bulletList[b]->liveFlag)
 						{
 							manager->enemybox[a]->EnemyDamege(defList[i]->battery->damage);
-							delete(defList[i]->battery->bulletList[b]);
-							defList[i]->battery->bulletList.erase(defList[i]->battery->bulletList.begin() + b);
+							defList[i]->battery->bulletList[b]->Reset();
 						}
 					}
 				}

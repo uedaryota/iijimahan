@@ -7,8 +7,10 @@ Battery::Battery()
 
 Battery::~Battery()
 {
-	delete(obj);
+	//delete(obj);
 	delete(input);
+	delete(col);
+	delete(clickcol);
 }
 
 void Battery::Update()
@@ -64,6 +66,15 @@ void Battery::Initialize()
 	clickcol->color = { 1,0,0,0.5 };
 	//cloickcol->color={}
 	SetScale({ 10,10,10 });
+	int bulletCount = 5;
+	for (int a = 0; a < bulletCount; a++)
+	{
+		Bullet* b = new Bullet();
+		b->Initialize();
+		b->SetPos(mainPos);
+		b->Reset();
+		bulletList.push_back(b);
+	}
 	//SetPos({ 100, 0, 100 });
 }
 
@@ -88,9 +99,14 @@ void Battery::SetScale(XMFLOAT3 scale)
 
 void Battery::Shot()
 {
-	Bullet* b = new Bullet();
-	b->Initialize();
-	b->SetPos(mainPos);
-	b->targetPos = targetPos;
-	bulletList.push_back(b);
+	for (int a = 0; a < bulletList.size(); a++)
+	{
+		if (!bulletList[a]->liveFlag)
+		{
+			bulletList[a]->targetPos = targetPos;
+			bulletList[a]->liveFlag = true;
+			bulletList[a]->SetPos(mainPos);
+			return;
+		}
+	}
 }

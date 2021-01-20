@@ -40,7 +40,10 @@ ObjFile::~ObjFile()
 		mainDescHeap = nullptr;
 	}
 	result = constBuffB0.Get()->Release();
-	//result = constBuffB1->Release();
+	for (int a = 0; a < constBuffB1.size(); a++)
+	{
+		result = constBuffB1[a]->Release();
+	}
 	result = vertBuff->Release();
 	result = indexBuff->Release();
 	for (int a = 0; a < texbuffs.size(); a++)
