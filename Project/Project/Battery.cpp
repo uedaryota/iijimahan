@@ -15,41 +15,44 @@ Battery::~Battery()
 
 void Battery::Update()
 {
-	
-	obj->Update();
-	input->Update();
-	col->Update();
-	clickcol->Update();
-
-	interval--;
-	
-	if (interval <= 0 && targetPos != nullptr)
+	if (liveFlag)
 	{
-		interval = startval;
-		Shot();
-	}
+		obj->Update();
+		input->Update();
+		col->Update();
+		clickcol->Update();
+		interval--;
 
-	if (bulletList.size() != 0)
-	{
-		for (int a = 0; a < bulletList.size(); a++)
+		if (interval <= 0 && targetPos != nullptr)
 		{
-			bulletList[a]->Update();
+			interval = startval;
+			Shot();
+		}
+		if (bulletList.size() != 0)
+		{
+			for (int a = 0; a < bulletList.size(); a++)
+			{
+				bulletList[a]->Update();
+			}
 		}
 	}
 }
 
 void Battery::Draw()
 {
-	obj->Draw(DirectXDevice::cmdList);
-	if (bulletList.size() != 0)
+	if (liveFlag)
 	{
-		for (int a = 0; a < bulletList.size(); a++)
+		obj->Draw(DirectXDevice::cmdList);
+		if (bulletList.size() != 0)
 		{
-			bulletList[a]->Draw();
+			for (int a = 0; a < bulletList.size(); a++)
+			{
+				bulletList[a]->Draw();
+			}
 		}
+		//col->Draw();
+		clickcol->Draw();
 	}
-	//col->Draw();
-	clickcol->Draw();
 }
 
 void Battery::Initialize()
@@ -75,6 +78,7 @@ void Battery::Initialize()
 		b->Reset();
 		bulletList.push_back(b);
 	}
+	liveFlag = false;
 	//SetPos({ 100, 0, 100 });
 }
 
@@ -109,4 +113,9 @@ void Battery::Shot()
 			return;
 		}
 	}
+}
+
+void Battery::Break()
+{
+	liveFlag = false;
 }

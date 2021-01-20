@@ -14,6 +14,10 @@ public:
 private:
 	void CameraMove();
 	Input* input;
+	//ステージ本体
 	Floor* floor;
+	//背景に続く床
+	Floor* floor2;
+
 };
 

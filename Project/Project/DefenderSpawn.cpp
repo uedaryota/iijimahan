@@ -33,19 +33,21 @@ void DefenderSpawn::Initialize()
 	col = new CircleCollision();
 	col->scale = 30;
 	col->color = { 1,0,0,1 };
+
+	battery = new Battery();
+	battery->Initialize();
 	
 }
 
 void DefenderSpawn::CreateBattery()
 {
-	battery = new Battery();
-	battery->Initialize();
-	battery->SetPos(position);
+	battery->liveFlag = true;
 }
 
 void DefenderSpawn::SetPos(XMFLOAT3 pos)
 {
 	position = pos;
 	col->position = position;
+	battery->SetPos(position);
 	//col->position.y += col->scale / 2;
 }

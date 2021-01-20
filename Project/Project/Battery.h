@@ -16,6 +16,7 @@ public:
 	void SetPos(XMFLOAT3 pos);
 	void SetScale(XMFLOAT3 scale);
 	void Shot();
+	void Break();
 	ObjFile* obj=nullptr;
 	CircleCollision* col = nullptr;
 	CircleCollision* clickcol = nullptr;
@@ -27,6 +28,7 @@ public:
 	int interval = 60;
 	int damage = 1;
 	Input* input;
+	bool liveFlag;
 private:
 	int startval = 60;
 	
