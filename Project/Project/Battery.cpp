@@ -17,14 +17,15 @@ void Battery::Update()
 {
 	if (liveFlag)
 	{
+		obj->rotation = rotation;
 		obj->Update();
 		input->Update();
 		col->Update();
 		clickcol->Update();
 		interval--;
-
+		Setdir();
 		if (interval <= 0 && targetPos != nullptr)
-		{
+		{	
 			interval = startval;
 			Shot();
 		}
@@ -50,8 +51,8 @@ void Battery::Draw()
 				bulletList[a]->Draw();
 			}
 		}
-		//col->Draw();
-		clickcol->Draw();
+		col->Draw();
+	//	clickcol->Draw();
 	}
 }
 
@@ -63,7 +64,7 @@ void Battery::Initialize()
 	obj->Initialize();
 	obj->LoadObj("Rhino");
 	col = new CircleCollision();
-	col->scale = 100;
+	col->scale = 150;
 	clickcol = new CircleCollision();
 	clickcol->scale = 30;
 	clickcol->color = { 1,0,0,0.5 };
@@ -74,7 +75,7 @@ void Battery::Initialize()
 	{
 		Bullet* b = new Bullet();
 		b->Initialize();
-		b->SetPos(mainPos);
+		b->SetPos(position);
 		b->Reset();
 		bulletList.push_back(b);
 	}
@@ -89,9 +90,9 @@ void Battery::SetTarget(XMFLOAT3* targetpos)
 
 void Battery::SetPos(XMFLOAT3 pos)
 {
-	mainPos = pos;
-	obj->SetPos(mainPos);
-	col->position = mainPos;
+	position = pos;
+	obj->SetPos(position);
+	col->position = position;
 //	col->position.z += 10;
 	clickcol->position = col->position;
 }
@@ -109,7 +110,7 @@ void Battery::Shot()
 		{
 			bulletList[a]->targetPos = targetPos;
 			bulletList[a]->liveFlag = true;
-			bulletList[a]->SetPos(mainPos);
+			bulletList[a]->SetPos(position);
 			return;
 		}
 	}
@@ -118,4 +119,20 @@ void Battery::Shot()
 void Battery::Break()
 {
 	liveFlag = false;
+}
+
+void Battery::Setdir()
+{
+	if (targetPos != nullptr)
+	{
+		float PI = 3.1415f;
+		XMFLOAT3 dir = { targetPos->x - position.x, targetPos->y - position.y, targetPos->z - position.z };
+		dir.y = 0;
+		float len = sqrtf(dir.x*dir.x + dir.y*dir.y + dir.z*dir.z);
+		dir = { dir.x / len, dir.y / len, dir.z / len };
+		float angle = atan2f(dir.x, dir.z);
+		rotation.y = angle + PI / 2;
+		//angle = angle * (180 / PI);
+	}
+
 }

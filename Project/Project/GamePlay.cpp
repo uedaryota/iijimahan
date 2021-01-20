@@ -71,6 +71,7 @@ void GamePlay::Update()
 		timer++;
 		if (timer / 60 > spawntime)
 		{
+			//エネミー生成
 			manager->Add2(spawn->GetPosition());
 			manager->ReAncerSet(pointA, pointB);
 			manager->SetTowerEnemy(tower);
@@ -216,6 +217,9 @@ void GamePlay::CollisionUpdate()
 				defList[i]->CreateBattery();
 			}
 		}
+	}
+	for (int i = 0; i < defList.size(); i++)
+	{
 		for (int a = 0; a < manager->boxcount; a++)
 		{
 			if (defList[i]->battery != nullptr)
@@ -239,7 +243,6 @@ void GamePlay::CollisionUpdate()
 					//範囲外ならnull
 					defList[i]->battery->SetTarget(nullptr);
 				}
-
 				if (defList[i]->battery->bulletList.size() != 0)
 				{
 					for (int b = 0; b < defList[i]->battery->bulletList.size(); b++)
@@ -252,11 +255,9 @@ void GamePlay::CollisionUpdate()
 						}
 					}
 				}
-
-
 				if (!targetFlag)
 				{
-					defList[i]->battery->SetTarget(nullptr);
+				//	defList[i]->battery->SetTarget(nullptr);
 				}
 			}
 		}
