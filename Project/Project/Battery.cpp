@@ -15,8 +15,26 @@ Battery::~Battery()
 
 void Battery::Update()
 {
+	if (MoveFlag && !liveFlag)
+	{
+		if (position.y > 0)
+		{
+			position.y -= 3;
+			SetPos(position);
+			obj->Update();
+			input->Update();
+			col->Update();
+		}
+		else
+		{
+			liveFlag = true;
+			position.y = 0;
+		}
+		
+	}
 	if (liveFlag)
 	{
+		SetPos(position);
 		obj->rotation = rotation;
 		obj->Update();
 		input->Update();
@@ -41,7 +59,7 @@ void Battery::Update()
 
 void Battery::Draw()
 {
-	if (liveFlag)
+	if (MoveFlag)
 	{
 		obj->Draw(DirectXDevice::cmdList);
 		if (bulletList.size() != 0)
@@ -66,7 +84,7 @@ void Battery::Initialize()
 	col = new CircleCollision();
 	col->scale = 150;
 	clickcol = new CircleCollision();
-	clickcol->scale = 30;
+	clickcol->scale = 10;
 	clickcol->color = { 1,0,0,0.5 };
 	//cloickcol->color={}
 	SetScale({ 10,10,10 });
@@ -80,6 +98,7 @@ void Battery::Initialize()
 		bulletList.push_back(b);
 	}
 	liveFlag = false;
+	MoveFlag = false;
 	//SetPos({ 100, 0, 100 });
 }
 
