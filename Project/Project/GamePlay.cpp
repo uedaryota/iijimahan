@@ -22,6 +22,7 @@
 #include"DefenderSpawn.h"
 #include<vector>
 #include"EnemyCSVRoder.h"
+#include"Cost.h"
 
 Camera* c = new Camera();
 Tower* tower = new Tower();
@@ -43,6 +44,7 @@ ObjFile* backSphere;
 
 Collision* collider = new Collision();
 Spawn* spawn = new Spawn();
+Cost* cost = new Cost();
 
 float timer = 0;
 float spawntime = 10;
@@ -107,6 +109,8 @@ void GamePlay::Update()
 	//}
 
 	CollisionUpdate();
+
+	cost->Update();
 }
 GamePlay::GamePlay()
 {
@@ -122,6 +126,7 @@ void GamePlay::Draw()
 		defList[a]->Draw();
 	}
 	backSphere->Draw(DirectXDevice::cmdList);
+	cost->Draw();
 }
 void GamePlay::Initialize()
 {
@@ -202,6 +207,8 @@ void GamePlay::Initialize()
 	backSphere->Initialize();
 	backSphere->LoadObj("BackSphere");
 	backSphere->scale = { 1000, 1000, 1000 };
+
+	cost->Initialize();
 }
 
 void GamePlay::CollisionUpdate()

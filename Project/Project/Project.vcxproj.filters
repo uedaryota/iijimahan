@@ -37,6 +37,12 @@
     <FxCompile Include="ColliderVS.hlsl">
       <Filter>シェーダファイル</Filter>
     </FxCompile>
+    <FxCompile Include="SpriteVertexShader.hlsl">
+      <Filter>シェーダファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="SpritePixelShader.hlsl">
+      <Filter>シェーダファイル</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Block.cpp">
@@ -120,6 +126,8 @@
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="End.cpp" />
     <ClCompile Include="GamePlay.cpp" />
+    <ClCompile Include="Cost.cpp" />
+    <ClCompile Include="Text.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Block.h">
@@ -203,6 +211,8 @@
     <ClInclude Include="GamePlay.h" />
     <ClInclude Include="StageRoder.h" />
     <ClInclude Include="EnemyCSVRoder.h" />
+    <ClInclude Include="Cost.h" />
+    <ClInclude Include="Text.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="BasicShaderHeader.hlsli">
@@ -221,6 +231,9 @@
       <Filter>シェーダファイル</Filter>
     </None>
     <None Include="Collider.hlsli">
+      <Filter>シェーダファイル</Filter>
+    </None>
+    <None Include="SpriteShaderHeader.hlsli">
       <Filter>シェーダファイル</Filter>
     </None>
   </ItemGroup>

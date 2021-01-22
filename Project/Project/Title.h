@@ -2,6 +2,7 @@
 #include"GameScene.h"
 #include"Sprite.h"
 #include"ObjFile.h"
+#include"Camera.h"
 
 class Title:public GameScene
 {

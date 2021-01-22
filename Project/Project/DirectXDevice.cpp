@@ -54,6 +54,8 @@ void DirectXDevice::Initialize()
 	SetView_Scissor();
 	SetFence();
 
+	Sprite::StaticInitialize(DirectXDevice::dev, Camera::window_width, Camera::window_height);
+
 	Light::StaticInitialize(DirectXDevice::dev);
 	//ƒ‰ƒCƒg¶¬
 	light = Light::Create();
@@ -77,8 +79,6 @@ void DirectXDevice::Initialize()
 	gameplay->Initialize();
 	title = new Title();
 	title->Initialize();
-
-
 
 }
 	

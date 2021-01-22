@@ -4,6 +4,8 @@
 #include <DirectXMath.h>
 #include "Texture.h"
 #include "Sprite.h"
+#include "Text.h"
+#include "DirectXDevice.h"
 
 class Cost
 {
@@ -47,8 +49,11 @@ public:
 	void SetCostUpTime(int costUpTime) { this->costUpTime = costUpTime; }
 
 private:
+	static const int TextNumber = 0;
 	int maxcost = 60;//最大コスト
-	Sprite* sprite = new Sprite();
+
+private:
+	Text* text;
 
 public:
 	int costUpTime = 30;//コスト増加間隔
