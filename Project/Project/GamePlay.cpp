@@ -228,9 +228,9 @@ void GamePlay::CollisionUpdate()
 	{
 		for (int a = 0; a < manager->boxcount; a++)
 		{
-			if (defList[i]->battery != nullptr)
+			if (defList[i]->battery->liveFlag)
 			{
-				if (collider->CircleToCircle(*defList[i]->battery->col, *manager->enemybox[a]->col))
+				if (collider->CircleToCircle(*defList[i]->battery->col, *manager->enemybox[a]->col) && manager->enemybox[a]->Hp >= 0)
 				{
 					targetFlag = true;
 					if (defList[i]->battery->targetPos == nullptr)
@@ -244,7 +244,7 @@ void GamePlay::CollisionUpdate()
 						defList[i]->battery->SetTarget(nullptr);
 					}
 				}
-				else
+				else if (!targetFlag)
 				{
 					//”ÍˆÍŠO‚È‚çnull
 					defList[i]->battery->SetTarget(nullptr);
