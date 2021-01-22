@@ -48,7 +48,8 @@ Cost* cost = new Cost();
 
 float timer = 0;
 float spawntime = 10;
-int EneMax = 3;
+int EneMax = 30;
+int Wave = 3;
 int EneNow = 0;
 void GamePlay::Update()
 {
