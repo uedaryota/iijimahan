@@ -69,7 +69,7 @@ void Battery::Draw()
 				bulletList[a]->Draw();
 			}
 		}
-		col->Draw();
+		//col->Draw();
 	//	clickcol->Draw();
 	}
 }

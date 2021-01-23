@@ -8,5 +8,6 @@ public:
 	void Update() override;
 	void Initialize() override;
 	void CollisionUpdate();
+	void CostUpdate();
 };
 

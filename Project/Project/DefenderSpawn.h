@@ -11,9 +11,16 @@ public:
 	void Draw();
 	void Initialize();
 	void CreateBattery();
+	void StopCreate();
 	void SetPos(XMFLOAT3 pos);
+	bool ReturnCostFlag();
+	void CostFlagTrue();
+	void CostFlagFalse();
+	int ReturnUseCost();
 	Battery* battery = nullptr;
 	CircleCollision* col = nullptr;
 	XMFLOAT3 position;
+	bool costFlag = false;;
+	const int usecost = 20;
 };
 

@@ -108,10 +108,12 @@ void GamePlay::Update()
 	//	enemy->EnemyDamege(1);
 	//	//enemy2->EnemyDamege(0.5);
 	//}
+	cost->Update();
 
+	CostUpdate();
 	CollisionUpdate();
 
-	cost->Update();
+
 }
 GamePlay::GamePlay()
 {
@@ -268,5 +270,30 @@ void GamePlay::CollisionUpdate()
 				}
 			}
 		}
+	}
+}
+
+void GamePlay::CostUpdate()
+{
+	for (int a = 0; a < defList.size(); a++)
+	{
+		//コストフラグがTrueなら
+		if (defList[a]->ReturnCostFlag())
+		{
+			//現在コストが使用コスト以上ならば
+			if (cost->GetCost() >= defList[a]->ReturnUseCost())
+			{
+				cost->SetSubCost(defList[a]->usecost);
+				defList[a]->CostFlagFalse();
+			}
+			//それ以外
+			else
+			{
+				defList[a]->StopCreate();
+			}
+			
+
+		}
+	
 	}
 }
