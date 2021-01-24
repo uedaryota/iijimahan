@@ -7,14 +7,18 @@ void Cost::Initialize()
 
 	//テキストの読み込み
 	Sprite::LoadTexture(TextNumber, L"Resources/debugfont.png");
+	Sprite::LoadTexture(3, L"Resources/costback.png");
 
 	//テキスト初期化
 	text = Text::GetInstance();
 	text->Initialize(TextNumber);
+	sprite = Sprite::Create(3, XMFLOAT2(0, 0));
+	sprite->SetSize(XMFLOAT2( 350, 50 ));
 }
 
 void Cost::Update()
 {
+	if (cost == maxcost) return;
 	if (cost <= maxcost)
 	{
 		if (time % costUpTime == 0)
@@ -32,7 +36,19 @@ void Cost::Update()
 void Cost::Draw()
 {
 	Sprite::PreDraw(DirectXDevice::cmdList);
-	text->Print(to_string(cost), 0, 0, 5);
+	sprite->Draw();
+	if (cost < 10)
+	{
+		text->Print("COST  " + to_string(cost) + " / " + to_string(maxcost), 0, 0, 3);
+	}
+	if (cost >= 10 && cost < 100)
+	{
+		text->Print("COST " + to_string(cost) + " / " + to_string(maxcost), 0, 0, 3);
+	}
+	if (cost >= 100)
+	{
+		text->Print("COST" + to_string(cost) + " / " + to_string(maxcost), 0, 0, 3);
+	}
 	text->DrawAll(DirectXDevice::cmdList);
 	Sprite::PostDraw();
 }
