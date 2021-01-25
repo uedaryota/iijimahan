@@ -49,6 +49,7 @@ public:
 
 	Enemy* enemybox[999];
 	int boxcount = 0;
+	float CountDeath();
 private:
 	
 	Spawn* spawn=new Spawn();
@@ -56,4 +57,5 @@ private:
 	float timer = 0;
 	int Cnt = 0;
 	vector<Enemy>enemybox2 = {};
+	float DeathCount = 0;
 };

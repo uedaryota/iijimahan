@@ -182,3 +182,16 @@ void EnemyManeger::SetSpeed(float x)
 		//enemybox2[i].SetSpeed(x);
 	}
 }
+
+float EnemyManeger::CountDeath()
+{
+	DeathCount = 0;
+	for (int i = 0; i < boxcount; i++)
+	{
+		if (enemybox[i]->Deadflag == true)
+		{
+			DeathCount++;
+		}
+	}
+	return DeathCount;
+}
