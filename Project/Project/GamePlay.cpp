@@ -77,7 +77,6 @@ void GamePlay::Update()
 		endFlag = true;
 	}
 	Camera::Update();
-<<<<<<< HEAD
 	tower->Update();
 	spawn->Update();
 	//	sound->Update();
@@ -161,9 +160,6 @@ void GamePlay::Update()
 		break;
 	}
 	
-	
-	
-=======
 	//クリアフラグ、ゲームオーバーフラグ共にFalseでUpdate
 	if (!clearFlag && !overFlag)
 	{
@@ -185,7 +181,6 @@ void GamePlay::Update()
 				EneNow++;
 			}
 		}
->>>>>>> origin/machida
 
 
 		//enemy->SetScale(XMFLOAT3{ 10,10,10 });
@@ -198,19 +193,6 @@ void GamePlay::Update()
 			defList[a]->Update();
 		}
 
-		//if (input->PushKey(DIK_Q))//実験用→実験結果成功　＊座標の変更を行えます。
-		//{
-		//	manager->AncerSet(XMFLOAT3{ 15,15,15 }, XMFLOAT3{ 15,15,15 });
-		//}
-		//if (input->PushKey(DIK_SPACE))//実験用→実験結果成功　＊座標の変更を行えます。
-		//{
-		//	manager->ReAncerSet(XMFLOAT3{ -100,1,-100 }, XMFLOAT3{ 500,500,500 });
-		//}
-		//if (input->TriggerKey(DIK_Z))
-		//{
-		//	enemy->EnemyDamege(1);
-		//	//enemy2->EnemyDamege(0.5);
-		//}
 		cost->Update();
 
 		CostUpdate();
