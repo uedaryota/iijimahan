@@ -1,2 +1,2 @@
-Enemy,FirstPosX,FirstPosY,FirstPosZ,SecondPosX,SecondPosY,SecondPosZ,HP,SPEED,Tag
-TypeOne,0,0,30,120,0,170,10,20,Enemy
+Enemy,FirstPosX,FirstPosZ,SecondPosX,SecondPosY,SecondPosZ,HP,SPEED,Tag,SpawnSpotX,SpawnSpotZ,Wave1,Wave2,Wave3
+TypeOne,0,30,120,0,170,10,20,Enemy,-170,-150,5,5,5

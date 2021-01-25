@@ -16,9 +16,13 @@ struct DATA
 	std::string Name;
 	DirectX::XMFLOAT3 FirstPos;
 	DirectX::XMFLOAT3 SecondPos;
+	DirectX::XMFLOAT3 SpawnSpot;
 	double HP;
 	double SPEED;
 	Tag Tag;
+	double Wave1;
+	double Wave2;
+	double Wave3;
 };
 
 using namespace std;
@@ -59,14 +63,20 @@ vector<DATA>LoadData(const char*filePath)
 		DATA data;
 		data.Name = datas[0];
 		data.FirstPos.x = strtof(datas[1].c_str(), NULL);
-		data.FirstPos.y = strtof(datas[2].c_str(), NULL);
-		data.FirstPos.z = strtof(datas[3].c_str(), NULL);
-		data.SecondPos.x = strtof(datas[4].c_str(), NULL);
-		data.SecondPos.y = strtof(datas[5].c_str(), NULL);
-		data.SecondPos.z = strtof(datas[6].c_str(), NULL);
-		data.HP = strtod(datas[7].c_str(), NULL);
-		data.SPEED = strtod(datas[8].c_str(), NULL);
-		auto tag = datas[9];
+		data.FirstPos.y = 0.0f;
+		data.FirstPos.z = strtof(datas[2].c_str(), NULL);
+		data.SecondPos.x = strtof(datas[3].c_str(), NULL);
+		data.SecondPos.y = strtof(datas[4].c_str(), NULL);
+		data.SecondPos.z = strtof(datas[5].c_str(), NULL);
+		data.HP = strtod(datas[6].c_str(), NULL);
+		data.SPEED = strtod(datas[7].c_str(), NULL);
+		auto tag = datas[8];
+		data.SpawnSpot.x = strtof(datas[9].c_str(), NULL);
+		data.SpawnSpot.z = strtof(datas[10].c_str(), NULL);
+		data.SpawnSpot.y = 0.0f;
+		data.Wave1 = strtof(datas[11].c_str(), NULL);
+		data.Wave2 = strtof(datas[12].c_str(), NULL);
+		data.Wave3 = strtof(datas[13].c_str(), NULL);
 		if (tag == "Enemy")
 		{
 			data.Tag = EnemyTag;

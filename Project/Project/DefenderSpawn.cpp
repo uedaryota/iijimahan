@@ -33,7 +33,7 @@ void DefenderSpawn::Initialize()
 	col = new CircleCollision();
 	col->scale = 10;
 	col->color = { 1,0,0,1 };
-
+	costFlag = false;
 	battery = new Battery();
 	battery->Initialize();
 	
@@ -41,8 +41,23 @@ void DefenderSpawn::Initialize()
 
 void DefenderSpawn::CreateBattery()
 {
-	battery->MoveFlag = true;
-	battery->position.y = 500;
+	if (!battery->liveFlag&&!battery->MoveFlag)
+	{
+		battery->MoveFlag = true;
+		battery->position.y = 200;
+
+		costFlag = true;
+	}
+
+}
+
+void DefenderSpawn::StopCreate()
+{
+	battery->MoveFlag = false;
+	battery->liveFlag = false;
+	battery->position.y = 0;
+
+	costFlag = false;
 }
 
 void DefenderSpawn::SetPos(XMFLOAT3 pos)
@@ -52,3 +67,24 @@ void DefenderSpawn::SetPos(XMFLOAT3 pos)
 	battery->SetPos(position);
 	//col->position.y += col->scale / 2;
 }
+
+bool DefenderSpawn::ReturnCostFlag()
+{
+	return costFlag;
+}
+
+void DefenderSpawn::CostFlagTrue()
+{
+	costFlag = true;
+}
+
+void DefenderSpawn::CostFlagFalse()
+{
+	costFlag = false;
+}
+
+int DefenderSpawn::ReturnUseCost()
+{
+	return usecost;
+}
+

@@ -322,6 +322,7 @@ void Enemy::TowerAtack()
 {
 	//mokuhyou->SetHp(GetPower());
 	mokuhyou->hp = mokuhyou->hp - GetPower();
+	Hp = 0;
 }
 
 ///<summary>

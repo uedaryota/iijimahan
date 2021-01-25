@@ -31,7 +31,6 @@ void Tower::Initialize(ID3D12Device* dev)
 	obj->LoadObj("Tower");
 	obj->position.y = 10;
 	obj->SetScale({ 30,30,30 });
-	hp = 80;
 }
 
 void Tower::Update()

@@ -30,6 +30,7 @@ public:
 	Input* input;
 	bool liveFlag;
 	bool MoveFlag;
+	
 private:
 	void Setdir();
 	int startval = 60;

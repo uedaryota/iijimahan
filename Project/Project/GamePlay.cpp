@@ -28,6 +28,7 @@ Camera* c = new Camera();
 Tower* tower = new Tower();
 XMFLOAT3 pointA = { 0,0,30 };
 XMFLOAT3 pointB = { 120,0,170 };
+XMFLOAT3 SpawnPoint = { -170, 0, -150 };
 float HpKari = 1;
 float SpeedKari = 1;
 Sound* sound = new Sound();
@@ -48,9 +49,15 @@ Cost* cost = new Cost();
 
 float timer = 0;
 float spawntime = 10;
-int EneMax = 30;
+int EneMax = 99;
 int Wave = 3;
 int EneNow = 0;
+int Wave1 = 0;
+int Wave2 = 0;
+int Wave3 = 0;
+
+
+
 void GamePlay::Update()
 {
 
@@ -68,21 +75,87 @@ void GamePlay::Update()
 	tower->Update();
 	spawn->Update();
 	//	sound->Update();
-	if (EneNow < EneMax)
+	switch (NowWAVE)
 	{
-		timer++;
-		if (timer / 60 > spawntime)
+	case wave1:
+		if (EneNow < Wave1-1)
 		{
-			//エネミー生成
-			manager->Add2(spawn->GetPosition());
-			manager->ReAncerSet(pointA, pointB);
-			manager->SetTowerEnemy(tower);
-			manager->SetHp(HpKari);
-			manager->SetSpeed(SpeedKari);
-			timer = 0;
-			EneNow++;
+			timer++;
+			if (timer / 60 > spawntime)
+			{
+				//エネミー生成
+				manager->Add2(spawn->GetPosition());
+				manager->ReAncerSet(pointA, pointB);
+				manager->SetTowerEnemy(tower);
+				manager->SetHp(HpKari);
+				manager->SetSpeed(SpeedKari);
+				timer = 0;
+				EneNow++;
+			}
 		}
+		else
+		{
+			if (EneNow == manager->CountDeath()-1)
+			{
+				timer = -(60*spawntime/2);
+				NowWAVE = wave2;
+			}
+		}
+		break;
+	case wave2:
+		if (EneNow < Wave1+Wave2-1)
+		{
+			timer++;
+			if (timer / 60 > spawntime)
+			{
+				//エネミー生成
+				manager->Add2(spawn->GetPosition());
+				manager->ReAncerSet(pointA, pointB);
+				manager->SetTowerEnemy(tower);
+				manager->SetHp(HpKari);
+				manager->SetSpeed(SpeedKari);
+				timer = 0;
+				EneNow++;
+			}
+		}
+		else
+		{
+			if (EneNow == manager->CountDeath()-1)
+			{
+				timer = -(60 * spawntime / 2);
+				NowWAVE = wave3;
+			}
+		}
+		break;
+	case wave3:
+		if (EneNow < Wave1 + Wave2 + Wave3-1)
+		{
+			timer++;
+			if (timer / 60 > spawntime)
+			{
+				//エネミー生成
+				manager->Add2(spawn->GetPosition());
+				manager->ReAncerSet(pointA, pointB);
+				manager->SetTowerEnemy(tower);
+				manager->SetHp(HpKari);
+				manager->SetSpeed(SpeedKari);
+				timer = 0;
+				EneNow++;
+			}
+		}
+		else
+		{
+			if (EneNow == manager->CountDeath()-1)
+			{
+				NowWAVE = clear;
+			}
+		}
+		break;
+	case clear:
+		break;
 	}
+	
+	
 	
 
 	//enemy->SetScale(XMFLOAT3{ 10,10,10 });
@@ -108,10 +181,12 @@ void GamePlay::Update()
 	//	enemy->EnemyDamege(1);
 	//	//enemy2->EnemyDamege(0.5);
 	//}
+	cost->Update();
 
+	CostUpdate();
 	CollisionUpdate();
 
-	cost->Update();
+
 }
 GamePlay::GamePlay()
 {
@@ -131,7 +206,6 @@ void GamePlay::Draw()
 }
 void GamePlay::Initialize()
 {
-	cost->Initialize();
 	tower->Initialize(DirectXDevice::dev);
 	tower->SetPoisition({ 130,0,180 });
 	manager->Initialize();
@@ -141,7 +215,7 @@ void GamePlay::Initialize()
 	spawn->Initialize(DirectXDevice::dev);
 	//Set = &SetAd;
 	spawn->SetSpawn(10, 10);
-	spawn->SetPoisition({ -170, 0, -150 });
+	spawn->SetPoisition(SpawnPoint);
 	manager->Add2(spawn->GetPosition());
 	//manager->Add(enemy);
 	//manager->Add(enemy2);
@@ -203,12 +277,18 @@ void GamePlay::Initialize()
 		pointB = date.SecondPos;
 		HpKari = date.HP;
 		SpeedKari = date.SPEED;
+		SpawnPoint = date.SpawnSpot;	
+		Wave1 = date.Wave1;
+		Wave2 = date.Wave2;
+		Wave3 = date.Wave3;
 	}
 	//背景
 	backSphere = new ObjFile();
 	backSphere->Initialize();
 	backSphere->LoadObj("BackSphere");
 	backSphere->scale = { 1000, 1000, 1000 };
+	NowWAVE=wave1;
+	cost->Initialize();
 }
 
 void GamePlay::CollisionUpdate()
@@ -267,5 +347,30 @@ void GamePlay::CollisionUpdate()
 				}
 			}
 		}
+	}
+}
+
+void GamePlay::CostUpdate()
+{
+	for (int a = 0; a < defList.size(); a++)
+	{
+		//コストフラグがTrueなら
+		if (defList[a]->ReturnCostFlag())
+		{
+			//現在コストが使用コスト以上ならば
+			if (cost->GetCost() >= defList[a]->ReturnUseCost())
+			{
+				cost->SetSubCost(defList[a]->usecost);
+				defList[a]->CostFlagFalse();
+			}
+			//それ以外
+			else
+			{
+				defList[a]->StopCreate();
+			}
+			
+
+		}
+	
 	}
 }
