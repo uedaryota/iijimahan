@@ -15,5 +15,8 @@ public:
 	void CollisionUpdate();
 	WAVE NowWAVE = wave1;
 	void CostUpdate();
+	void EndFlagCheck();
+	bool clearFlag = false;
+	bool overFlag = false;
 };
 

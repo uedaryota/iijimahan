@@ -13,6 +13,8 @@ public:
 	void Initialize() override;
 
 	ObjFile* obj;
+	Sprite* sprite;
+	Sprite* sprite2;
 
 };
 

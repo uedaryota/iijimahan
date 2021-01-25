@@ -3,9 +3,6 @@
 #include"DirectXDevice.h"
 
 Input* input2;
-Sprite* sprite;
-Sprite* sprite2;
-
  void Title::Update()
 {
 
@@ -45,6 +42,9 @@ void Title::Initialize()
 	input2->Initialize();
 	Sprite::LoadTexture(1, L"img/TowerDefence_Title.png");
 	Sprite::LoadTexture(2, L"img/TowerDefence_TitleBack.png");
+	Sprite::LoadTexture(3, L"img/title.png");
+	Sprite::LoadTexture(4, L"img/end.png");
+
 	sprite = Sprite::Create(1, {0.0f, 0.0f});
 	//sprite->SetPosition(XMFLOAT2{ static_cast<float>(Camera::window_width) / 2, static_cast<float>(Camera::window_height) / 2 });
 	sprite->SetSize(XMFLOAT2{ static_cast<float>(Camera::window_width), static_cast<float>(Camera::window_height) });
