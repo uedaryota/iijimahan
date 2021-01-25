@@ -131,6 +131,7 @@ void GamePlay::Draw()
 }
 void GamePlay::Initialize()
 {
+	cost->Initialize();
 	tower->Initialize(DirectXDevice::dev);
 	tower->SetPoisition({ 130,0,180 });
 	manager->Initialize();
@@ -208,8 +209,6 @@ void GamePlay::Initialize()
 	backSphere->Initialize();
 	backSphere->LoadObj("BackSphere");
 	backSphere->scale = { 1000, 1000, 1000 };
-
-	cost->Initialize();
 }
 
 void GamePlay::CollisionUpdate()

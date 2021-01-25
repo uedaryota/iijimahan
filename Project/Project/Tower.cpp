@@ -12,17 +12,26 @@ Tower::~Tower()
 
 void Tower::Initialize(ID3D12Device* dev)
 {
-	texPos = { 0,Camera::window_height - 100,0 };
+	Sprite::LoadTexture(4, L"Resources/HPBack.png");
+	Sprite::LoadTexture(5, L"Resources/HP.png");
+	sprite = Sprite::Create(4, XMFLOAT2(Camera::window_width / 2, 25));
+	sprite->SetAnchorPoint(XMFLOAT2(0.5, 0));
+	sprite->SetSize(XMFLOAT2(400, 50));
 
-	tex->Initialize();
-	tex->position = { texPos.x, texPos.y / Camera::window_height, 0 };
-	tex->scale = { texSize.x / Camera::window_width*hp,texSize.y / Camera::window_height,100.0f };
+	maxhp = hp;
+	nowhp = hp;
+
+	sprite2 = Sprite::Create(5, XMFLOAT2(Camera::window_width / 2 - 200, 0));
+	sprite2->SetSize(XMFLOAT2(spriteSize.x / maxhp * nowhp, spriteSize.y));
+
+	text = Text::GetInstance();
+	text->Initialize(0);
 
 	obj->Initialize();
 	obj->LoadObj("Tower");
 	obj->position.y = 10;
 	obj->SetScale({ 30,30,30 });
-	hp = 100;
+	hp = 80;
 }
 
 void Tower::Update()
@@ -31,17 +40,37 @@ void Tower::Update()
 	{
 		hp = 0;
 	}
-	tex->position = { (texPos.x - ((100 - hp)*texSize.x / 2)) / Camera::window_width,
-		texPos.y / Camera::window_height, 0 };//プロジェクションView行列掛けてないのでここで
-	tex->scale = { texSize.x / Camera::window_width*hp,texSize.y / Camera::window_height,100.0f };//同文
+	if (nowhp > hp)
+	{
+		nowhp -= hpspeed;
+	}
+	if (nowhp < hp)
+	{
+		nowhp = hp;
+	}
+	sprite2->SetSize(XMFLOAT2(spriteSize.x / maxhp * nowhp, spriteSize.y));
 	obj->Update();
-	tex->Update();
 }
 
 void Tower::Draw(ID3D12GraphicsCommandList * cmdList)
 {
 	obj->Draw(cmdList);
-	tex->Draw();
+	Sprite::PreDraw(DirectXDevice::cmdList);
+	sprite->Draw();
+	sprite2->Draw();
+	if (hp < 10)
+	{
+		text->Print("HP   " + to_string((int)hp) + " / " + to_string((int)maxhp), Camera::window_width / 2 - 100, 8, 2);
+	}
+	if (hp < 100 && hp >= 10)
+	{
+		text->Print("HP  " + to_string((int)hp) + " / " + to_string((int)maxhp), Camera::window_width / 2 - 100, 8, 2);
+	}
+	if (hp >= 100)
+	{
+		text->Print("HP " + to_string((int)hp) + " / " + to_string((int)maxhp), Camera::window_width / 2 - 100, 8, 2);
+	}
+	Sprite::PostDraw();
 }
 
 
