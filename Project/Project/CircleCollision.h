@@ -20,6 +20,7 @@ class CircleCollision
 	};
 	struct ConstDate
 	{
+		~ConstDate() = default;
 		XMMATRIX world;
 		XMMATRIX viewproj;
 		XMFLOAT4 color;
@@ -48,7 +49,7 @@ private:
 
 	ID3D12PipelineState* pipelinestate = nullptr;
 	ID3D12RootSignature* rootsignature = nullptr;
-	ID3D12DescriptorHeap* mainDescHeap;
+	ID3D12DescriptorHeap* mainDescHeap = nullptr;
 	D3D12_VERTEX_BUFFER_VIEW vbView{};
 	D3D12_INDEX_BUFFER_VIEW ibView{};
 	//
@@ -64,12 +65,12 @@ private:
 	XMMATRIX matWorld = XMMatrixIdentity();
 	XMMATRIX matView;
 	XMMATRIX matProjection;
-	ID3D12Resource* vertBuff;
+	ID3D12Resource* vertBuff = nullptr;
 	ID3D12Resource* indexBuff = nullptr;
 	ID3D12Resource* constBuff = nullptr;
 
 	XMMATRIX matBillboard;
-	ConstDate* constMap;
+	ConstDate* constMap = nullptr;
 	Vertex* vertMap = nullptr;
 	unsigned short* indexMap = nullptr;
 

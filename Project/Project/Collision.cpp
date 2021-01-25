@@ -69,11 +69,11 @@ bool Collision::MouseToCircle(Input* input, CircleCollision* circle)
 //	return false;
 }
 
-bool Collision::CircleToCircle(CircleCollision a, CircleCollision b)
+bool Collision::CircleToCircle(CircleCollision* a,CircleCollision* b)
 {
-	XMFLOAT3 v = { fabs(a.position.x - b.position.x), fabs(a.position.y - b.position.y), fabs(a.position.z - b.position.z) };
+	XMFLOAT3 v = { fabs(a->position.x - b->position.x), fabs(a->position.y - b->position.y), fabs(a->position.z - b->position.z) };
 	float len = sqrtf(v.x*v.x + v.y*v.y + v.z*v.z);
-	if (len < a.scale + b.scale)
+	if (len < a->scale + b->scale)
 	{
 		return true;
 	}
