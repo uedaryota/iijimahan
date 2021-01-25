@@ -9,5 +9,8 @@ public:
 	void Initialize() override;
 	void CollisionUpdate();
 	void CostUpdate();
+	void EndFlagCheck();
+	bool clearFlag = false;
+	bool overFlag = false;
 };
 

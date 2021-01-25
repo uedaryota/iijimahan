@@ -7,17 +7,17 @@ Poly::Poly()
 
 Poly::~Poly()
 {
-	delete(pipelinestate);
-	delete(rootsignature);
-	delete(mainDescHeap);
-	delete(dsvHeap);
-	delete(constBuff);
-	delete(constMap);
-	//delete(subDescHeap);
-	delete(constBuff2);
-	delete(constMap2);
-
-	delete(input);
+	pipelinestate->Release();
+	pipelinestate = nullptr;
+	rootsignature->Release();
+	rootsignature = nullptr;
+	mainDescHeap->Release();
+	mainDescHeap = nullptr;
+	//delete(indexMap);
+	constBuff->Release();
+	constBuff = nullptr;
+	//	delete(constMap);
+	constMap = nullptr;
 }
 
 void Poly::Initialize()

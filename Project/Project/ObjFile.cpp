@@ -21,20 +21,19 @@ ObjFile::~ObjFile()
 	//HRESULT result = dev->Release();
 		
 	HRESULT result;
-
-	if (pipelinestate);
+	if (pipelinestate != nullptr);
 	{
 		result = pipelinestate->Release();
 		pipelinestate = nullptr;
 	}
 
-	if (rootsignature);
+	if (rootsignature != nullptr);
 	{
 		result = rootsignature->Release();
 		rootsignature = nullptr;
 	}
 
-	if (mainDescHeap);
+	if (mainDescHeap != nullptr);
 	{
 		result = mainDescHeap->Release();
 		mainDescHeap = nullptr;

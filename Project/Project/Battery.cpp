@@ -7,10 +7,14 @@ Battery::Battery()
 
 Battery::~Battery()
 {
-	//delete(obj);
+	delete(obj);
+	obj = nullptr;
 	delete(input);
+	input = nullptr;
 	delete(col);
+	col = nullptr;
 	delete(clickcol);
+	clickcol = nullptr;
 }
 
 void Battery::Update()

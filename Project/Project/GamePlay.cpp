@@ -41,7 +41,8 @@ Input* input = new Input();
 //vector<Battery*> batL;
 vector<DefenderSpawn*> defList;
 ObjFile* backSphere;
-
+Sprite* over;
+Sprite* clear;
 Collision* collider = new Collision();
 Spawn* spawn = new Spawn();
 Cost* cost = new Cost();
@@ -64,54 +65,63 @@ void GamePlay::Update()
 	{
 		sound->PlayRoop();
 	}
+	if (input->PushKey(DIK_SPACE) && (overFlag || clearFlag))
+	{
+		endFlag = true;
+	}
 	Camera::Update();
-	tower->Update();
-	spawn->Update();
-	//	sound->Update();
-	if (EneNow < EneMax)
+	//クリアフラグ、ゲームオーバーフラグ共にFalseでUpdate
+	if (!clearFlag && !overFlag)
 	{
-		timer++;
-		if (timer / 60 > spawntime)
+		tower->Update();
+		spawn->Update();
+		//	sound->Update();
+		if (EneNow < EneMax)
 		{
-			//エネミー生成
-			manager->Add2(spawn->GetPosition());
-			manager->ReAncerSet(pointA, pointB);
-			manager->SetTowerEnemy(tower);
-			manager->SetHp(HpKari);
-			manager->SetSpeed(SpeedKari);
-			timer = 0;
-			EneNow++;
+			timer++;
+			if (timer / 60 > spawntime)
+			{
+				//エネミー生成
+				manager->Add2(spawn->GetPosition());
+				manager->ReAncerSet(pointA, pointB);
+				manager->SetTowerEnemy(tower);
+				manager->SetHp(HpKari);
+				manager->SetSpeed(SpeedKari);
+				timer = 0;
+				EneNow++;
+			}
 		}
+
+
+		//enemy->SetScale(XMFLOAT3{ 10,10,10 });
+		manager->Update();
+
+		stage->Update();
+		backSphere->Update();
+		for (int a = 0; a < defList.size(); a++)
+		{
+			defList[a]->Update();
+		}
+
+		//if (input->PushKey(DIK_Q))//実験用→実験結果成功　＊座標の変更を行えます。
+		//{
+		//	manager->AncerSet(XMFLOAT3{ 15,15,15 }, XMFLOAT3{ 15,15,15 });
+		//}
+		//if (input->PushKey(DIK_SPACE))//実験用→実験結果成功　＊座標の変更を行えます。
+		//{
+		//	manager->ReAncerSet(XMFLOAT3{ -100,1,-100 }, XMFLOAT3{ 500,500,500 });
+		//}
+		//if (input->TriggerKey(DIK_Z))
+		//{
+		//	enemy->EnemyDamege(1);
+		//	//enemy2->EnemyDamege(0.5);
+		//}
+		cost->Update();
+
+		CostUpdate();
+		CollisionUpdate();
+		EndFlagCheck();
 	}
-	
-
-	//enemy->SetScale(XMFLOAT3{ 10,10,10 });
-	manager->Update();
-
-	stage->Update();
-	backSphere->Update();
-	for (int a = 0; a < defList.size(); a++)
-	{
-		defList[a]->Update();
-	}
-
-	//if (input->PushKey(DIK_Q))//実験用→実験結果成功　＊座標の変更を行えます。
-	//{
-	//	manager->AncerSet(XMFLOAT3{ 15,15,15 }, XMFLOAT3{ 15,15,15 });
-	//}
-	//if (input->PushKey(DIK_SPACE))//実験用→実験結果成功　＊座標の変更を行えます。
-	//{
-	//	manager->ReAncerSet(XMFLOAT3{ -100,1,-100 }, XMFLOAT3{ 500,500,500 });
-	//}
-	//if (input->TriggerKey(DIK_Z))
-	//{
-	//	enemy->EnemyDamege(1);
-	//	//enemy2->EnemyDamege(0.5);
-	//}
-	cost->Update();
-
-	CostUpdate();
-	CollisionUpdate();
 
 
 }
@@ -130,9 +140,42 @@ void GamePlay::Draw()
 	}
 	backSphere->Draw(DirectXDevice::cmdList);
 	cost->Draw();
+	if (clearFlag)
+	{
+		Sprite::PreDraw(DirectXDevice::cmdList);
+		clear->Draw();
+		//sprite2->Draw();
+		Sprite::PostDraw();
+	}
+	if (overFlag)
+	{
+		Sprite::PreDraw(DirectXDevice::cmdList);
+		over->Draw();
+		//sprite2->Draw();
+		Sprite::PostDraw();
+	}
+
 }
 void GamePlay::Initialize()
 {
+	overFlag = false;
+	clearFlag = false;
+	endFlag = false;
+
+	//Sprite::LoadTexture(1, L"img/TowerDefence_Title.png");
+	//Sprite::LoadTexture(2, L"img/TowerDefence_TitleBack.png");
+	Sprite::LoadTexture(3, L"img/title.png");
+	Sprite::LoadTexture(4, L"img/end.png");
+
+	//クリア画像読込,読込済みの3番
+	clear = Sprite::Create(3, { 0.0f, 0.0f });
+//	clear->SetPosition(XMFLOAT2{ static_cast<float>(Camera::window_width) / 2, static_cast<float>(Camera::window_height) / 2 });
+//	clear->SetSize(XMFLOAT2{ 1 * (static_cast<float>(Camera::window_width) / static_cast<float>(Camera::window_height)),1 });
+	//ゲームオーバー画像読込,込済みの4番
+	over = Sprite::Create(4, { 0.0f, 0.0f });
+//	over->SetPosition(XMFLOAT2{ static_cast<float>(Camera::window_width) / 2, static_cast<float>(Camera::window_height) / 2 });
+//	over->SetSize(XMFLOAT2{ 1 * (static_cast<float>(Camera::window_width) / static_cast<float>(Camera::window_height)),1 });
+
 	tower->Initialize(DirectXDevice::dev);
 	tower->SetPoisition({ 130,0,180 });
 	manager->Initialize();
@@ -144,18 +187,10 @@ void GamePlay::Initialize()
 	spawn->SetSpawn(10, 10);
 	spawn->SetPoisition({ -170, 0, -150 });
 	manager->Add2(spawn->GetPosition());
-	//manager->Add(enemy);
-	//manager->Add(enemy2);
-	//enemy->state = move1;
+
 	timer = 0;
 	manager->SetTowerEnemy(tower);
-	//back->Initialize();
-	//back->ResetTex(L"img/Blueback.png");
-	//back->SetScale(XMFLOAT3(300, 300, 300));
-	//back->SetPos(XMFLOAT3(0, 0, 500));
-	//enemy->SetTower(tower);
-	//砲台スポナー
-
+	
 	DefenderSpawn* d1 = new DefenderSpawn();
 	d1->Initialize();
 	d1->SetPos({ -40, 0, -90 });
@@ -231,9 +266,9 @@ void GamePlay::CollisionUpdate()
 	{
 		for (int a = 0; a < manager->boxcount; a++)
 		{
-			if (defList[i]->battery->liveFlag)
+			if (defList[i]->battery->liveFlag&&manager->enemybox[a] != nullptr)
 			{
-				if (collider->CircleToCircle(*defList[i]->battery->col, *manager->enemybox[a]->col) && manager->enemybox[a]->Hp >= 0)
+				if (collider->CircleToCircle(defList[i]->battery->col, manager->enemybox[a]->col) && manager->enemybox[a]->Hp >= 0)
 				{
 					targetFlag = true;
 					if (defList[i]->battery->targetPos == nullptr)
@@ -256,7 +291,7 @@ void GamePlay::CollisionUpdate()
 				{
 					for (int b = 0; b < defList[i]->battery->bulletList.size(); b++)
 					{
-						if (collider->CircleToCircle(*defList[i]->battery->bulletList[b]->col, *manager->enemybox[a]->col)
+						if (collider->CircleToCircle(defList[i]->battery->bulletList[b]->col, manager->enemybox[a]->col)
 							&& defList[i]->battery->bulletList[b]->liveFlag)
 						{
 							manager->enemybox[a]->EnemyDamege(defList[i]->battery->damage);
@@ -291,9 +326,18 @@ void GamePlay::CostUpdate()
 			{
 				defList[a]->StopCreate();
 			}
-			
+		}	
+	}
+}
 
-		}
-	
+void GamePlay::EndFlagCheck()
+{
+	if (tower->GetHp() <= 0)
+	{
+		overFlag = true;
+	}
+	if (manager->boxcount <= 0)
+	{
+		clearFlag = true;
 	}
 }

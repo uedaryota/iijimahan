@@ -8,6 +8,7 @@ Bullet::Bullet()
 Bullet::~Bullet()
 {
 	delete(obj);
+	delete(col);
 }
 
 void Bullet::Update()
