@@ -54,6 +54,7 @@ private:
 
 private:
 	Text* text;
+	Sprite* sprite;
 
 public:
 	int costUpTime = 30;//ƒRƒXƒg‘‰ÁŠÔŠu
