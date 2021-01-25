@@ -3,7 +3,7 @@
 
 enum WAVE
 {
-	wave1, wave2, wave3, clear
+	wave1, wave2, wave3, wave0
 };
 class GamePlay:public GameScene
 {

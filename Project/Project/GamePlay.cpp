@@ -152,11 +152,11 @@ void GamePlay::Update()
 		{
 			if (EneNow == manager->CountDeath()-1)
 			{
-				NowWAVE = clear;
+				NowWAVE = wave0;
 			}
 		}
 		break;
-	case clear:
+	case wave0:
 		break;
 	}
 	
