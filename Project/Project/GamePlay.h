@@ -14,5 +14,6 @@ public:
 	void Initialize() override;
 	void CollisionUpdate();
 	WAVE NowWAVE = wave1;
+	void CostUpdate();
 };
 

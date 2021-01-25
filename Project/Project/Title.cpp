@@ -3,14 +3,15 @@
 #include"DirectXDevice.h"
 
 Input* input2;
+Sprite* sprite;
+Sprite* sprite2;
+
  void Title::Update()
 {
 
 	 Camera::Update();
 	 input2->Update();
 	 Camera::window_height;
-	 sprite->Update();
-	 sprite2->Update();
 
 	 obj->Update();
 	 if (input2->TriggerKey(DIK_SPACE))
@@ -28,12 +29,13 @@ Input* input2;
  void Title::Draw()
 {
 	obj->Draw(DirectXDevice::cmdList);
+	Sprite::PreDraw(DirectXDevice::cmdList);
 	sprite->Draw();
 	//sprite2->Draw();
+	Sprite::PostDraw();
  }
 void Title::Initialize()
 {
-
 	Camera::ReturnCameraState()->cameraPos = { 0,0,500 };
 	Camera::ReturnCameraState()->pPos = { 0,0,0 };
 	Camera::ReturnCameraState()->target = { 0,0,1 };
@@ -41,14 +43,14 @@ void Title::Initialize()
 	endFlag = false;
 	input2 = new Input();
 	input2->Initialize();
-	sprite = new Sprite();
-	sprite->Initialize();
-	sprite->scale = { 1 * (static_cast<float>(Camera::window_width) / static_cast<float>(Camera::window_height)),1,1 };
-	sprite->ResetTex(L"img/TowerDefence_Title.png");
-	sprite2 = new Sprite();
-	sprite2->Initialize();
-	sprite2->scale = { 1 * (static_cast<float>(Camera::window_width) / static_cast<float>(Camera::window_height)),1,1 };
-	sprite2->ResetTex(L"img/TowerDefence_TitleBack.png");
+	Sprite::LoadTexture(1, L"img/TowerDefence_Title.png");
+	Sprite::LoadTexture(2, L"img/TowerDefence_TitleBack.png");
+	sprite = Sprite::Create(1, {0.0f, 0.0f});
+	//sprite->SetPosition(XMFLOAT2{ static_cast<float>(Camera::window_width) / 2, static_cast<float>(Camera::window_height) / 2 });
+	sprite->SetSize(XMFLOAT2{ static_cast<float>(Camera::window_width), static_cast<float>(Camera::window_height) });
+	sprite2 = Sprite::Create(2, { 0.0f, 0.0f });
+	sprite2->SetPosition(XMFLOAT2{static_cast<float>(Camera::window_width) / 2, static_cast<float>(Camera::window_height) / 2});
+	sprite2->SetSize(XMFLOAT2{ 1 * (static_cast<float>(Camera::window_width) / static_cast<float>(Camera::window_height)),1 });
 	obj = new ObjFile();
 	obj->Initialize();
 	obj->LoadObj("BackSphere");

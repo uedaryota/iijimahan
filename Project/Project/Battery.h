@@ -29,6 +29,8 @@ public:
 	int damage = 1;
 	Input* input;
 	bool liveFlag;
+	bool MoveFlag;
+	
 private:
 	void Setdir();
 	int startval = 60;

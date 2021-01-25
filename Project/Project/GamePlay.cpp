@@ -22,6 +22,7 @@
 #include"DefenderSpawn.h"
 #include<vector>
 #include"EnemyCSVRoder.h"
+#include"Cost.h"
 
 Camera* c = new Camera();
 Tower* tower = new Tower();
@@ -44,6 +45,7 @@ ObjFile* backSphere;
 
 Collision* collider = new Collision();
 Spawn* spawn = new Spawn();
+Cost* cost = new Cost();
 
 float timer = 0;
 float spawntime = 10;
@@ -179,8 +181,12 @@ void GamePlay::Update()
 	//	enemy->EnemyDamege(1);
 	//	//enemy2->EnemyDamege(0.5);
 	//}
+	cost->Update();
 
+	CostUpdate();
 	CollisionUpdate();
+
+
 }
 GamePlay::GamePlay()
 {
@@ -196,6 +202,7 @@ void GamePlay::Draw()
 		defList[a]->Draw();
 	}
 	backSphere->Draw(DirectXDevice::cmdList);
+	cost->Draw();
 }
 void GamePlay::Initialize()
 {
@@ -281,6 +288,7 @@ void GamePlay::Initialize()
 	backSphere->LoadObj("BackSphere");
 	backSphere->scale = { 1000, 1000, 1000 };
 	NowWAVE=wave1;
+	cost->Initialize();
 }
 
 void GamePlay::CollisionUpdate()
@@ -300,9 +308,9 @@ void GamePlay::CollisionUpdate()
 	{
 		for (int a = 0; a < manager->boxcount; a++)
 		{
-			if (defList[i]->battery != nullptr)
+			if (defList[i]->battery->liveFlag)
 			{
-				if (collider->CircleToCircle(*defList[i]->battery->col, *manager->enemybox[a]->col))
+				if (collider->CircleToCircle(*defList[i]->battery->col, *manager->enemybox[a]->col) && manager->enemybox[a]->Hp >= 0)
 				{
 					targetFlag = true;
 					if (defList[i]->battery->targetPos == nullptr)
@@ -316,7 +324,7 @@ void GamePlay::CollisionUpdate()
 						defList[i]->battery->SetTarget(nullptr);
 					}
 				}
-				else
+				else if (!targetFlag)
 				{
 					//範囲外ならnull
 					defList[i]->battery->SetTarget(nullptr);
@@ -339,5 +347,30 @@ void GamePlay::CollisionUpdate()
 				}
 			}
 		}
+	}
+}
+
+void GamePlay::CostUpdate()
+{
+	for (int a = 0; a < defList.size(); a++)
+	{
+		//コストフラグがTrueなら
+		if (defList[a]->ReturnCostFlag())
+		{
+			//現在コストが使用コスト以上ならば
+			if (cost->GetCost() >= defList[a]->ReturnUseCost())
+			{
+				cost->SetSubCost(defList[a]->usecost);
+				defList[a]->CostFlagFalse();
+			}
+			//それ以外
+			else
+			{
+				defList[a]->StopCreate();
+			}
+			
+
+		}
+	
 	}
 }
