@@ -1,5 +1,4 @@
 #pragma once
-#include"Camera.h"
 #include"ObjFile.h"
 #include <d3d12.h>
 #include <DirectXMath.h>
@@ -22,10 +21,7 @@ public:
 	Enemy* enemyamount();
 	int GetAmount();
 private:
-	XMFLOAT3 texSize{ 20,50,0 };
-	XMFLOAT3 texPos{ 0,0,0 };
 	ObjFile* obj = new ObjFile();
-	Texture* tex = new Texture();
 	int amount;
 	int* backamount;
 	float time = 0;

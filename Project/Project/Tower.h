@@ -4,7 +4,9 @@
 #include <d3d12.h>
 #include <DirectXMath.h>
 #include <d3dx12.h>
-#include"Texture.h"
+#include "Sprite.h"
+#include "DirectXDevice.h"
+#include "Text.h"
 class Tower
 {
 public:
@@ -20,10 +22,14 @@ public:
 	void Damage(float damage);
 	float hp =100.0f;
 private:
-	XMFLOAT3 texSize{ 20,50,0 };
-	XMFLOAT3 texPos{ 0,0,0 };
+	float maxhp;
+	float nowhp = 100.0f;
+	float hpspeed = 0.1f;
+	XMFLOAT2 spriteSize{ 400.0f, 50.0f };
 	bool deadflag;
 	ObjFile* obj = new ObjFile();
-	Texture* tex = new Texture();
+	Sprite* sprite = nullptr;
+	Sprite* sprite2 = nullptr;
+	Text* text = nullptr;
 };
 
