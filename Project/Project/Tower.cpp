@@ -12,16 +12,17 @@ Tower::~Tower()
 
 void Tower::Initialize(ID3D12Device* dev)
 {
-	Sprite::LoadTexture(4, L"Resources/HPBack.png");
-	Sprite::LoadTexture(5, L"Resources/HP.png");
-	sprite = Sprite::Create(4, XMFLOAT2(Camera::window_width / 2, 25));
+	Sprite::LoadTexture(6, L"img/HPBack.png");
+	Sprite::LoadTexture(7, L"img/HP.png");
+
+	sprite = Sprite::Create(6, XMFLOAT2(Camera::window_width / 2, 25));
 	sprite->SetAnchorPoint(XMFLOAT2(0.5, 0));
 	sprite->SetSize(XMFLOAT2(400, 50));
 
 	maxhp = hp;
 	nowhp = hp;
 
-	sprite2 = Sprite::Create(5, XMFLOAT2(Camera::window_width / 2 - 200, 0));
+	sprite2 = Sprite::Create(7, XMFLOAT2(Camera::window_width / 2 - 200, 0));
 	sprite2->SetSize(XMFLOAT2(spriteSize.x / maxhp * nowhp, spriteSize.y));
 
 	text = Text::GetInstance();

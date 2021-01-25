@@ -5,14 +5,12 @@ void Cost::Initialize()
 	time = 0;
 	cost = 0;
 
-	//テキストの読み込み
-	Sprite::LoadTexture(TextNumber, L"Resources/debugfont.png");
-	Sprite::LoadTexture(3, L"Resources/costback.png");
+	Sprite::LoadTexture(5, L"img/costback.png");
 
 	//テキスト初期化
 	text = Text::GetInstance();
 	text->Initialize(TextNumber);
-	sprite = Sprite::Create(3, XMFLOAT2(0, 0));
+	sprite = Sprite::Create(5, XMFLOAT2(0, 0));
 	sprite->SetSize(XMFLOAT2( 350, 50 ));
 }
 
