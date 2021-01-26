@@ -61,8 +61,15 @@ void EnemyManeger::Draw(ID3D12GraphicsCommandList * cmdList)
 {
 	for (int i = 0; i < boxcount; i++)
 	{
-		enemybox[i]->Draw(cmdList);
-		//enemybox2[i].Draw(cmdList);
+		if (enemybox[i]->Deadflag == true)
+		{
+			
+		}
+		else
+		{
+			enemybox[i]->Draw(cmdList);
+			//enemybox2[i].Draw(cmdList);
+		}
 	}
 }
 
@@ -70,9 +77,15 @@ void EnemyManeger::Update()
 {
 	for (int i = 0; i < boxcount; i++)
 	{
+		if (enemybox[i]->Deadflag == true)
+		{
+
+		}
+		else
+		{
 		enemybox[i]->Update();
 		//enemybox2[i].Update();
-	
+		}
 	}
 	//Serch();
 }
@@ -86,10 +99,17 @@ void EnemyManeger::AncerSet(XMFLOAT3 anc1, XMFLOAT3 anc2)
 {
 	for (int i = 0; i < boxcount; i++)
 	{
-		enemybox[i]->SetAncer1(anc1);
-		enemybox[i]->SetAncer2(anc2);
-		//enemybox2[i].SetAncer1(anc1);
-		//enemybox2[i].SetAncer2(anc2);
+		if (enemybox[i]->Deadflag == true)
+		{
+
+		}
+		else
+		{
+			enemybox[i]->SetAncer1(anc1);
+			enemybox[i]->SetAncer2(anc2);
+			//enemybox2[i].SetAncer1(anc1);
+			//enemybox2[i].SetAncer2(anc2);
+		}
 	}
 }
 
@@ -101,7 +121,14 @@ void EnemyManeger::FirstAncerSet(XMFLOAT3 anc1)
 {
 	for (int i = 0; i < boxcount; i++)
 	{
-		enemybox[i]->SetAncer1(anc1);
+		if (enemybox[i]->Deadflag == true)
+		{
+
+		}
+		else
+		{
+			enemybox[i]->SetAncer1(anc1);
+		}
 	}
 }
 
@@ -113,7 +140,14 @@ void EnemyManeger::SecondAncerSet(XMFLOAT3 anc2)
 {
 	for (int i = 0; i < boxcount; i++)
 	{
-		enemybox[i]->SetAncer2(anc2);
+		if (enemybox[i]->Deadflag == true)
+		{
+
+		}
+		else
+		{
+			enemybox[i]->SetAncer2(anc2);
+		}
 	}
 }
 
@@ -121,11 +155,17 @@ void EnemyManeger::ReAncerSet(XMFLOAT3 anc1, XMFLOAT3 anc2)
 {
 	for (int i = 0; i < boxcount; i++)
 	{
-		
-		enemybox[i]->SetAncer1(anc1);
-		//enemybox2[i].SetAncer1(anc1);
-		enemybox[i]->SetAncer2(anc2);
-		//enemybox2[i].SetAncer2(anc2);
+		if (enemybox[i]->Deadflag == true)
+		{
+
+		}
+		else
+		{
+			enemybox[i]->SetAncer1(anc1);
+			//enemybox2[i].SetAncer1(anc1);
+			enemybox[i]->SetAncer2(anc2);
+			//enemybox2[i].SetAncer2(anc2);
+		}
 	}
 }
 
@@ -138,18 +178,25 @@ bool EnemyManeger::Serch()
 	{
 		for (int x = 0; x < boxcount; x++)
 		{
-			if (enemybox[i]->GetPosition().x - enemybox[x]->GetPosition().x == 0 && enemybox[i]->GetPosition().z - enemybox[x]->GetPosition().z == 0)
+			if (enemybox[i]->Deadflag == true)
 			{
-			}
-			else if (abs(enemybox[i]->GetPosition().x - enemybox[x]->GetPosition().x) > hitX)
-			{
-			}
-			else if (abs(enemybox[i]->GetPosition().z - enemybox[x]->GetPosition().z) > hitZ)
-			{
+
 			}
 			else
 			{
-				enemybox[i]->state = Stay;
+				if (enemybox[i]->GetPosition().x - enemybox[x]->GetPosition().x == 0 && enemybox[i]->GetPosition().z - enemybox[x]->GetPosition().z == 0)
+				{
+				}
+				else if (abs(enemybox[i]->GetPosition().x - enemybox[x]->GetPosition().x) > hitX)
+				{
+				}
+				else if (abs(enemybox[i]->GetPosition().z - enemybox[x]->GetPosition().z) > hitZ)
+				{
+				}
+				else
+				{
+					enemybox[i]->state = Stay;
+				}
 			}
 		}
 	}
@@ -160,8 +207,15 @@ void EnemyManeger::SetTowerEnemy(Tower* tow)
 {
 	for (int i = 0; i < boxcount; i++)
 	{
-		enemybox[i]->SetTower(tow);
-		//enemybox2[i].SetTower(tow);
+		if (enemybox[i]->Deadflag == true)
+		{
+
+		}
+		else
+		{
+			enemybox[i]->SetTower(tow);
+			//enemybox2[i].SetTower(tow);
+		}
 	}
 }
 
@@ -169,8 +223,15 @@ void EnemyManeger::SetHp(float x)
 {
 	for (int i = 0; i < boxcount; i++)
 	{
-		enemybox[i]->SetHp(x);
-		//enemybox2[i].SetHp(x);
+		if (enemybox[i]->Deadflag == true)
+		{
+
+		}
+		else
+		{
+			enemybox[i]->SetHp(x);
+			//enemybox2[i].SetHp(x);
+		}
 	}
 }
 
@@ -178,6 +239,10 @@ void EnemyManeger::SetSpeed(float x)
 {
 	for (int i = 0; i < boxcount; i++)
 	{
+		if (enemybox[i]->Deadflag == true)
+		{
+			return;
+		}
 		enemybox[i]->SetSpeed(x);
 		//enemybox2[i].SetSpeed(x);
 	}
