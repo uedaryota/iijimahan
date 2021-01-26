@@ -25,35 +25,75 @@ void Stage2D::Initialize()
 	floor2->position.y -= 0.1;
 	floor2->SetScale({ 700, 700, 700 });
 
-	rock->Initialize();
-	rock->LoadObj("Rock");
-	rock->SetScale(XMFLOAT3(20, 20, 20));
-	rock->SetPos(XMFLOAT3(130, 0, -50));
+	for (int i = 0; i <= rockcount * 2 / 3 - 1; i++)
+	{
+		rocks[i] = new ObjFile();
+		rocks[i]->Initialize();
+		rocks[i]->LoadObj("Rock");
+		if (i % 2 == 0)
+		{
+			rocks[i]->SetScale(XMFLOAT3(30, 23, 31));
+			rocks[i]->SetRotate(XMFLOAT3(10, 30, -10));
+		}
+		else if (i % 3 == 0)
+		{
+			rocks[i]->SetScale(XMFLOAT3(33, 25, 32));
+			rocks[i]->SetRotate(XMFLOAT3(-10, 45, 10));
+		}
+		else
+		{
+			rocks[i]->SetScale(XMFLOAT3(25, 20, 28));
+			rocks[i]->SetRotate(XMFLOAT3(0, 60, 0));
+		}
+	}
+	for (int i = 16; i <= rockcount - 1; i++)
+	{
+		rocks[i] = new ObjFile();
+		rocks[i]->Initialize();
+		rocks[i]->LoadObj("Rock_02");
+		if (i % 2 == 0)
+		{
+			rocks[i]->SetScale(XMFLOAT3(30, 23, 30));
+			rocks[i]->SetRotate(XMFLOAT3(10, 30, -10));
+		}
+		else if (i % 5 == 0)
+		{
+			rocks[i]->SetScale(XMFLOAT3(33, 25, 32));
+			rocks[i]->SetRotate(XMFLOAT3(-10, 45, 10));
+		}
+		else
+		{
+			rocks[i]->SetScale(XMFLOAT3(25, 20, 28));
+			rocks[i]->SetRotate(XMFLOAT3(0, 60, 0));
+		}
+	}
 
-	rock2->Initialize();
-	rock2->LoadObj("Rock_02");
-	rock2->SetScale(XMFLOAT3(20, 20, 20));
-	rock2->SetPos(XMFLOAT3(170, 0, -150));
+	rocks[0]->SetPos(XMFLOAT3(330, 0, -250));
+	rocks[1]->SetPos(XMFLOAT3(-310, 0, 230));
+	rocks[2]->SetPos(XMFLOAT3(-230, 0, 330));
+	rocks[3]->SetPos(XMFLOAT3(230, 0, -380));
+	rocks[4]->SetPos(XMFLOAT3(330, 0, 250));
+	rocks[5]->SetPos(XMFLOAT3(-310, 0, -230));
+	rocks[6]->SetPos(XMFLOAT3(-230, 0, -330));
+	rocks[7]->SetPos(XMFLOAT3(230, 0, 380));
 
-	rock3->Initialize();
-	rock3->LoadObj("Rock");
-	rock3->SetScale(XMFLOAT3(20, 20, 20));
-	rock3->SetPos(XMFLOAT3(-110, 0, 30));
+	rocks[8]->SetPos(XMFLOAT3(330, 0, 70));
+	rocks[9]->SetPos(XMFLOAT3(310, 0, -80));
+	rocks[10]->SetPos(XMFLOAT3(-330, 0, 90));
+	rocks[11]->SetPos(XMFLOAT3(-350, 0, -70));
+	rocks[12]->SetPos(XMFLOAT3(80, 0, 320));
+	rocks[13]->SetPos(XMFLOAT3(-90, 0, 370));
+	rocks[14]->SetPos(XMFLOAT3(90, 0, -310));
+	rocks[15]->SetPos(XMFLOAT3(-70, 0, -340));
 
-	rock4->Initialize();
-	rock4->LoadObj("Rock_02");
-	rock4->SetScale(XMFLOAT3(20, 20, 20));
-	rock4->SetPos(XMFLOAT3(-140, 0, 130));
-
-	rock5->Initialize();
-	rock5->LoadObj("Rock");
-	rock5->SetScale(XMFLOAT3(20, 20, 20));
-	rock5->SetPos(XMFLOAT3(-30, 0, 130));
-
-	rock6->Initialize();
-	rock6->LoadObj("Rock");
-	rock6->SetScale(XMFLOAT3(20, 20, 20));
-	rock6->SetPos(XMFLOAT3(30, 0, -180));
+	rocks[16]->SetPos(XMFLOAT3(370, 0, -350));
+	rocks[17]->SetPos(XMFLOAT3(-340, 0, 330));
+	rocks[18]->SetPos(XMFLOAT3(370, 0, 350));
+	rocks[19]->SetPos(XMFLOAT3(-340, 0, -330));
+	rocks[20]->SetPos(XMFLOAT3(0, 0, 300));
+	rocks[21]->SetPos(XMFLOAT3(0, 0, -300));
+	rocks[22]->SetPos(XMFLOAT3(300, 0, 0));
+	rocks[23]->SetPos(XMFLOAT3(-300, 0, 0));
 }
 void Stage2D::CreateStage(int count)
 {
@@ -66,24 +106,20 @@ void Stage2D::Update()
 
 	input->Update();
 	CameraMove();
-	rock->Update();
-	rock2->Update();
-	rock3->Update();
-	rock4->Update();
-	rock5->Update();
-	rock6->Update();
+	for (int i = 0; i <= rockcount - 1; i++)
+	{
+		rocks[i]->Update();
+	}
 }
 
 void Stage2D::Draw()
 {
 	floor->Draw(DirectXDevice::cmdList, DirectXDevice::dev);
 	floor2->Draw(DirectXDevice::cmdList, DirectXDevice::dev);
-	rock->Draw(DirectXDevice::cmdList);
-	rock2->Draw(DirectXDevice::cmdList);
-	rock3->Draw(DirectXDevice::cmdList);
-	rock4->Draw(DirectXDevice::cmdList);
-	rock5->Draw(DirectXDevice::cmdList);
-	rock6->Draw(DirectXDevice::cmdList);
+	for (int i = 0; i <= rockcount - 1; i++)
+	{
+		rocks[i]->Draw(DirectXDevice::cmdList);
+	}
 }
 void Stage2D::CameraMove()
 {

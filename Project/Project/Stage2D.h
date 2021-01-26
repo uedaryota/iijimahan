@@ -31,5 +31,45 @@ private:
 	ObjFile* rock5 = new ObjFile();
 	//‰ñ‚è‚ÌŠâ6
 	ObjFile* rock6 = new ObjFile();
+	//‰ñ‚è‚ÌŠâ7
+	ObjFile* rock7 = new ObjFile();
+	//‰ñ‚è‚ÌŠâ8
+	ObjFile* rock8 = new ObjFile();
+	//‰ñ‚è‚ÌŠâ9
+	ObjFile* rock9 = new ObjFile();
+	//‰ñ‚è‚ÌŠâ10
+	ObjFile* rock10 = new ObjFile();
+	//‰ñ‚è‚ÌŠâ11
+	ObjFile* rock11 = new ObjFile();
+	//‰ñ‚è‚ÌŠâ12
+	ObjFile* rock12 = new ObjFile();
+	//Žü‚è‚ÌŠâ13
+	ObjFile* rock13 = new ObjFile();
+	//Žü‚è‚ÌŠâ14
+	ObjFile* rock14 = new ObjFile();
+	//‰ñ‚è‚ÌŠâ15
+	ObjFile* rock15 = new ObjFile();
+	//‰ñ‚è‚ÌŠâ16
+	ObjFile* rock16 = new ObjFile();
+	//‰ñ‚è‚ÌŠâ17
+	ObjFile* rock17 = new ObjFile();
+	//‰ñ‚è‚ÌŠâ18
+	ObjFile* rock18 = new ObjFile();
+	//‰ñ‚è‚ÌŠâ19
+	ObjFile* rock19 = new ObjFile();
+	//‰ñ‚è‚ÌŠâ20
+	ObjFile* rock20 = new ObjFile();
+	//‰ñ‚è‚ÌŠâ21
+	ObjFile* rock21 = new ObjFile();
+	//‰ñ‚è‚ÌŠâ22
+	ObjFile* rock22 = new ObjFile();
+	//‰ñ‚è‚ÌŠâ23
+	ObjFile* rock23 = new ObjFile();
+	//‰ñ‚è‚ÌŠâ24
+	ObjFile* rock24 = new ObjFile();
+
+	int rockcount = 24;
+
+	ObjFile* rocks[24];
 };
 
