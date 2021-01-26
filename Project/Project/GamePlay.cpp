@@ -321,6 +321,7 @@ void GamePlay::Initialize()
 	backSphere->Initialize();
 	backSphere->LoadObj("BackSphere");
 	backSphere->scale = { 1000, 1000, 1000 };
+
 	NowWAVE=wave1;
 	cost->Initialize();
 }

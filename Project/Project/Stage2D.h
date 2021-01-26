@@ -1,6 +1,7 @@
 #pragma once
 #include"Floor.h"
 #include"Input.h"
+#include"ObjFile.h"
 class Stage2D
 {
 public:
@@ -18,6 +19,17 @@ private:
 	Floor* floor;
 	//”wŒi‚É‘±‚­°
 	Floor* floor2;
-
+	//ü‚è‚ÌŠâ1
+	ObjFile* rock = new ObjFile();
+	//ü‚è‚ÌŠâ2
+	ObjFile* rock2 = new ObjFile();
+	//‰ñ‚è‚ÌŠâ3
+	ObjFile* rock3 = new ObjFile();
+	//‰ñ‚è‚ÌŠâ4
+	ObjFile* rock4 = new ObjFile();
+	//‰ñ‚è‚ÌŠâ5
+	ObjFile* rock5 = new ObjFile();
+	//‰ñ‚è‚ÌŠâ6
+	ObjFile* rock6 = new ObjFile();
 };
 

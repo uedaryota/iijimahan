@@ -25,6 +25,35 @@ void Stage2D::Initialize()
 	floor2->position.y -= 0.1;
 	floor2->SetScale({ 700, 700, 700 });
 
+	rock->Initialize();
+	rock->LoadObj("Rock");
+	rock->SetScale(XMFLOAT3(20, 20, 20));
+	rock->SetPos(XMFLOAT3(130, 0, -50));
+
+	rock2->Initialize();
+	rock2->LoadObj("Rock_02");
+	rock2->SetScale(XMFLOAT3(20, 20, 20));
+	rock2->SetPos(XMFLOAT3(170, 0, -150));
+
+	rock3->Initialize();
+	rock3->LoadObj("Rock");
+	rock3->SetScale(XMFLOAT3(20, 20, 20));
+	rock3->SetPos(XMFLOAT3(-110, 0, 30));
+
+	rock4->Initialize();
+	rock4->LoadObj("Rock_02");
+	rock4->SetScale(XMFLOAT3(20, 20, 20));
+	rock4->SetPos(XMFLOAT3(-140, 0, 130));
+
+	rock5->Initialize();
+	rock5->LoadObj("Rock");
+	rock5->SetScale(XMFLOAT3(20, 20, 20));
+	rock5->SetPos(XMFLOAT3(-30, 0, 130));
+
+	rock6->Initialize();
+	rock6->LoadObj("Rock");
+	rock6->SetScale(XMFLOAT3(20, 20, 20));
+	rock6->SetPos(XMFLOAT3(30, 0, -180));
 }
 void Stage2D::CreateStage(int count)
 {
@@ -37,14 +66,24 @@ void Stage2D::Update()
 
 	input->Update();
 	CameraMove();
-	
+	rock->Update();
+	rock2->Update();
+	rock3->Update();
+	rock4->Update();
+	rock5->Update();
+	rock6->Update();
 }
 
 void Stage2D::Draw()
 {
 	floor->Draw(DirectXDevice::cmdList, DirectXDevice::dev);
 	floor2->Draw(DirectXDevice::cmdList, DirectXDevice::dev);
-
+	rock->Draw(DirectXDevice::cmdList);
+	rock2->Draw(DirectXDevice::cmdList);
+	rock3->Draw(DirectXDevice::cmdList);
+	rock4->Draw(DirectXDevice::cmdList);
+	rock5->Draw(DirectXDevice::cmdList);
+	rock6->Draw(DirectXDevice::cmdList);
 }
 void Stage2D::CameraMove()
 {
