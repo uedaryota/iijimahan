@@ -333,7 +333,7 @@ void GamePlay::CollisionUpdate()
 	{
 		for (int a = 0; a < manager->boxcount; a++)
 		{
-			if (defList[i]->battery->liveFlag&&manager->enemybox[a] != nullptr)
+			if (defList[i]->battery->liveFlag&&manager->enemybox[a] != nullptr && manager->enemybox[a]->Deadflag==false)
 			{
 				if (collider->CircleToCircle(defList[i]->battery->col, manager->enemybox[a]->col) && manager->enemybox[a]->Hp >= 0)
 				{
