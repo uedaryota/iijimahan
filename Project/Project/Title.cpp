@@ -15,8 +15,10 @@ Input* input2;
 	 {
 		 endFlag = true;
 	 }
-	Camera::ReturnCameraState()->eyeangleY += 0.01;
-
+	 if (input2->PushKey(DIK_S))
+	 {
+		 Camera::ReturnCameraState()->eyeangleY += 0.03;
+	 }
 }
  Title::Title()
  {
