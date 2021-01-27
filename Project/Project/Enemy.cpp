@@ -6,7 +6,7 @@ Enemy::Enemy()
 
 Enemy::~Enemy()
 {
-	delete(pol);
+	//delete(pol);
 }
 
 Enemy::Enemy(const Enemy * ene)
@@ -21,7 +21,6 @@ void Enemy::Initialize()
 	col = new CircleCollision();
 	col->scale= 10;
 	//col->length = 10;
-	//pol->Initialize();
 	ai.Initialize();
 	SetState();
 	Deadflag = false;
@@ -72,10 +71,8 @@ void Enemy::Update()
 		//pol->Update();
 		obj->Update();
 
-		//obj->position = pol->position;
-		obj->position = pol->position;
 		obj2->Update();
-		obj2->position = pol->position;
+		obj2->SetPos(obj->position);
 		col->position = obj->position;
 		PositionUpdate(Ancer1, Ancer2, mokuhyou->GetPosition());
 		GetState();
@@ -121,6 +118,7 @@ void Enemy::SetPos(XMFLOAT3 position)
 {
 	//pol->position = position;
 	obj->position = position;
+	obj2->position = position;
 }
 
 ///<summary>
