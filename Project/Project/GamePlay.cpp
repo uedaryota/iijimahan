@@ -83,85 +83,7 @@ void GamePlay::Update()
 	
 	
 	//	sound->Update();
-	switch (NowWAVE)
-	{
-	case wave1:
-		if (EneNow < Wave1-1)
-		{
-			timer++;
-			if (timer / 60 > spawntime)
-			{
-				//エネミー生成
-				manager->Add2(spawn->GetPosition());
-				manager->ReAncerSet(pointA, pointB);
-				manager->SetTowerEnemy(tower);
-				manager->SetHp(HpKari);
-				manager->SetSpeed(SpeedKari);
-				timer = 0;
-				EneNow++;
-			}
-		}
-		else
-		{
-			if (EneNow == manager->CountDeath()-1)
-			{
-				timer = -(60*spawntime/2);
-				NowWAVE = wave2;
-			}
-		}
-		break;
-	case wave2:
-		if (EneNow < Wave1+Wave2-1)
-		{
-			timer++;
-			if (timer / 60 > spawntime)
-			{
-				//エネミー生成
-				manager->Add2(spawn->GetPosition());
-				manager->ReAncerSet(pointA, pointB);
-				manager->SetTowerEnemy(tower);
-				manager->SetHp(HpKari);
-				manager->SetSpeed(SpeedKari);
-				timer = 0;
-				EneNow++;
-			}
-		}
-		else
-		{
-			if (EneNow == manager->CountDeath()-1)
-			{
-				timer = -(60 * spawntime / 2);
-				NowWAVE = wave3;
-			}
-		}
-		break;
-	case wave3:
-		if (EneNow < Wave1 + Wave2 + Wave3-1)
-		{
-			timer++;
-			if (timer / 60 > spawntime)
-			{
-				//エネミー生成
-				manager->Add2(spawn->GetPosition());
-				manager->ReAncerSet(pointA, pointB);
-				manager->SetTowerEnemy(tower);
-				manager->SetHp(HpKari);
-				manager->SetSpeed(SpeedKari);
-				timer = 0;
-				EneNow++;
-			}
-		}
-		else
-		{
-			if (EneNow == manager->CountDeath()-1)
-			{
-				NowWAVE = wave0;
-			}
-		}
-		break;
-	case wave0:
-		break;
-	}
+
 	
 	//クリアフラグ、ゲームオーバーフラグ共にFalseでUpdate
 	if (!clearFlag && !overFlag)
@@ -169,22 +91,86 @@ void GamePlay::Update()
 		tower->Update();
 		spawn->Update();
 		//	sound->Update();
-		if (EneNow < EneMax)
-		{
-			timer++;
-			if (timer / 60 > spawntime)
-			{
-				//エネミー生成
-				manager->Add2(spawn->GetPosition());
-				manager->ReAncerSet(pointA, pointB);
-				manager->SetTowerEnemy(tower);
-				manager->SetHp(HpKari);
-				manager->SetSpeed(SpeedKari);
-				timer = 0;
-				EneNow++;
-			}
-		}
 
+		switch (NowWAVE)
+		{
+		case wave1:
+			if (EneNow < Wave1 - 1)
+			{
+				timer++;
+				if (timer / 60 > spawntime)
+				{
+					//エネミー生成
+					manager->Add2(spawn->GetPosition());
+					manager->ReAncerSet(pointA, pointB);
+					manager->SetTowerEnemy(tower);
+					manager->SetHp(HpKari);
+					manager->SetSpeed(SpeedKari);
+					timer = 0;
+					EneNow++;
+				}
+			}
+			else
+			{
+				if (EneNow == manager->CountDeath())
+				{
+					timer = -(60 * spawntime / 2);
+					NowWAVE = wave2;
+				}
+			}
+			break;
+		case wave2:
+			if (EneNow < Wave1 + Wave2 - 1)
+			{
+				timer++;
+				if (timer / 60 > spawntime)
+				{
+					//エネミー生成
+					manager->Add2(spawn->GetPosition());
+					manager->ReAncerSet(pointA, pointB);
+					manager->SetTowerEnemy(tower);
+					manager->SetHp(HpKari);
+					manager->SetSpeed(SpeedKari);
+					timer = 0;
+					EneNow++;
+				}
+			}
+			else
+			{
+				if (EneNow == manager->CountDeath() - 1)
+				{
+					timer = -(60 * spawntime / 2);
+					NowWAVE = wave3;
+				}
+			}
+			break;
+		case wave3:
+			if (EneNow < Wave1 + Wave2 + Wave3)
+			{
+				timer++;
+				if (timer / 60 > spawntime)
+				{
+					//エネミー生成
+					manager->Add2(spawn->GetPosition());
+					manager->ReAncerSet(pointA, pointB);
+					manager->SetTowerEnemy(tower);
+					manager->SetHp(HpKari);
+					manager->SetSpeed(SpeedKari);
+					timer = 0;
+					EneNow++;
+				}
+			}
+			else
+			{
+				if (EneNow == manager->CountDeath() - 1)
+				{
+					NowWAVE = wave0;
+				}
+			}
+			break;
+		case wave0:
+			break;
+		}
 
 		//enemy->SetScale(XMFLOAT3{ 10,10,10 });
 		manager->Update();
@@ -325,6 +311,7 @@ void GamePlay::Initialize()
 	backSphere->Initialize();
 	backSphere->LoadObj("BackSphere");
 	backSphere->scale = { 1000, 1000, 1000 };
+
 	NowWAVE=wave1;
 	cost->Initialize();
 	par = new ParticleManager();
