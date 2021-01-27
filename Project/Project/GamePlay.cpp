@@ -185,7 +185,7 @@ void GamePlay::Update()
 		}
 
 		cost->Update();
-
+		manager->Draw(DirectXDevice::cmdList);
 		CostUpdate();
 		CollisionUpdate();
 		EndFlagCheck();
@@ -200,7 +200,6 @@ void GamePlay::Draw()
 {
 	tower->Draw(DirectXDevice::cmdList);
 	spawn->Draw(DirectXDevice::cmdList);
-	manager->Draw(DirectXDevice::cmdList);
 	stage->Draw();
 	par->Draw();
 	for (int a = 0; a < defList.size(); a++)

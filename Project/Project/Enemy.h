@@ -4,6 +4,7 @@
 #include <d3dx12.h>
 #include"Texture.h"
 #include"CircleCollision.h"
+
 using namespace DirectX;
 enum State {
 	move1, move2, move3, atack1, special1, Destory, Stay, 
@@ -33,7 +34,7 @@ public:
 	int time = 0;
 	int endtime = 3;
 	XMFLOAT3 endscale = {10, 10, 10};
-	XMFLOAT3 vel = {0.1 + (Speed / 50), 0, -0.1 - (Speed / 50) };
+	XMFLOAT3 vel = {0.3, 0, -0.3};
 	bool NextX = false;
 	bool NextZ = false;
 	float Floar2 = 110.0f;
