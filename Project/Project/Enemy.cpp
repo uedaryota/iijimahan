@@ -21,7 +21,7 @@ void Enemy::Initialize()
 	col = new CircleCollision();
 	col->scale= 10;
 	//col->length = 10;
-	pol->Initialize();
+	//pol->Initialize();
 	ai.Initialize();
 	SetState();
 	Deadflag = false;
@@ -30,6 +30,9 @@ void Enemy::Initialize()
 	obj->Initialize();
 	obj->LoadObj("UFO");
 	obj->position.y = 0;
+	obj2->Initialize();
+	obj2->LoadObj("UFO_Red");
+	obj2->position.y = 0;
 	vel.x = vel.x + (Speed / 50);
 	vel.z = vel.z + (Speed / 50);
 }
@@ -64,24 +67,15 @@ void Enemy::Update()
 			}
 
 			obj->SetScale(endscale);
+			obj->SetScale(endscale);
 		}
-		if (Damege)
-		{
-			time++;
-			if (time <= endtime)
-			{
-				//obj->LoadObj("DamegeUFO");
-			}
-			else
-			{ 
-				time = 0;
-				obj->LoadObj("UFO");
-				Damege = false;
-			}
-		}
-		pol->Update();
+		//pol->Update();
 		obj->Update();
+
+		//obj->position = pol->position;
 		obj->position = pol->position;
+		obj2->Update();
+		obj2->position = pol->position;
 		col->position = obj->position;
 		PositionUpdate(Ancer1, Ancer2, mokuhyou->GetPosition());
 		GetState();
@@ -97,8 +91,26 @@ void Enemy::Draw(ID3D12GraphicsCommandList * cmdList)
 {
 	if (!Deadflag)
 	{
-		//pol->Draw(DirectXDevice::cmdList, DirectXDevice::dev);
-		obj->Draw(DirectXDevice::cmdList);
+
+		if (Damege)
+		{
+			time++;
+			if (time <= endtime)
+			{
+				obj2->Draw(DirectXDevice::cmdList);
+			}
+			else
+			{
+				time = 0;
+				obj->Draw(DirectXDevice::cmdList);
+				Damege = false;
+			}
+		}
+		else
+		{
+			//pol->Draw(DirectXDevice::cmdList, DirectXDevice::dev);
+			obj->Draw(DirectXDevice::cmdList);
+		}
 	}
 }
 
@@ -107,7 +119,8 @@ void Enemy::Draw(ID3D12GraphicsCommandList * cmdList)
 ///</summary>
 void Enemy::SetPos(XMFLOAT3 position)
 {
-	pol->position = position;
+	//pol->position = position;
+	obj->position = position;
 }
 
 ///<summary>
@@ -115,8 +128,9 @@ void Enemy::SetPos(XMFLOAT3 position)
 ///</summary>
 void Enemy::SetScale(XMFLOAT3 scale)
 {
-	pol->scale = scale;
+	//pol->scale = scale;
 	obj->scale = scale;
+	obj2->scale = scale;
 }
 
 ///<summary>
@@ -169,25 +183,25 @@ void Enemy::PositionUpdate(XMFLOAT3 pointA, XMFLOAT3 pointB, XMFLOAT3 tower)//エ
 #pragma endregion
 		case move1://第1移動
 #pragma region
-			if (pol->position.x - pointA.x > 0.5f) {
-				pol->position.x = pol->position.x + vel.z;
+			if (obj->position.x - pointA.x > 0.5f) {
+				obj->position.x = obj->position.x + vel.z;
 			}
-			else if (pol->position.x - pointA.x < -0.5f)
+			else if (obj->position.x - pointA.x < -0.5f)
 			{				
-				pol->position.x = pol->position.x + vel.x;
+				obj->position.x = obj->position.x + vel.x;
 			}
 			else
 			{
 				NextX = true;
 			}
 			if (NextX) {
-				if (pol->position.z - pointA.z > 0.5f)
+				if (obj->position.z - pointA.z > 0.5f)
 				{
-					pol->position.z = pol->position.z + vel.z;
+					obj->position.z = obj->position.z + vel.z;
 				}
-				else if (pol->position.z - pointA.z < -0.5)
+				else if (obj->position.z - pointA.z < -0.5)
 				{
-					pol->position.z = pol->position.z + vel.x;
+					obj->position.z = obj->position.z + vel.x;
 				}
 				else
 				{
@@ -204,25 +218,25 @@ void Enemy::PositionUpdate(XMFLOAT3 pointA, XMFLOAT3 pointB, XMFLOAT3 tower)//エ
 #pragma endregion
 		case move2://第2移動
 #pragma region
-			if (pol->position.x - pointB.x > 0.5f) {
-				pol->position.x = pol->position.x + vel.z;
+			if (obj->position.x - pointB.x > 0.5f) {
+				obj->position.x = obj->position.x + vel.z;
 			}
-			else if (pol->position.x - pointB.x < -0.5f)
+			else if (obj->position.x - pointB.x < -0.5f)
 			{
-				pol->position.x = pol->position.x + vel.x;
+				obj->position.x = obj->position.x + vel.x;
 			}
 			else
 			{
 				NextX = true;
 			}
 			if (NextX) {
-				if (pol->position.z - pointB.z > 0.5f)
+				if (obj->position.z - pointB.z > 0.5f)
 				{
-					pol->position.z = pol->position.z + vel.z;
+					obj->position.z = obj->position.z + vel.z;
 				}
-				else if (pol->position.z - pointB.z < -0.5)
+				else if (obj->position.z - pointB.z < -0.5)
 				{
-					pol->position.z = pol->position.z + vel.x;
+					obj->position.z = obj->position.z + vel.x;
 				}
 				else
 				{
@@ -239,25 +253,25 @@ void Enemy::PositionUpdate(XMFLOAT3 pointA, XMFLOAT3 pointB, XMFLOAT3 tower)//エ
 #pragma endregion
 		case move3://第3移動
 #pragma region
-			if (pol->position.x - tower.x > 0.5f) {
-				pol->position.x = pol->position.x + vel.z;
+			if (obj->position.x - tower.x > 0.5f) {
+				obj->position.x = obj->position.x + vel.z;
 			}
-			else if (pol->position.x - tower.x < -0.5f)
+			else if (obj->position.x - tower.x < -0.5f)
 			{
-				pol->position.x = pol->position.x + vel.x;
+				obj->position.x = obj->position.x + vel.x;
 			}
 			else
 			{
 				NextX = true;
 			}
 			if (NextX) {
-				if (pol->position.z - tower.z > 0.5f)
+				if (obj->position.z - tower.z > 0.5f)
 				{
-					pol->position.z = pol->position.z + vel.z;
+					obj->position.z = obj->position.z + vel.z;
 				}
-				else if (pol->position.z - tower.z < -0.5)
+				else if (obj->position.z - tower.z < -0.5)
 				{
-					pol->position.z = pol->position.z + vel.x;
+					obj->position.z = obj->position.z + vel.x;
 				}
 				else
 				{
@@ -278,7 +292,7 @@ void Enemy::PositionUpdate(XMFLOAT3 pointA, XMFLOAT3 pointB, XMFLOAT3 tower)//エ
 			if (Cnt < 10.0f)
 			{
 				Cnt++;
-				pol->position.y = pol->position.y + vel.z;
+				obj->position.y = obj->position.y + vel.z;
 			}
 			else if (Cnt > 20.0f)
 			{
@@ -288,7 +302,7 @@ void Enemy::PositionUpdate(XMFLOAT3 pointA, XMFLOAT3 pointB, XMFLOAT3 tower)//エ
 			else if (Cnt <= 20.0f &Cnt >= 10.0f)
 			{
 				Cnt++;
-				pol->position.y = pol->position.y - vel.z;
+				obj->position.y = obj->position.y - vel.z;
 			}
 			break;
 #pragma endregion
@@ -298,7 +312,7 @@ void Enemy::PositionUpdate(XMFLOAT3 pointA, XMFLOAT3 pointB, XMFLOAT3 tower)//エ
 			break;
 #pragma endregion
 	}
-		pol->position;
+	obj->position;
 }
 
 ///<summary>

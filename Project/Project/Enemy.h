@@ -4,6 +4,7 @@
 #include <d3dx12.h>
 #include"Texture.h"
 #include"CircleCollision.h"
+
 using namespace DirectX;
 enum State {
 	move1, move2, move3, atack1, special1, Destory, Stay, 
@@ -33,7 +34,7 @@ public:
 	int time = 0;
 	int endtime = 3;
 	XMFLOAT3 endscale = {10, 10, 10};
-	XMFLOAT3 vel = {0.1 + (Speed / 50), 0, -0.1 - (Speed / 50) };
+	XMFLOAT3 vel = {0.3, 0, -0.3};
 	bool NextX = false;
 	bool NextZ = false;
 	float Floar2 = 110.0f;
@@ -74,6 +75,7 @@ private:
 	bool Damege = false;//ダメージを受けた際にTRUEになる変数です
 	bool Kosinuke = false;//腰抜け状態です。
 	ObjFile* obj = new ObjFile();
+	ObjFile* obj2 = new ObjFile();
 	Texture* tex = new Texture();
 	
 };

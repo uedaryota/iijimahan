@@ -37,15 +37,15 @@ void Cost::Draw()
 	sprite->Draw();
 	if (cost < 10)
 	{
-		text->Print("COST  " + to_string(cost) + " / " + to_string(maxcost), 0, 0, 3);
+		text->Print("COST  " + to_string(cost) + " / " + to_string(maxcost), 10, 0, 3);
 	}
 	if (cost >= 10 && cost < 100)
 	{
-		text->Print("COST " + to_string(cost) + " / " + to_string(maxcost), 0, 0, 3);
+		text->Print("COST " + to_string(cost) + " / " + to_string(maxcost), 10, 0, 3);
 	}
 	if (cost >= 100)
 	{
-		text->Print("COST" + to_string(cost) + " / " + to_string(maxcost), 0, 0, 3);
+		text->Print("COST" + to_string(cost) + " / " + to_string(maxcost), 10, 0, 3);
 	}
 	text->DrawAll(DirectXDevice::cmdList);
 	Sprite::PostDraw();

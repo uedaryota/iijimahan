@@ -74,7 +74,7 @@ void DirectXDevice::Initialize()
 	objdata->LoadObj("Tower");
 	objdata->LoadObj("Rock");
 	objdata->LoadObj("Rock_02");
-	//objdata->LoadObj("DamegeUFO");
+	objdata->LoadObj("UFO_Red");
 
 	//objdata.LoadObj("triangle");
 	objdata->LoadObj("Enemy_Base");
@@ -160,14 +160,12 @@ void DirectXDevice::Update()
 	DirectXDevice::cmdList->ResourceBarrier(1, &barrierDesc);
 	//‚±‚±‚Ü‚Å
 	DirectXDevice::cmdList->Close();
-
-	
-
 	ID3D12CommandList* cmdLists[] = { DirectXDevice::cmdList };
 	cmdQueue->ExecuteCommandLists(1, cmdLists);
 
 
 	cmdQueue->Signal(DirectXDevice::fence, ++DirectXDevice::fenceVal);
+
 	while (fence->GetCompletedValue() != DirectXDevice::fenceVal)
 	{
 		HANDLE event = CreateEvent(nullptr, false, false, nullptr);
@@ -175,12 +173,9 @@ void DirectXDevice::Update()
 		WaitForSingleObject(event, INFINITE);
 		CloseHandle(event);
 	}
-
-
-	DirectXDevice::cmdAllocator->Reset();
 	DirectXDevice::cmdList->Reset(cmdAllocator, nullptr);
-
 	DirectXDevice::swapchain->Present(1, 0);
+	DirectXDevice::cmdAllocator->Reset();
 
 }
 void DirectXDevice::CreateGameWindow()

@@ -189,7 +189,7 @@ void GamePlay::Update()
 		}
 
 		cost->Update();
-
+		manager->Draw(DirectXDevice::cmdList);
 		CostUpdate();
 		CollisionUpdate();
 		EndFlagCheck();
@@ -205,7 +205,6 @@ void GamePlay::Draw()
 	backSphere->Draw(DirectXDevice::cmdList);
 	
 	spawn->Draw(DirectXDevice::cmdList);
-	manager->Draw(DirectXDevice::cmdList);
 	stage->Draw();
 	tower->Draw(DirectXDevice::cmdList);
 	for (int a = 0; a < defList.size(); a++)
@@ -234,6 +233,9 @@ void GamePlay::Initialize()
 	overFlag = false;
 	clearFlag = false;
 	endFlag = false;
+
+	Sprite::LoadTexture(3, L"img/title.png");
+	Sprite::LoadTexture(4, L"img/end.png");
 
 	//ƒNƒŠƒA‰æ‘œ“Çž,“ÇžÏ‚Ý‚Ì3”Ô
 	clear = Sprite::Create(3, { 0.0f, 0.0f });
