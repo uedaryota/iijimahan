@@ -75,6 +75,7 @@ private:
 	bool Damege = false;//ダメージを受けた際にTRUEになる変数です
 	bool Kosinuke = false;//腰抜け状態です。
 	ObjFile* obj = new ObjFile();
+	ObjFile* obj2 = new ObjFile();
 	Texture* tex = new Texture();
 	
 };

@@ -74,7 +74,7 @@ void DirectXDevice::Initialize()
 	objdata->LoadObj("Tower");
 	objdata->LoadObj("Rock");
 	objdata->LoadObj("Rock_02");
-	//objdata->LoadObj("DamegeUFO");
+	objdata->LoadObj("UFO_Red");
 
 	//objdata.LoadObj("triangle");
 	objdata->LoadObj("Enemy_Base");

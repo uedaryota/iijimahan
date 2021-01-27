@@ -230,6 +230,9 @@ void GamePlay::Initialize()
 	clearFlag = false;
 	endFlag = false;
 
+	Sprite::LoadTexture(3, L"img/title.png");
+	Sprite::LoadTexture(4, L"img/end.png");
+
 	//ƒNƒŠƒA‰æ‘œ“Çž,“ÇžÏ‚Ý‚Ì3”Ô
 	clear = Sprite::Create(3, { 0.0f, 0.0f });
 //	clear->SetPosition(XMFLOAT2{ static_cast<float>(Camera::window_width) / 2, static_cast<float>(Camera::window_height) / 2 });
