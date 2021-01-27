@@ -67,7 +67,7 @@ void GamePlay::Update()
 	Camera::ReturnCameraState()->up = XMFLOAT3(0, 1, 0);
 
 	input->Update();
-
+	
 	if (input->PushKey(DIK_P))
 	{
 		sound->PlayRoop();
@@ -79,6 +79,8 @@ void GamePlay::Update()
 	Camera::Update();
 	tower->Update();
 	spawn->Update();
+	par->Start();
+	par->SetPos({ 130,0,180 });
 	par->Update();
 	
 	

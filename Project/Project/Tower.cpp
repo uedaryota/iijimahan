@@ -53,7 +53,7 @@ void Tower::Update()
 	sprite2->SetSize(XMFLOAT2(spriteSize.x / maxhp * nowhp, spriteSize.y));
 	obj->Update();
 
-	//particle->SetPos(obj->position);
+	particle->SetPos(obj->position);
 	particle->Update();
 }
 
@@ -63,7 +63,6 @@ void Tower::Draw(ID3D12GraphicsCommandList * cmdList)
 	Sprite::PreDraw(DirectXDevice::cmdList);
 	sprite->Draw();
 	sprite2->Draw();
-	particle->Update();
 	if (hp < 10)
 	{
 		text->Print("HP   " + to_string((int)hp) + " / " + to_string((int)maxhp), Camera::window_width / 2 - 100, 8, 2);
@@ -77,6 +76,7 @@ void Tower::Draw(ID3D12GraphicsCommandList * cmdList)
 		text->Print("HP " + to_string((int)hp) + " / " + to_string((int)maxhp), Camera::window_width / 2 - 100, 8, 2);
 	}
 	Sprite::PostDraw();
+	particle->Draw();
 }
 
 

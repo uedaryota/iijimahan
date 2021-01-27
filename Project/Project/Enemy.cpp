@@ -365,7 +365,7 @@ void Enemy::SetTower(Tower* tow){mokuhyou = tow;}
 void Enemy::TowerAtack()
 {
 	//mokuhyou->SetHp(GetPower());
-	mokuhyou->hp = mokuhyou->hp - GetPower();
+	mokuhyou->Damage(GetPower());
 	Hp = 0;
 }
 
