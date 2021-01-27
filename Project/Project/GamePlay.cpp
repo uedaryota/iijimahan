@@ -47,7 +47,6 @@ Sprite* clear;
 Collision* collider = new Collision();
 Spawn* spawn = new Spawn();
 Cost* cost = new Cost();
-ParticleManager* par;
 float timer = 0;
 float spawntime = 10;
 int EneMax = 99;
@@ -79,16 +78,13 @@ void GamePlay::Update()
 	Camera::Update();
 	tower->Update();
 	spawn->Update();
-	par->Start();
-	par->SetPos({ 130,0,180 });
-	par->Update();
 	if (input->TriggerKey(DIK_B))
 	{
 		tower->Damage(10);
 	}
 	//
 	//
-	//	sound->Update();
+	//	sound->Update();`
 
 	
 	//クリアフラグ、ゲームオーバーフラグ共にFalseでUpdate
@@ -322,8 +318,7 @@ void GamePlay::Initialize()
 
 	NowWAVE=wave1;
 	cost->Initialize();
-	par = new ParticleManager();
-	par->Initialize();
+	
 }
 
 void GamePlay::CollisionUpdate()

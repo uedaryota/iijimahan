@@ -69,8 +69,6 @@ public:
 	void SetSpeed(float x);
 	CircleCollision* col;
 private:
-	Poly * pol = new Poly();
-
 	//性格事に行動変化するための変数です
 	bool Damege = false;//ダメージを受けた際にTRUEになる変数です
 	bool Kosinuke = false;//腰抜け状態です。
