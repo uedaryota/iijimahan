@@ -82,8 +82,12 @@ void GamePlay::Update()
 	par->Start();
 	par->SetPos({ 130,0,180 });
 	par->Update();
-	
-	
+	if (input->TriggerKey(DIK_B))
+	{
+		tower->Damage(10);
+	}
+	//
+	//
 	//	sound->Update();
 
 	
@@ -198,16 +202,16 @@ GamePlay::GamePlay()
 }
 void GamePlay::Draw()
 {
-	tower->Draw(DirectXDevice::cmdList);
+	backSphere->Draw(DirectXDevice::cmdList);
+	
 	spawn->Draw(DirectXDevice::cmdList);
 	manager->Draw(DirectXDevice::cmdList);
 	stage->Draw();
-	par->Draw();
+	tower->Draw(DirectXDevice::cmdList);
 	for (int a = 0; a < defList.size(); a++)
 	{
 		defList[a]->Draw();
 	}
-	backSphere->Draw(DirectXDevice::cmdList);
 	cost->Draw();
 	if (clearFlag)
 	{

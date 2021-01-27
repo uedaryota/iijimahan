@@ -52,7 +52,7 @@ void Tower::Update()
 	}
 	sprite2->SetSize(XMFLOAT2(spriteSize.x / maxhp * nowhp, spriteSize.y));
 	obj->Update();
-
+	//particle->Start();
 	particle->SetPos(obj->position);
 	particle->Update();
 }
@@ -106,4 +106,6 @@ void Tower::Damage(float damage)
 {
 	hp = hp - damage;
 	particle->Start();
+	int movetime = 25;
+	Camera::CameraShake(movetime);
 }

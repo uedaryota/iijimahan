@@ -115,7 +115,7 @@ void Particle::CreatePipeline()
 		gpipeline.RasterizerState.MultisampleEnable = false;
 		gpipeline.RasterizerState.CullMode = D3D12_CULL_MODE_NONE; // カリングしない
 		gpipeline.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID; // ポリゴン内塗りつぶし
-		gpipeline.RasterizerState.DepthClipEnable = true; // 深度クリッピングを有効に
+		gpipeline.RasterizerState.DepthClipEnable = false; // 深度クリッピングを有効に
 
 		gpipeline.BlendState.AlphaToCoverageEnable = false;
 		gpipeline.BlendState.IndependentBlendEnable = false;
@@ -500,7 +500,6 @@ void Particle::Draw()
 	handle.ptr += DirectXDevice::dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 	DirectXDevice::cmdList->SetGraphicsRootDescriptorTable(1, handle);
 	DirectXDevice::cmdList->DrawIndexedInstanced(_countof(indices), 1, 0, 0, 0);
-
 }
 
 void Particle::Update()
@@ -525,11 +524,11 @@ void Particle::Update()
 	matTrans = XMMatrixTranslation(position.x, position.y, position.z);
 	matWorld = XMMatrixIdentity();
 
+	matWorld *= bill;
 	matWorld *= matScale;
 	matWorld *= matRot;
 	matWorld *= matTrans;
-	matWorld *= bill;
-
+	
 	//color.x -= 0.01f;
 
 	color.y -= 1 / life * 3; 
