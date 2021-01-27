@@ -23,7 +23,7 @@
 #include<vector>
 #include"EnemyCSVRoder.h"
 #include"Cost.h"
-
+#include"ParticleManager.h"
 Camera* c = new Camera();
 Tower* tower = new Tower();
 XMFLOAT3 pointA = { 0,0,30 };
@@ -47,7 +47,7 @@ Sprite* clear;
 Collision* collider = new Collision();
 Spawn* spawn = new Spawn();
 Cost* cost = new Cost();
-
+ParticleManager* par;
 float timer = 0;
 float spawntime = 10;
 int EneMax = 99;
@@ -79,6 +79,9 @@ void GamePlay::Update()
 	Camera::Update();
 	tower->Update();
 	spawn->Update();
+	par->Update();
+	
+	
 	//	sound->Update();
 	switch (NowWAVE)
 	{
@@ -211,6 +214,7 @@ void GamePlay::Draw()
 	spawn->Draw(DirectXDevice::cmdList);
 	manager->Draw(DirectXDevice::cmdList);
 	stage->Draw();
+	par->Draw();
 	for (int a = 0; a < defList.size(); a++)
 	{
 		defList[a]->Draw();
@@ -323,6 +327,8 @@ void GamePlay::Initialize()
 	backSphere->scale = { 1000, 1000, 1000 };
 	NowWAVE=wave1;
 	cost->Initialize();
+	par = new ParticleManager();
+	par->Initialize();
 }
 
 void GamePlay::CollisionUpdate()

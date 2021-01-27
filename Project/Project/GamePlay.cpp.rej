@@ -1,0 +1,9 @@
+diff a/Project/Project/GamePlay.cpp b/Project/Project/GamePlay.cpp	(rejected hunks)
+@@ -239,7 +239,6 @@
+ 	clearFlag = false;
+ 	endFlag = false;
+ 
+-	Sprite::LoadTexture(3, L"img/title.png");
+ 	//�N���A�摜�Ǎ�,�Ǎ��ς݂�3��
+ 	clear = Sprite::Create(3, { 0.0f, 0.0f });
+ //	clear->SetPosition(XMFLOAT2{ static_cast<float>(Camera::window_width) / 2, static_cast<float>(Camera::window_height) / 2 });
