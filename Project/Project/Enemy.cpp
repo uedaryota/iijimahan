@@ -70,7 +70,7 @@ void Enemy::Update()
 			time++;
 			if (time <= endtime)
 			{
-				//obj->LoadObj("DamegeUFO");
+				obj->LoadObj("UFO_Red");
 			}
 			else
 			{ 
