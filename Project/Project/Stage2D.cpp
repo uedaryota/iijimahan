@@ -32,17 +32,17 @@ void Stage2D::Initialize()
 		rocks[i]->LoadObj("Rock");
 		if (i % 2 == 0)
 		{
-			rocks[i]->SetScale(XMFLOAT3(30, 23, 31));
+			rocks[i]->SetScale(XMFLOAT3(50, 43, 51));
 			rocks[i]->SetRotate(XMFLOAT3(10, 30, -10));
 		}
 		else if (i % 3 == 0)
 		{
-			rocks[i]->SetScale(XMFLOAT3(33, 25, 32));
+			rocks[i]->SetScale(XMFLOAT3(53, 55, 52));
 			rocks[i]->SetRotate(XMFLOAT3(-10, 45, 10));
 		}
 		else
 		{
-			rocks[i]->SetScale(XMFLOAT3(25, 20, 28));
+			rocks[i]->SetScale(XMFLOAT3(45, 31, 48));
 			rocks[i]->SetRotate(XMFLOAT3(0, 60, 0));
 		}
 	}
@@ -53,17 +53,17 @@ void Stage2D::Initialize()
 		rocks[i]->LoadObj("Rock_02");
 		if (i % 2 == 0)
 		{
-			rocks[i]->SetScale(XMFLOAT3(30, 23, 30));
+			rocks[i]->SetScale(XMFLOAT3(50, 32, 50));
 			rocks[i]->SetRotate(XMFLOAT3(10, 30, -10));
 		}
 		else if (i % 5 == 0)
 		{
-			rocks[i]->SetScale(XMFLOAT3(33, 25, 32));
+			rocks[i]->SetScale(XMFLOAT3(53, 45, 52));
 			rocks[i]->SetRotate(XMFLOAT3(-10, 45, 10));
 		}
 		else
 		{
-			rocks[i]->SetScale(XMFLOAT3(25, 20, 28));
+			rocks[i]->SetScale(XMFLOAT3(45, 52, 48));
 			rocks[i]->SetRotate(XMFLOAT3(0, 60, 0));
 		}
 	}
@@ -90,10 +90,10 @@ void Stage2D::Initialize()
 	rocks[17]->SetPos(XMFLOAT3(-340, 0, 330));
 	rocks[18]->SetPos(XMFLOAT3(370, 0, 350));
 	rocks[19]->SetPos(XMFLOAT3(-340, 0, -330));
-	rocks[20]->SetPos(XMFLOAT3(0, 0, 300));
-	rocks[21]->SetPos(XMFLOAT3(0, 0, -300));
-	rocks[22]->SetPos(XMFLOAT3(300, 0, 0));
-	rocks[23]->SetPos(XMFLOAT3(-300, 0, 0));
+	rocks[20]->SetPos(XMFLOAT3(0, 0, 320));
+	rocks[21]->SetPos(XMFLOAT3(0, 0, -320));
+	rocks[22]->SetPos(XMFLOAT3(320, 0, 0));
+	rocks[23]->SetPos(XMFLOAT3(-320, 0, 0));
 }
 void Stage2D::CreateStage(int count)
 {
