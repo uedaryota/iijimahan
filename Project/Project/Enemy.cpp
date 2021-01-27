@@ -30,6 +30,9 @@ void Enemy::Initialize()
 	obj->Initialize();
 	obj->LoadObj("UFO");
 	obj->position.y = 0;
+	obj2->Initialize();
+	obj2->LoadObj("UFO_Red");
+	obj2->position.y = 0;
 	vel.x = vel.x + (Speed / 50);
 	vel.z = vel.z + (Speed / 50);
 }
@@ -64,24 +67,13 @@ void Enemy::Update()
 			}
 
 			obj->SetScale(endscale);
-		}
-		if (Damege)
-		{
-			time++;
-			if (time <= endtime)
-			{
-				obj->LoadObj("UFO_Red");
-			}
-			else
-			{ 
-				time = 0;
-				obj->LoadObj("UFO");
-				Damege = false;
-			}
+			obj->SetScale(endscale);
 		}
 		pol->Update();
 		obj->Update();
 		obj->position = pol->position;
+		obj2->Update();
+		obj2->position = pol->position;
 		col->position = obj->position;
 		PositionUpdate(Ancer1, Ancer2, mokuhyou->GetPosition());
 		GetState();
@@ -97,8 +89,26 @@ void Enemy::Draw(ID3D12GraphicsCommandList * cmdList)
 {
 	if (!Deadflag)
 	{
-		//pol->Draw(DirectXDevice::cmdList, DirectXDevice::dev);
-		obj->Draw(DirectXDevice::cmdList);
+
+		if (Damege)
+		{
+			time++;
+			if (time <= endtime)
+			{
+				obj2->Draw(DirectXDevice::cmdList);
+			}
+			else
+			{
+				time = 0;
+				obj->Draw(DirectXDevice::cmdList);
+				Damege = false;
+			}
+		}
+		else
+		{
+			//pol->Draw(DirectXDevice::cmdList, DirectXDevice::dev);
+			obj->Draw(DirectXDevice::cmdList);
+		}
 	}
 }
 
@@ -117,6 +127,7 @@ void Enemy::SetScale(XMFLOAT3 scale)
 {
 	pol->scale = scale;
 	obj->scale = scale;
+	obj2->scale = scale;
 }
 
 ///<summary>
