@@ -4,6 +4,8 @@
 CameraState Camera::camera1;
 CameraState Camera::camera2;
 CurrentCamera Camera::currentcamera;
+int Camera::moveTime = 0;
+XMFLOAT3 Camera::vel = { 0, 20, 0 };
 Camera::Camera()
 {
 	camera1.cameraPos = XMFLOAT3(0, 65, -175);
@@ -48,12 +50,10 @@ void Camera::Update()
 	camera1.matView = XMMatrixLookAtLH(
 		XMLoadFloat3(&Camera::MainCameraPos()), XMLoadFloat3(&Camera::ReturnCameraState()->target), XMLoadFloat3(&Camera::Up())
 	);
-
 	camera2.matView = XMMatrixLookAtLH(
 		XMLoadFloat3(&Camera::SubCameraPos()), XMLoadFloat3(&Camera::ReturnSubCameraState()->target), XMLoadFloat3(&Camera::Up())
 	);
-
-
+	shakeUpdate();
 }
 XMFLOAT3 Camera::MainCameraPos()
 {
@@ -67,7 +67,16 @@ XMFLOAT3 Camera::MainCameraPos()
 		_cameraPos.y += camera1.pPos.y;
 		_cameraPos.z += camera1.pPos.z;
 
+		if (moveTime > 0)
+		{
+			_cameraPos.x += vel.x;
+			_cameraPos.y += vel.y;
+			_cameraPos.z += vel.z;
+		}
+		else
+		{
 
+		}
 		return _cameraPos;
 	}
 	if (currentcamera == CurrentCamera::Sub)
@@ -142,6 +151,11 @@ void Camera::SetUp(XMFLOAT3 _up)
 	camera1.up = _up;
 }
 
+void Camera::CameraShake(int time)
+{
+	moveTime = time;
+}
+
 void Camera::SetCameraPos(XMFLOAT3 _cameraPos)
 {
 	camera1.cameraPos = _cameraPos;
@@ -195,6 +209,16 @@ CameraState *Camera::ReturnSubCameraState()
 CurrentCamera Camera::ReturnCurrentCamera()
 {
 	return currentcamera;
+}
+
+void Camera::shakeUpdate()
+{
+	if (moveTime > 0)
+	{
+		//camera1.cameraPos = { camera1.cameraPos.x + vel.x, camera1.cameraPos.y + vel.y, camera1.cameraPos.z + vel.z };
+		vel.y = vel.y*-1;
+		moveTime--;
+	}
 }
 
 

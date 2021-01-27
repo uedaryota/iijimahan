@@ -124,8 +124,6 @@ void Floor::CreatePipeline(ID3D12Device * dev)
 	
 	gpipeline.DepthStencilState.DepthEnable = true;
 	gpipeline.DepthStencilState.StencilEnable = false;
-	gpipeline.DepthStencilState.StencilEnable = false;
-
 	gpipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
 	gpipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
 

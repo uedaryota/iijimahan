@@ -52,10 +52,11 @@ public:
 
 	static  XMFLOAT3 Target();
 	static  XMFLOAT3 Up();
-	static  void SetEye(XMFLOAT3 eye);
+	static void SetEye(XMFLOAT3 eye);
 	static void SetTarget(XMFLOAT3 target);
-	static  void SetUp(XMFLOAT3 up);
-	static  void SetCameraPos(XMFLOAT3 cameraPos);
+	static void SetUp(XMFLOAT3 up);
+	static void CameraShake(int time);
+	static void SetCameraPos(XMFLOAT3 cameraPos);
 	static void ChangeMainCamera();
 	static XMFLOAT3 NormalizeXZ(XMFLOAT3 vec);
 	static CameraState* ReturnCameraState();
@@ -67,8 +68,8 @@ public:
 	static CurrentCamera currentcamera;
 
 private:
-
-
-	
+	static void shakeUpdate();
+	static int moveTime;
+	static XMFLOAT3 vel;
 };
 

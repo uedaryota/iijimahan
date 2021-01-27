@@ -28,9 +28,9 @@ void EnemyManeger::Add2(XMFLOAT3 x)
 			enemybox[boxcount] = spawn->enemyamount();		  
 			//enemybox2[boxcount].Initialize();
 			enemybox[boxcount]->Initialize();
-			enemybox[boxcount]->SetScale(XMFLOAT3(10, 10, 10));
-			//enemybox2[boxcount].SetScale(XMFLOAT3(10, 10, 10));
 			enemybox[boxcount]->SetPos(x);
+			enemybox[boxcount]->SetScale(XMFLOAT3(10, 10, 10));
+			//enemybox2[boxcount].SetScale(XMFLOAT3(10, 10, 10));	
 			//enemybox2[boxcount].SetPos(x);
 			enemybox[boxcount]->ActionRiset();
 			//enemybox2[boxcount].ActionRiset();
@@ -47,8 +47,8 @@ void EnemyManeger::Create()
 	for (int i = 0; i < boxcount; i++)
 	{
 		enemybox[i]->Initialize();
-		enemybox[i]->SetScale(XMFLOAT3(2, 2, 2));
 		enemybox[i]->SetPos(XMFLOAT3(60, 60, 60));
+		enemybox[i]->SetScale(XMFLOAT3(2, 2, 2));		
 	}
 }
 
