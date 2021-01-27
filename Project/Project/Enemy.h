@@ -30,6 +30,9 @@ public:
 	float Hp;
 	float Speed=1;
 	float Power;
+	int time = 0;
+	int endtime = 3;
+	XMFLOAT3 endscale = {10, 10, 10};
 	XMFLOAT3 vel = {0.1 + (Speed / 50), 0, -0.1 - (Speed / 50) };
 	bool NextX = false;
 	bool NextZ = false;
@@ -46,6 +49,8 @@ public:
 	void TowerAtack();
 	void GetAlive();//生きてるか？
 	bool Deadflag = false;
+	bool Endflag = false;
+	bool Dead = false;
 	CodeOfConduct code;
 	CodeOfConduct GetCode();
 	void EnemyDamege(float x);//エネミーに対する攻撃処理です。floatにダメージ量を入れる。

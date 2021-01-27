@@ -43,6 +43,12 @@
     <FxCompile Include="SpritePixelShader.hlsl">
       <Filter>シェーダファイル</Filter>
     </FxCompile>
+    <FxCompile Include="ParticlePixelShader.hlsl">
+      <Filter>シェーダファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="ParticleVertexShader.hlsl">
+      <Filter>シェーダファイル</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Block.cpp">
@@ -128,6 +134,8 @@
     <ClCompile Include="GamePlay.cpp" />
     <ClCompile Include="Cost.cpp" />
     <ClCompile Include="Text.cpp" />
+    <ClCompile Include="Particle.cpp" />
+    <ClCompile Include="ParticleManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Block.h">
@@ -213,6 +221,8 @@
     <ClInclude Include="EnemyCSVRoder.h" />
     <ClInclude Include="Cost.h" />
     <ClInclude Include="Text.h" />
+    <ClInclude Include="Particle.h" />
+    <ClInclude Include="ParticleManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="BasicShaderHeader.hlsli">
@@ -234,6 +244,9 @@
       <Filter>シェーダファイル</Filter>
     </None>
     <None Include="SpriteShaderHeader.hlsli">
+      <Filter>シェーダファイル</Filter>
+    </None>
+    <None Include="ParticleShaderHeader.hlsli">
       <Filter>シェーダファイル</Filter>
     </None>
   </ItemGroup>

@@ -23,7 +23,7 @@
 #include<vector>
 #include"EnemyCSVRoder.h"
 #include"Cost.h"
-
+#include"ParticleManager.h"
 Camera* c = new Camera();
 Tower* tower = new Tower();
 XMFLOAT3 pointA = { 0,0,30 };
@@ -47,7 +47,7 @@ Sprite* clear;
 Collision* collider = new Collision();
 Spawn* spawn = new Spawn();
 Cost* cost = new Cost();
-
+ParticleManager* par;
 float timer = 0;
 float spawntime = 10;
 int EneMax = 99;
@@ -67,7 +67,7 @@ void GamePlay::Update()
 	Camera::ReturnCameraState()->up = XMFLOAT3(0, 1, 0);
 
 	input->Update();
-
+	
 	if (input->PushKey(DIK_P))
 	{
 		sound->PlayRoop();
@@ -79,6 +79,11 @@ void GamePlay::Update()
 	Camera::Update();
 	tower->Update();
 	spawn->Update();
+	par->Start();
+	par->SetPos({ 130,0,180 });
+	par->Update();
+	
+	
 	//	sound->Update();
 
 	
@@ -197,6 +202,7 @@ void GamePlay::Draw()
 	spawn->Draw(DirectXDevice::cmdList);
 	manager->Draw(DirectXDevice::cmdList);
 	stage->Draw();
+	par->Draw();
 	for (int a = 0; a < defList.size(); a++)
 	{
 		defList[a]->Draw();
@@ -224,11 +230,6 @@ void GamePlay::Initialize()
 	overFlag = false;
 	clearFlag = false;
 	endFlag = false;
-
-	//Sprite::LoadTexture(1, L"img/TowerDefence_Title.png");
-	//Sprite::LoadTexture(2, L"img/TowerDefence_TitleBack.png");
-	Sprite::LoadTexture(3, L"img/title.png");
-	Sprite::LoadTexture(4, L"img/end.png");
 
 	//ƒNƒŠƒA‰æ‘œ“Çž,“ÇžÏ‚Ý‚Ì3”Ô
 	clear = Sprite::Create(3, { 0.0f, 0.0f });
@@ -312,8 +313,11 @@ void GamePlay::Initialize()
 	backSphere->Initialize();
 	backSphere->LoadObj("BackSphere");
 	backSphere->scale = { 1000, 1000, 1000 };
+
 	NowWAVE=wave1;
 	cost->Initialize();
+	par = new ParticleManager();
+	par->Initialize();
 }
 
 void GamePlay::CollisionUpdate()

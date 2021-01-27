@@ -25,6 +25,8 @@ void Enemy::Initialize()
 	ai.Initialize();
 	SetState();
 	Deadflag = false;
+	Endflag = false;
+	Deadflag = false;
 	obj->Initialize();
 	obj->LoadObj("UFO");
 	obj->position.y = 0;
@@ -37,17 +39,54 @@ void Enemy::Initialize()
 ///</summary>
 void Enemy::Update()
 {
-	if (Deadflag)
+	if (!Deadflag)
 	{
-		return;
+		if (Endflag)
+		{
+			endscale = obj->scale;
+			time++;
+			if (time <= 10)
+			{
+				endscale.x += 0.5f;
+				endscale.y += 0.5f;
+				endscale.z += 0.5f;
+			}
+			if (time > 10)
+			{
+				endscale.x -= 0.5f;
+				endscale.y -= 0.5f;
+				endscale.z -= 0.5f;
+			}
+			if (endscale.x <= 0)
+			{
+				endscale = XMFLOAT3(0, 0, 0);
+				Deadflag = true;
+			}
+
+			obj->SetScale(endscale);
+		}
+		if (Damege)
+		{
+			time++;
+			if (time <= endtime)
+			{
+				//obj->LoadObj("DamegeUFO");
+			}
+			else
+			{ 
+				time = 0;
+				obj->LoadObj("UFO");
+				Damege = false;
+			}
+		}
+		pol->Update();
+		obj->Update();
+		obj->position = pol->position;
+		col->position = obj->position;
+		PositionUpdate(Ancer1, Ancer2, mokuhyou->GetPosition());
+		GetState();
+		GetAlive();
 	}
-	pol->Update();
-	obj->Update();
-	obj->position = pol->position;
-	col->position = obj->position;
-	PositionUpdate(Ancer1, Ancer2, mokuhyou->GetPosition());
-	GetState();
-	GetAlive();
 }
 
 
@@ -56,12 +95,11 @@ void Enemy::Update()
 ///</summary>
 void Enemy::Draw(ID3D12GraphicsCommandList * cmdList)
 {
-	if (Deadflag)
+	if (!Deadflag)
 	{
-		return;
+		//pol->Draw(DirectXDevice::cmdList, DirectXDevice::dev);
+		obj->Draw(DirectXDevice::cmdList);
 	}
-	//pol->Draw(DirectXDevice::cmdList, DirectXDevice::dev);
-	obj->Draw(DirectXDevice::cmdList);
 }
 
 ///<summary>
@@ -110,13 +148,19 @@ void Enemy::PositionUpdate(XMFLOAT3 pointA, XMFLOAT3 pointB, XMFLOAT3 tower)//ÉG
 	if (Hp <= 0)
 	{
 		state = Destory;
+		if (Dead)
+		{
+			return;
+		}
+		time = 0;
+		Dead = true;
 	}
 
 	switch (state)
 	{
 	    case Destory:
 #pragma region
-		Deadflag = true;
+		Endflag = true;
 		break;
 #pragma endregion
 		case Stay:
@@ -321,7 +365,7 @@ void Enemy::SetTower(Tower* tow){mokuhyou = tow;}
 void Enemy::TowerAtack()
 {
 	//mokuhyou->SetHp(GetPower());
-	mokuhyou->hp = mokuhyou->hp - GetPower();
+	mokuhyou->Damage(GetPower());
 	Hp = 0;
 }
 
@@ -347,11 +391,10 @@ CodeOfConduct Enemy::GetCode(){return code;}
 void Enemy::EnemyDamege(float x)
 {
 	Hp = Hp - x;
-	if (Damege)
+	if (!Damege)
 	{
-		return;
+		Damege = true;
 	}
-	Damege = true;
 }
 
 ///<summary>

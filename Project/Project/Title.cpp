@@ -40,6 +40,7 @@ void Title::Initialize()
 	endFlag = false;
 	input2 = new Input();
 	input2->Initialize();
+	Sprite::LoadTexture(0, L"img/debugfont.png");
 	Sprite::LoadTexture(1, L"img/TowerDefence_Title.png");
 	Sprite::LoadTexture(2, L"img/TowerDefence_TitleBack.png");
 	Sprite::LoadTexture(3, L"img/title.png");

@@ -7,6 +7,7 @@
 #include "Sprite.h"
 #include "DirectXDevice.h"
 #include "Text.h"
+#include"ParticleManager.h"
 class Tower
 {
 public:
@@ -31,5 +32,6 @@ private:
 	Sprite* sprite = nullptr;
 	Sprite* sprite2 = nullptr;
 	Text* text = nullptr;
+	ParticleManager* particle = nullptr;
 };
 

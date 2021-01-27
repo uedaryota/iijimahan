@@ -29,10 +29,13 @@ float4 main(VSOutput input) : SV_TARGET
 	//拡散反射光
 	float3 diffuse = dotlightnormal * m_diffuse;
 	//応急処置
-	diffuse = clamp(diffuse, 0.5, 1);
+	//diffuse = clamp(diffuse, 0.5, 1);
 	//鏡面反射光
 	float3 specular = pow(saturate(dot(reflect, eyedir)), shininess) * m_specular;
 
+	specular = m_specular;
+
+	//shadecolor.rgb = (ambient + diffuse + specular) * lightcolor;
 	shadecolor.rgb = (ambient + diffuse + specular) * lightcolor;
 	shadecolor.a = m_alpha;
 
