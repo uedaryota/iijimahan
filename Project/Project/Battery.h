@@ -4,6 +4,7 @@
 #include<vector>
 #include"Input.h"
 #include"CircleCollision.h"
+#include "Sound.h"
 class Battery
 {
 public:
@@ -34,6 +35,6 @@ public:
 private:
 	void Setdir();
 	int startval = 60;
-	
+	Sound* sound = new Sound();
 };
 

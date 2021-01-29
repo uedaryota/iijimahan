@@ -34,6 +34,7 @@ void Tower::Initialize(ID3D12Device* dev)
 	obj->SetScale({ 30,30,30 });
 	particle = new ParticleManager();
 	particle->Initialize();
+	sound->Initialize();
 }
 
 void Tower::Update()
@@ -108,4 +109,5 @@ void Tower::Damage(float damage)
 	particle->Start();
 	int movetime = 25;
 	Camera::CameraShake(movetime);
+	//sound->PlayWave("Resources/‚Î‚­‚Í‚Â‚¨‚ñ.wav");
 }

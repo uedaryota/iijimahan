@@ -31,7 +31,6 @@ XMFLOAT3 pointB = { 120,0,170 };
 XMFLOAT3 SpawnPoint = { -170, 0, -150 };
 float HpKari = 1;
 float SpeedKari = 1;
-Sound* sound = new Sound();
 //Stage* stage = new Stage();
 Stage2D* stage = new Stage2D();
 Enemy* enemy = new Enemy();
@@ -66,11 +65,7 @@ void GamePlay::Update()
 	Camera::ReturnCameraState()->up = XMFLOAT3(0, 1, 0);
 
 	input->Update();
-	
-	if (input->PushKey(DIK_P))
-	{
-		sound->PlayRoop();
-	}
+
 	if (input->PushKey(DIK_SPACE) && (overFlag || clearFlag))
 	{
 		endFlag = true;
@@ -191,7 +186,7 @@ void GamePlay::Update()
 		EndFlagCheck();
 	}
 
-
+	sound->ChkRoop();
 }
 GamePlay::GamePlay()
 {
@@ -296,7 +291,7 @@ void GamePlay::Initialize()
 	//“G
 	//enemy2->state = move1;
 	//enemy2->SetTower(tower);
-	sound->LoadFile(L".\\Resources\\TDBGM2.mp3");
+	sound->LoadFile(L".\\Resources\\TDBGM3.mp3");
 	input->Initialize();
 	vector<DATA>DateTable = LoadData("Data/Enemy.csv");
 	for (auto date : DateTable)
@@ -318,6 +313,8 @@ void GamePlay::Initialize()
 
 	NowWAVE=wave1;
 	cost->Initialize();
+
+	sound->PlayRoop();
 	
 }
 

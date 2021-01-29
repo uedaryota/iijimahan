@@ -16,7 +16,7 @@ Input* input2;
 		 endFlag = true;
 	 }
 	Camera::ReturnCameraState()->eyeangleY += 0.01;
-
+	sound->ChkRoop();
 }
  Title::Title()
  {
@@ -52,4 +52,8 @@ void Title::Initialize()
 	obj->Initialize();
 	obj->LoadObj("BackSphere");
 	obj->scale={1000, 1000, 1000};
+	sound->Initialize();
+	sound->LoadFile(L".\\Resources\\TDBGM2.mp3");
+	sound->PlayRoop();
+	sound->ChkRoop();
 }

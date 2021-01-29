@@ -32,6 +32,8 @@ ObjDate* objdata;
 GamePlay* gameplay;
 Title* title;
 Light* light = nullptr;
+bool titlescene = true;
+bool gameplayscene = false;
 LRESULT WindowProc1(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
 
@@ -79,9 +81,9 @@ void DirectXDevice::Initialize()
 	//objdata.LoadObj("triangle");
 	objdata->LoadObj("Enemy_Base");
 	gameplay = new GamePlay();
-	gameplay->Initialize();
+	//gameplay->Initialize();
 	title = new Title();
-	title->Initialize();
+	//title->Initialize();
 
 }
 	
@@ -128,11 +130,32 @@ void DirectXDevice::Update()
 	light->Update();
 	if (!title->endFlag)
 	{
+		if (titlescene)
+		{
+			title->Initialize();
+			titlescene = false;
+			gameplayscene = true;
+			if (!gameplay->sound->Nullcheck())
+			{
+				gameplay->sound->Stop();
+			}
+		}
 		title->Update();
 		title->Draw();
+
 	}
 	else if (title->endFlag && !gameplay->endFlag)
 	{
+		if (gameplayscene)
+		{
+			gameplay->Initialize();
+			gameplayscene = false;
+			titlescene = true;
+			if (!title->sound->Nullcheck())
+			{
+				title->sound->Stop();
+			}
+		}
 		gameplay->Update();
 		gameplay->Draw();
 	}
@@ -213,14 +236,14 @@ void DirectXDevice::CreateGameWindow()
 }
 void DirectXDevice::CreateDevice()
 {
-#ifdef _DEBUG
-	ComPtr<ID3D12Debug> debugController;
-	//デバッグレイヤーをオンに	
-	if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController))))
-	{
-		debugController->EnableDebugLayer();
-	}
-#endif
+//#ifdef _DEBUG
+//	ComPtr<ID3D12Debug> debugController;
+//	//デバッグレイヤーをオンに	
+//	if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController))))
+//	{
+//		debugController->EnableDebugLayer();
+//	}
+//#endif
 
 	D3D_FEATURE_LEVEL levels[] =
 	{

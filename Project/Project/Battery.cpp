@@ -1,5 +1,6 @@
 #include "Battery.h"
 #include"DirectXDevice.h"
+
 Battery::Battery()
 {
 	
@@ -33,6 +34,7 @@ void Battery::Update()
 		{
 			liveFlag = true;
 			position.y = 0;
+			//sound->PlayWave("Resources/‚¿‚á‚­‚¿‚¨‚ñ.wav");
 		}
 		
 	}
@@ -104,6 +106,7 @@ void Battery::Initialize()
 	liveFlag = false;
 	MoveFlag = false;
 	//SetPos({ 100, 0, 100 });
+	sound->Initialize();
 }
 
 void Battery::SetTarget(XMFLOAT3* targetpos)
