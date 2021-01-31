@@ -27,6 +27,8 @@ Input* input2;
 	Sprite::PreDraw(DirectXDevice::cmdList);
 	sprite->Draw();
 	//sprite2->Draw();
+	text->Print("Press Space", Camera::window_width / 2 - 200, Camera::window_height / 2 + 50, 5);
+	text->DrawAll(DirectXDevice::cmdList);
 	Sprite::PostDraw();
  }
 void Title::Initialize()
@@ -55,4 +57,7 @@ void Title::Initialize()
 	sound->Initialize();
 	sound->LoadFile(L".\\Resources\\TDBGM2.mp3");
 	sound->PlayRoop();
+
+	text = Text::GetInstance();
+	text->Initialize(0);
 }
