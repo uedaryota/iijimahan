@@ -35,6 +35,7 @@ void Tower::Initialize(ID3D12Device* dev)
 	particle = new ParticleManager();
 	particle->Initialize();
 	sound->Initialize();
+	sound->LoadFile(L".\\Resources\\explode.mp3");
 }
 
 void Tower::Update()
@@ -109,5 +110,5 @@ void Tower::Damage(float damage)
 	particle->Start();
 	int movetime = 25;
 	Camera::CameraShake(movetime);
-	//sound->PlayWave("Resources/‚Î‚­‚Í‚Â‚¨‚ñ.wav");
+	sound->PlayStart();
 }

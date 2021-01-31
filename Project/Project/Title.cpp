@@ -55,5 +55,4 @@ void Title::Initialize()
 	sound->Initialize();
 	sound->LoadFile(L".\\Resources\\TDBGM2.mp3");
 	sound->PlayRoop();
-	sound->ChkRoop();
 }
