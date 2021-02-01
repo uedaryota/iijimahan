@@ -24,6 +24,7 @@
 #include"EnemyCSVRoder.h"
 #include"Cost.h"
 #include"ParticleManager.h"
+#include"Button.h"
 Camera* c = new Camera();
 Tower* tower = new Tower();
 XMFLOAT3 pointA = { 0,0,30 };
@@ -46,6 +47,7 @@ Sprite* clear;
 Collision* collider = new Collision();
 Spawn* spawn = new Spawn();
 Cost* cost = new Cost();
+Button* button = new Button();
 float timer = 0;
 float spawntime = 10;
 int EneMax = 99;
@@ -180,6 +182,7 @@ void GamePlay::Update()
 		}
 
 		cost->Update();
+		button->Update();
 		manager->Draw(DirectXDevice::cmdList);
 		CostUpdate();
 		CollisionUpdate();
@@ -203,6 +206,7 @@ void GamePlay::Draw()
 		defList[a]->Draw();
 	}
 	cost->Draw();
+	button->Draw();
 	if (clearFlag)
 	{
 		Sprite::PreDraw(DirectXDevice::cmdList);
@@ -313,6 +317,7 @@ void GamePlay::Initialize()
 
 	NowWAVE=wave1;
 	cost->Initialize();
+	button->Initialize();
 
 	sound->PlayRoop();
 	

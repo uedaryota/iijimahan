@@ -77,6 +77,7 @@ void DirectXDevice::Initialize()
 	objdata->LoadObj("Rock");
 	objdata->LoadObj("Rock_02");
 	objdata->LoadObj("UFO_Red");
+	objdata->LoadObj("Button");
 
 	//objdata.LoadObj("triangle");
 	objdata->LoadObj("Enemy_Base");
@@ -191,7 +192,7 @@ void DirectXDevice::Update()
 
 	while (fence->GetCompletedValue() != DirectXDevice::fenceVal)
 	{
-		HANDLE event = CreateEvent(nullptr, false, false, nullptr);
+ 		HANDLE event = CreateEvent(nullptr, false, false, nullptr);
 		fence->SetEventOnCompletion(DirectXDevice::fenceVal, event);
 		WaitForSingleObject(event, INFINITE);
 		CloseHandle(event);
