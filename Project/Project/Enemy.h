@@ -68,6 +68,7 @@ public:
 	void SetHp(float x);
 	void SetSpeed(float x);
 	CircleCollision* col;
+	
 private:
 	//性格事に行動変化するための変数です
 	bool Damege = false;//ダメージを受けた際にTRUEになる変数です

@@ -241,10 +241,12 @@ void EnemyManeger::SetSpeed(float x)
 	{
 		if (enemybox[i]->Deadflag == true)
 		{
-			return;
 		}
-		enemybox[i]->SetSpeed(x);
-		//enemybox2[i].SetSpeed(x);
+		else
+		{
+			enemybox[i]->SetSpeed(x);
+			//enemybox2[i].SetSpeed(x);
+		}
 	}
 }
 

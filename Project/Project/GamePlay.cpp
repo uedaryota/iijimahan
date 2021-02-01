@@ -34,9 +34,7 @@ float SpeedKari = 1;
 Sound* sound = new Sound();
 //Stage* stage = new Stage();
 Stage2D* stage = new Stage2D();
-Enemy* enemy = new Enemy();
-Enemy* enemy2 = new Enemy();
-EnemyAI* ai = new EnemyAI();
+
 EnemyManeger* manager = new EnemyManeger();
 Input* input = new Input();
 //vector<Battery*> batL;
@@ -173,8 +171,6 @@ void GamePlay::Update()
 		case wave0:
 			break;
 		}
-
-		//enemy->SetScale(XMFLOAT3{ 10,10,10 });
 		manager->Update();
 
 		stage->Update();
@@ -245,7 +241,6 @@ void GamePlay::Initialize()
 	tower->Initialize(DirectXDevice::dev);
 	tower->SetPoisition({ 130,0,180 });
 	manager->Initialize();
-	enemy->Initialize();
 	sound->Initialize();
 	stage->Initialize();
 	spawn->Initialize(DirectXDevice::dev);
@@ -253,7 +248,6 @@ void GamePlay::Initialize()
 	spawn->SetSpawn(10, 10);
 	spawn->SetPoisition(SpawnPoint);
 	manager->Add2(spawn->GetPosition());
-
 	timer = 0;
 	manager->SetTowerEnemy(tower);
 	
@@ -292,10 +286,6 @@ void GamePlay::Initialize()
 	d7->SetPos({ 170, 0, 25 });
 	defList.push_back(d7);
 
-	//enemy->SetTarget(&tower->GetPosition);
-	//“G
-	//enemy2->state = move1;
-	//enemy2->SetTower(tower);
 	sound->LoadFile(L".\\Resources\\TDBGM2.mp3");
 	input->Initialize();
 	vector<DATA>DateTable = LoadData("Data/Enemy.csv");
@@ -315,7 +305,7 @@ void GamePlay::Initialize()
 	backSphere->Initialize();
 	backSphere->LoadObj("BackSphere");
 	backSphere->scale = { 1000, 1000, 1000 };
-
+	manager->SetSpeed(SpeedKari);
 	NowWAVE=wave1;
 	cost->Initialize();
 	

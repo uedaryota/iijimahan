@@ -19,7 +19,7 @@ Enemy::Enemy(const Enemy * ene)
 void Enemy::Initialize()
 {
 	col = new CircleCollision();
-	col->scale= 10;
+	col->scale = 10;
 	//col->length = 10;
 	ai.Initialize();
 	SetState();
@@ -32,8 +32,6 @@ void Enemy::Initialize()
 	obj2->Initialize();
 	obj2->LoadObj("UFO_Red");
 	obj2->position.y = 0;
-	vel.x = vel.x + (Speed / 50);
-	vel.z = vel.z + (Speed / 50);
 }
 
 ///<summary>
@@ -461,6 +459,6 @@ float Enemy::GetSpeed()
 
 void Enemy::SetSpeed(float x)
 {
-	Speed = x;
-	Speed;
+	Speed = x/10;
+	vel = { Speed,0,-Speed };
 }
