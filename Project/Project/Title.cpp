@@ -5,18 +5,21 @@
 Input* input2;
  void Title::Update()
 {
+	 Camera::ReturnCameraState()->cameraPos = { 0,0,500 };
+	 Camera::ReturnCameraState()->pPos = { 0,0,0 };
+	 Camera::ReturnCameraState()->target = { 0,0,1 };
 
 	 Camera::Update();
 	 input2->Update();
-	 Camera::window_height;
 
 	 obj->Update();
 	 if (input2->TriggerKey(DIK_SPACE))
 	 {
 		 endFlag = true;
 	 }
-	Camera::ReturnCameraState()->eyeangleY += 0.01;
-	sound->ChkRoop();
+//	Camera::ReturnCameraState()->eyeangleY += 0.01;
+//	sound->ChkRoop();
+	
 }
  Title::Title()
  {
@@ -36,7 +39,7 @@ void Title::Initialize()
 	Camera::ReturnCameraState()->cameraPos = { 0,0,500 };
 	Camera::ReturnCameraState()->pPos = { 0,0,0 };
 	Camera::ReturnCameraState()->target = { 0,0,1 };
-
+	Camera::ReturnCameraState()->eyeangleY = 0;
 	endFlag = false;
 	input2 = new Input();
 	input2->Initialize();
@@ -56,7 +59,7 @@ void Title::Initialize()
 	obj->scale={1000, 1000, 1000};
 	sound->Initialize();
 	sound->LoadFile(L".\\Resources\\TDBGM2.mp3");
-	sound->PlayRoop();
+	//sound->PlayRoop();
 
 	text = Text::GetInstance();
 	text->Initialize(0);

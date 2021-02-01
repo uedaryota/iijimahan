@@ -43,9 +43,9 @@ ObjFile* backSphere;
 Sprite* over;
 Sprite* clear;
 Collision* collider = new Collision();
-Spawn* spawn = new Spawn();
+Spawn* spawn;
 Cost* cost = new Cost();
-Button* button = new Button();
+Button* button;
 float timer = 0;
 float spawntime = 10;
 int EneMax = 99;
@@ -70,9 +70,13 @@ void GamePlay::Update()
 	{
 		endFlag = true;
 	}
+	if (input->PushKey(DIK_A) )
+	{
+		clearFlag = true;
+	}
 	Camera::Update();
-	tower->Update();
-	spawn->Update();
+	//tower->Update();
+	//spawn->Update();
 	if (input->TriggerKey(DIK_B))
 	{
 		tower->Damage(10);
@@ -171,7 +175,6 @@ void GamePlay::Update()
 		manager->Update();
 
 		stage->Update();
-		backSphere->Update();
 		for (int a = 0; a < defList.size(); a++)
 		{
 			defList[a]->Update();
@@ -179,7 +182,9 @@ void GamePlay::Update()
 
 		cost->Update();
 		button->Update();
-		manager->Draw(DirectXDevice::cmdList);
+		backSphere->Update();
+		//backSphere->SetPos({ 500,500,500 });
+		
 		CostUpdate();
 		CollisionUpdate();
 		EndFlagCheck();
@@ -192,8 +197,8 @@ GamePlay::GamePlay()
 }
 void GamePlay::Draw()
 {
-	backSphere->Draw(DirectXDevice::cmdList);
 	
+	manager->Draw(DirectXDevice::cmdList);
 	spawn->Draw(DirectXDevice::cmdList);
 	stage->Draw();
 	tower->Draw(DirectXDevice::cmdList);
@@ -203,6 +208,7 @@ void GamePlay::Draw()
 	}
 	cost->Draw();
 	button->Draw();
+	backSphere->Draw(DirectXDevice::cmdList);
 	if (clearFlag)
 	{
 		Sprite::PreDraw(DirectXDevice::cmdList);
@@ -224,16 +230,19 @@ void GamePlay::Initialize()
 	overFlag = false;
 	clearFlag = false;
 	endFlag = false;
-
-	Sprite::LoadTexture(3, L"img/title.png");
-	Sprite::LoadTexture(4, L"img/end.png");
+	
+	Sprite::LoadTexture(3, L"img/GameClear.png");
+	Sprite::LoadTexture(4, L"img/GameOver.png");
 
 	//クリア画像読込,読込済みの3番
 	clear = Sprite::Create(3, { 0.0f, 0.0f });
+	clear->SetSize({ static_cast<float>(Camera::window_width),static_cast<float>(Camera::window_height) });
 //	clear->SetPosition(XMFLOAT2{ static_cast<float>(Camera::window_width) / 2, static_cast<float>(Camera::window_height) / 2 });
 //	clear->SetSize(XMFLOAT2{ 1 * (static_cast<float>(Camera::window_width) / static_cast<float>(Camera::window_height)),1 });
 	//ゲームオーバー画像読込,込済みの4番
 	over = Sprite::Create(4, { 0.0f, 0.0f });
+
+	over->SetSize({ static_cast<float>(Camera::window_width),static_cast<float>(Camera::window_height) });
 //	over->SetPosition(XMFLOAT2{ static_cast<float>(Camera::window_width) / 2, static_cast<float>(Camera::window_height) / 2 });
 //	over->SetSize(XMFLOAT2{ 1 * (static_cast<float>(Camera::window_width) / static_cast<float>(Camera::window_height)),1 });
 
@@ -242,6 +251,7 @@ void GamePlay::Initialize()
 	manager->Initialize();
 	sound->Initialize();
 	stage->Initialize();
+	spawn = new Spawn();
 	spawn->Initialize(DirectXDevice::dev);
 	//Set = &SetAd;
 	spawn->SetSpawn(10, 10);
@@ -307,7 +317,11 @@ void GamePlay::Initialize()
 	backSphere->scale = { 1000, 1000, 1000 };
 	manager->SetSpeed(SpeedKari);
 	NowWAVE=wave1;
+
+	cost = new Cost();
 	cost->Initialize();
+
+	button = new Button();
 	button->Initialize();
 
 	sound->PlayRoop();
@@ -331,8 +345,10 @@ void GamePlay::CollisionUpdate()
 	{
 		for (int a = 0; a < manager->boxcount; a++)
 		{
+			bool AllDead = true;
 			if (defList[i]->battery->liveFlag&&manager->enemybox[a] != nullptr && manager->enemybox[a]->Deadflag==false)
 			{
+				AllDead = false;
 				if (collider->CircleToCircle(defList[i]->battery->col, manager->enemybox[a]->col) && manager->enemybox[a]->Hp >= 0)
 				{
 					targetFlag = true;
@@ -368,6 +384,10 @@ void GamePlay::CollisionUpdate()
 				{
 				//	defList[i]->battery->SetTarget(nullptr);
 				}
+			}
+	//		if (AllDead)
+			{
+				//return;
 			}
 		}
 	}

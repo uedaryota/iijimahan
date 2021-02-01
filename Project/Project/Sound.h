@@ -71,6 +71,8 @@ public:
 
 	void PlayWave(const char* filename);
 
+	Input* input;
+	
 	ComPtr<IXAudio2> xAudio2;
 	IXAudio2MasteringVoice* masterVoice;
 	XAudio2VoiceCallBack voicecallback;

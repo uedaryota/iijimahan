@@ -30,6 +30,7 @@ void DefenderSpawn::Draw()
 
 void DefenderSpawn::Initialize()
 {
+	obj=new ObjFile();
 	col = new CircleCollision();
 	col->Initialize();
 	col->scale = 10;

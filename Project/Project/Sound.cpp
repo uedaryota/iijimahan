@@ -23,12 +23,13 @@ void Sound::Initialize()
 	{
 		assert(0);
 	}
+	input = new Input();
+	input->Initialize();
+	
 }
 
 void Sound::Update()
 {
-	Input* input = new Input();
-	input->Initialize();
 	input->Update();
 	if (input->PushKey(DIK_SPACE))
 	{

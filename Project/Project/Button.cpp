@@ -13,7 +13,7 @@ Button::~Button()
 
 void Button::Initialize()
 {
-	for (int i = 0; i <= ButtonCount - 1; i++)
+	for (int i = 0; i <= ButtonCount; i++)
 	{
 		buttons[i] = new ObjFile();
 		buttons[i]->Initialize();
@@ -32,7 +32,7 @@ void Button::Initialize()
 
 void Button::Update()
 {
-	for (int i = 0; i <= ButtonCount - 1; i++)
+	for (int i = 0; i <= ButtonCount; i++)
 	{
 		buttons[i]->Update();
 	}
@@ -40,7 +40,7 @@ void Button::Update()
 
 void Button::Draw()
 {
-	for (int i = 0; i <= ButtonCount - 1; i++)
+	for (int i = 0; i <= ButtonCount; i++)
 	{
 		buttons[i]->Draw(DirectXDevice::cmdList);
 	}

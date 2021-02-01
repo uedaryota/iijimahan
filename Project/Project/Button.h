@@ -14,6 +14,6 @@ private:
 
 	int ButtonCount = 7;
 
-	ObjFile* buttons[6];
+	ObjFile* buttons[7];
 };
 

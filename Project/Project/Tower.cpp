@@ -14,7 +14,7 @@ void Tower::Initialize(ID3D12Device* dev)
 {
 	Sprite::LoadTexture(6, L"img/HPBack.png");
 	Sprite::LoadTexture(7, L"img/HP.png");
-
+	hp = 100;
 	sprite = Sprite::Create(6, XMFLOAT2(Camera::window_width / 2, 25));
 	sprite->SetAnchorPoint(XMFLOAT2(0.5, 0));
 	sprite->SetSize(XMFLOAT2(400, 50));

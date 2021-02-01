@@ -17,6 +17,7 @@ public:
 	void CostFlagTrue();
 	void CostFlagFalse();
 	int ReturnUseCost();
+	ObjFile* obj = nullptr;
 	Battery* battery = nullptr;
 	CircleCollision* col = nullptr;
 	XMFLOAT3 position;

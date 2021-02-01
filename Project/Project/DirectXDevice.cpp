@@ -78,6 +78,7 @@ void DirectXDevice::Initialize()
 	objdata->LoadObj("Rock_02");
 	objdata->LoadObj("UFO_Red");
 	objdata->LoadObj("Button");
+	objdata->LoadObj("Button_Black");
 
 	//objdata.LoadObj("triangle");
 	objdata->LoadObj("Enemy_Base");
@@ -91,9 +92,9 @@ void DirectXDevice::Initialize()
 void DirectXDevice::Update()
 {
 	HRESULT result;
-	//result = DirectXDevice::cmdAllocator->Reset();
+	result = DirectXDevice::cmdAllocator->Reset();
 	UINT bbIdx = DirectXDevice::swapchain->GetCurrentBackBufferIndex();
-	rtvH = DirectXDevice::rtvHeaps->GetCPUDescriptorHandleForHeapStart();
+	D3D12_CPU_DESCRIPTOR_HANDLE rtvH = DirectXDevice::rtvHeaps->GetCPUDescriptorHandleForHeapStart();
 	rtvH.ptr += bbIdx * DirectXDevice::dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 
 
@@ -113,20 +114,18 @@ void DirectXDevice::Update()
 
 	DirectXDevice::cmdList->OMSetRenderTargets(1, &rtvH, true, &dsvH);
 	DirectXDevice::cmdList->ClearDepthStencilView(dsvH, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
-	
-	DirectXDevice::cmdList->ClearRenderTargetView(rtvH, clearColor, 0, nullptr);
-	
+	float clearColor[] = { 1.0f,1.0f,1.0f,0.0f };
 
-	viewport2.Width = Camera::window_width/3;
-	viewport2.Height = Camera::window_height/3;
-	viewport2.TopLeftX = Camera::window_width / 3 * 2;
-	viewport2.TopLeftY = 0;
-	viewport2.MaxDepth = 0.5f;
-	viewport2.MinDepth = 0.0f;
+	DirectXDevice::cmdList->ClearRenderTargetView(rtvH, clearColor, 0, nullptr);
+
+	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
+	DirectXDevice::cmdList->ResourceBarrier(1, &barrierDesc);
 
 	DirectXDevice::cmdList->RSSetViewports(1, &viewport);
 
 	DirectXDevice::cmdList->RSSetScissorRects(1, &scissorrect);
+
 	//‚±‚±‚©‚çUpdate
 	light->Update();
 	if (!title->endFlag)
@@ -150,6 +149,8 @@ void DirectXDevice::Update()
 		if (gameplayscene)
 		{
 			gameplay->Initialize();
+			//gameplay->Initialize();
+
 			gameplayscene = false;
 			titlescene = true;
 			if (!title->sound->Nullcheck())
@@ -171,36 +172,28 @@ void DirectXDevice::Update()
 		gameplay->Initialize();
 		//endscene->Initialize();
 	}
-	//DirectXDevice::cmdList->RSSetViewports(1, &viewport2);
-	//
-	//tower->Draw(DirectXDevice::cmdList);
 
-//	stage->Update();
-	//stage->Draw();
-	//manager->Draw();
 
-	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
-	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
-	DirectXDevice::cmdList->ResourceBarrier(1, &barrierDesc);
-	//‚±‚±‚Ü‚Å
+	////‚±‚±‚Ü‚Å
 	DirectXDevice::cmdList->Close();
 	ID3D12CommandList* cmdLists[] = { DirectXDevice::cmdList };
 	cmdQueue->ExecuteCommandLists(1, cmdLists);
 
-
 	cmdQueue->Signal(DirectXDevice::fence, ++DirectXDevice::fenceVal);
-
 	while (fence->GetCompletedValue() != DirectXDevice::fenceVal)
 	{
- 		HANDLE event = CreateEvent(nullptr, false, false, nullptr);
+		HANDLE event = CreateEvent(nullptr, false, false, nullptr);
 		fence->SetEventOnCompletion(DirectXDevice::fenceVal, event);
 		WaitForSingleObject(event, INFINITE);
 		CloseHandle(event);
 	}
-	DirectXDevice::cmdList->Reset(cmdAllocator, nullptr);
-	DirectXDevice::swapchain->Present(1, 0);
-	DirectXDevice::cmdAllocator->Reset();
 
+
+	DirectXDevice::cmdAllocator->Reset();
+	DirectXDevice::cmdList->Reset(cmdAllocator, nullptr);
+
+	DirectXDevice::swapchain->Present(1, 0);
+	
 }
 void DirectXDevice::CreateGameWindow()
 {
