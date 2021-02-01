@@ -8,6 +8,7 @@
 #include "DirectXDevice.h"
 #include "Text.h"
 #include"ParticleManager.h"
+#include "Sound.h"
 class Tower
 {
 public:
@@ -33,5 +34,6 @@ private:
 	Sprite* sprite2 = nullptr;
 	Text* text = nullptr;
 	ParticleManager* particle = nullptr;
+	Sound* sound = new Sound();
 };
 

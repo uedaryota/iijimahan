@@ -1,5 +1,6 @@
 #pragma once
 #include"GameScene.h"
+#include"Sound.h"
 
 enum WAVE
 {
@@ -18,5 +19,6 @@ public:
 	void EndFlagCheck();
 	bool clearFlag = false;
 	bool overFlag = false;
+	Sound* sound = new Sound();
 };
 

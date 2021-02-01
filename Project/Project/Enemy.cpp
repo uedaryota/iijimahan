@@ -401,9 +401,12 @@ CodeOfConduct Enemy::GetCode(){return code;}
 void Enemy::EnemyDamege(float x)
 {
 	Hp = Hp - x;
-	if (!Damege)
+	if (!Endflag)
 	{
-		Damege = true;
+		if (!Damege)
+		{
+			Damege = true;
+		}
 	}
 }
 

@@ -1,5 +1,6 @@
 #include "Battery.h"
 #include"DirectXDevice.h"
+
 Battery::Battery()
 {
 	
@@ -33,6 +34,7 @@ void Battery::Update()
 		{
 			liveFlag = true;
 			position.y = 0;
+			sound->PlayStart();
 		}
 		
 	}
@@ -104,6 +106,8 @@ void Battery::Initialize()
 	liveFlag = false;
 	MoveFlag = false;
 	//SetPos({ 100, 0, 100 });
+	sound->Initialize();
+	sound->LoadFile(L".\\Resources\\clap.mp3");
 }
 
 void Battery::SetTarget(XMFLOAT3* targetpos)

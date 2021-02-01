@@ -108,4 +108,6 @@ public:
 
 	// ƒŠƒ\[ƒX‰ğ•ú
 	void Release();
+
+	bool Nullcheck();
 };

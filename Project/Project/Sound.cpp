@@ -210,3 +210,12 @@ void Sound::Release()
 		CoUninitialize();
 	}
 }
+
+bool Sound::Nullcheck()
+{
+	pGraphBuilder;
+	pMediaControl;
+	pMediaPosition;
+	if (pGraphBuilder == NULL || pMediaControl == NULL || pMediaPosition == NULL) return true;
+	return false;
+}

@@ -24,6 +24,7 @@
 #include"EnemyCSVRoder.h"
 #include"Cost.h"
 #include"ParticleManager.h"
+#include"Button.h"
 Camera* c = new Camera();
 Tower* tower = new Tower();
 XMFLOAT3 pointA = { 0,0,30 };
@@ -31,7 +32,6 @@ XMFLOAT3 pointB = { 120,0,170 };
 XMFLOAT3 SpawnPoint = { -170, 0, -150 };
 float HpKari = 1;
 float SpeedKari = 1;
-Sound* sound = new Sound();
 //Stage* stage = new Stage();
 Stage2D* stage = new Stage2D();
 
@@ -45,6 +45,7 @@ Sprite* clear;
 Collision* collider = new Collision();
 Spawn* spawn = new Spawn();
 Cost* cost = new Cost();
+Button* button = new Button();
 float timer = 0;
 float spawntime = 10;
 int EneMax = 99;
@@ -64,11 +65,7 @@ void GamePlay::Update()
 	Camera::ReturnCameraState()->up = XMFLOAT3(0, 1, 0);
 
 	input->Update();
-	
-	if (input->PushKey(DIK_P))
-	{
-		sound->PlayRoop();
-	}
+
 	if (input->PushKey(DIK_SPACE) && (overFlag || clearFlag))
 	{
 		endFlag = true;
@@ -181,13 +178,14 @@ void GamePlay::Update()
 		}
 
 		cost->Update();
+		button->Update();
 		manager->Draw(DirectXDevice::cmdList);
 		CostUpdate();
 		CollisionUpdate();
 		EndFlagCheck();
 	}
 
-
+	sound->ChkRoop();
 }
 GamePlay::GamePlay()
 {
@@ -204,6 +202,7 @@ void GamePlay::Draw()
 		defList[a]->Draw();
 	}
 	cost->Draw();
+	button->Draw();
 	if (clearFlag)
 	{
 		Sprite::PreDraw(DirectXDevice::cmdList);
@@ -287,6 +286,7 @@ void GamePlay::Initialize()
 	defList.push_back(d7);
 
 	sound->LoadFile(L".\\Resources\\TDBGM2.mp3");
+	sound->LoadFile(L".\\Resources\\TDBGM3.mp3");
 	input->Initialize();
 	vector<DATA>DateTable = LoadData("Data/Enemy.csv");
 	for (auto date : DateTable)
@@ -308,6 +308,9 @@ void GamePlay::Initialize()
 	manager->SetSpeed(SpeedKari);
 	NowWAVE=wave1;
 	cost->Initialize();
+	button->Initialize();
+
+	sound->PlayRoop();
 	
 }
 

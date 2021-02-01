@@ -3,6 +3,8 @@
 #include"Sprite.h"
 #include"ObjFile.h"
 #include"Camera.h"
+#include"Sound.h"
+#include "Text.h"
 
 class Title:public GameScene
 {
@@ -15,6 +17,9 @@ public:
 	ObjFile* obj;
 	Sprite* sprite;
 	Sprite* sprite2;
+	Sound* sound = new Sound();
 
+private:
+	Text* text;
 };
 
