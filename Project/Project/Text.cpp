@@ -61,6 +61,7 @@ void Text::NPrint(int len, const char* text)
 		spriteDatas[spriteIndex]->SetPosition({ this->posX + fontWidth * this->size * i, this->posY });
 		spriteDatas[spriteIndex]->SetTextureRect({ (float)fontIndexX * fontWidth, (float)fontIndexY * fontHeight }, { (float)fontWidth, (float)fontHeight });
 		spriteDatas[spriteIndex]->SetSize({ fontWidth * this->size, fontHeight * this->size });
+		spriteDatas[spriteIndex]->SetColor({ this->color });
 
 		// •¶š‚ğ‚P‚Âi‚ß‚é
 		spriteIndex++;

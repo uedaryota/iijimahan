@@ -18,7 +18,7 @@ Input* input2;
 		 endFlag = true;
 	 }
 //	Camera::ReturnCameraState()->eyeangleY += 0.01;
-//	sound->ChkRoop();
+	sound->ChkRoop();
 	
 }
  Title::Title()
@@ -59,7 +59,7 @@ void Title::Initialize()
 	obj->scale={1000, 1000, 1000};
 	sound->Initialize();
 	sound->LoadFile(L".\\Resources\\TDBGM2.mp3");
-	//sound->PlayRoop();
+	sound->PlayRoop();
 
 	text = Text::GetInstance();
 	text->Initialize(0);

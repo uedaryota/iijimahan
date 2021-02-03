@@ -186,13 +186,21 @@ void GamePlay::Update()
 		{
 			defList[a]->Update();
 		}
+		if (cost->cost >= 20)
+		{
+			button->costflag = true;
+		}
+		else
+		{
+			button->costflag = false;
+		}
 
 		cost->Update();
-		button->Update();
 		backSphere->Update();
 		//backSphere->SetPos({ 500,500,500 });
 		
 		CostUpdate();
+		button->Update();
 		CollisionUpdate();
 		EndFlagCheck();
 	}

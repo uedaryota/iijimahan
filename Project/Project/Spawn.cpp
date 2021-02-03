@@ -22,6 +22,7 @@ void Spawn::Initialize(ID3D12Device* dev)
 
 void Spawn::Update()
 {	
+	obj->Update()
 	for (int i = 0; i < amount; i++)
 	{
 		time++;
@@ -32,7 +33,6 @@ void Spawn::Update()
 			time = 0;
 		}
 	}
-	obj->Update();
 }
 
 void Spawn::Draw(ID3D12GraphicsCommandList * cmdList)
