@@ -22,7 +22,7 @@ void Spawn::Initialize(ID3D12Device* dev)
 
 void Spawn::Update()
 {	
-	obj->Update()
+	obj->Update();
 	for (int i = 0; i < amount; i++)
 	{
 		time++;

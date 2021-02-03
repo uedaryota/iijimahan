@@ -1,2 +1,2 @@
-Enemy,FirstPosX,FirstPosZ,SecondPosX,SecondPosY,SecondPosZ,HP,SPEED,Tag,SpawnSpotX,SpawnSpotZ,Wave1,Wave2,Wave3,Wave2Attack,Wave2Hp,Wave2Speed,Wave3Attack,Wave3Hp,Wave3Speed
-TypeOne,0,30,120,0,170,10,10,Enemy,-170,-150,5,5,5,2,15,15,5,20,20
+Enemy,FirstPosX,FirstPosZ,SecondPosX,SecondPosY,SecondPosZ,HP,SPEED,Tag,SpawnSpotX,SpawnSpotZ,Wave1,Wave2,Wave3,Wave2Attack,Wave2Hp,Wave2Speed,Wave3Attack,Wave3Hp,Wave3Speed,Wave4,Wave4Attack,Wave4Hp,Wave4Speed,BossHp,BossAttack,BossSpeed
+TypeOne,0,30,120,0,170,10,5,Enemy,-170,-150,5,5,5,2,15,10,5,20,15,5,5,20,20,10,10,10
