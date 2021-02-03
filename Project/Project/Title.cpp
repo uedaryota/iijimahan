@@ -46,6 +46,7 @@ void Title::Initialize()
 	Sprite::LoadTexture(0, L"img/debugfont.png");
 	Sprite::LoadTexture(1, L"img/TowerDefence_Title.png");
 	Sprite::LoadTexture(2, L"img/TowerDefence_TitleBack.png");
+	Sprite::LoadTexture(10, L"img/debugfont2.png");
 
 	sprite = Sprite::Create(1, {0.0f, 0.0f});
 	//sprite->SetPosition(XMFLOAT2{ static_cast<float>(Camera::window_width) / 2, static_cast<float>(Camera::window_height) / 2 });

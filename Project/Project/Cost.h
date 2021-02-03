@@ -5,6 +5,7 @@
 #include "Texture.h"
 #include "Sprite.h"
 #include "Text.h"
+#include "RedText.h"
 #include "DirectXDevice.h"
 
 class Cost
@@ -49,11 +50,11 @@ public:
 	void SetCostUpTime(int costUpTime) { this->costUpTime = costUpTime; }
 
 private:
-	static const int TextNumber = 0;
 	int maxcost = 60;//ç≈ëÂÉRÉXÉg
 
 private:
 	Text* text;
+	RedText* redtext;
 	Sprite* sprite;
 
 public:
