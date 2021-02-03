@@ -438,6 +438,11 @@ void Sprite::SetIsFlipY(bool isFlipY)
 	TransferVertices();
 }
 
+void Sprite::SetColor(XMFLOAT4 color)
+{
+	this->color = color;
+}
+
 void Sprite::SetTextureRect(XMFLOAT2 texBase, XMFLOAT2 texSize)
 {
 	this->texBase = texBase;
