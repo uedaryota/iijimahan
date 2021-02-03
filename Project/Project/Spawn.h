@@ -16,7 +16,6 @@ public:
 	void Draw(ID3D12GraphicsCommandList * cmdList);
 	XMFLOAT3 GetPosition();
 	void SetPoisition(XMFLOAT3 position);
-	void Stop();
 	void SetSpawn(int amount, int time);
 	Enemy* enemyamount();
 	int GetAmount();
@@ -26,7 +25,6 @@ private:
 	int* backamount;
 	float time = 0;
 	float timer = 0;
-	bool stop = false;
 	int Cnt = 0;
 	Enemy* enemy[100];
 };
