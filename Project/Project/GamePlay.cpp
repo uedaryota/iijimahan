@@ -224,6 +224,11 @@ void GamePlay::Draw()
 		Sprite::PostDraw();
 	}
 
+	Sprite::PreDraw(DirectXDevice::cmdList);
+	text->Print("NEXT  " + to_string(int(spawntime - timer / 60)), 30, 250, 3);
+	nextback->Draw();
+	text->DrawAll(DirectXDevice::cmdList);
+	Sprite::PostDraw();
 }
 void GamePlay::Initialize()
 {
@@ -233,6 +238,7 @@ void GamePlay::Initialize()
 	
 	Sprite::LoadTexture(3, L"img/GameClear.png");
 	Sprite::LoadTexture(4, L"img/GameOver.png");
+	Sprite::LoadTexture(6, L"img/costback.png");
 
 	//クリア画像読込,読込済みの3番
 	clear = Sprite::Create(3, { 0.0f, 0.0f });
@@ -245,7 +251,7 @@ void GamePlay::Initialize()
 	over->SetSize({ static_cast<float>(Camera::window_width),static_cast<float>(Camera::window_height) });
 //	over->SetPosition(XMFLOAT2{ static_cast<float>(Camera::window_width) / 2, static_cast<float>(Camera::window_height) / 2 });
 //	over->SetSize(XMFLOAT2{ 1 * (static_cast<float>(Camera::window_width) / static_cast<float>(Camera::window_height)),1 });
-
+	nextback = Sprite::Create(6, {0.0f,250.0f});
 	tower->Initialize(DirectXDevice::dev);
 	tower->SetPoisition({ 130,0,180 });
 	manager->Initialize();
@@ -325,7 +331,11 @@ void GamePlay::Initialize()
 	button->Initialize();
 
 	sound->PlayRoop();
-	
+	//テキスト初期化
+	text = Text::GetInstance();
+	text->Initialize(TextNumber);
+	nextback = Sprite::Create(5, { 0.0f,250.0f });
+	nextback->SetSize(XMFLOAT2(350, 50));
 }
 
 void GamePlay::CollisionUpdate()

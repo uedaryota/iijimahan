@@ -1,6 +1,7 @@
 #pragma once
 #include"GameScene.h"
 #include"Sound.h"
+#include "Text.h"
 
 enum WAVE
 {
@@ -20,5 +21,9 @@ public:
 	bool clearFlag = false;
 	bool overFlag = false;
 	Sound* sound = new Sound();
+private:
+	Text * text;
+	Sprite* nextback;
+	static const int TextNumber = 0;
 };
 
