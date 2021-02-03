@@ -18,6 +18,7 @@ void Spawn::Initialize(ID3D12Device* dev)
 	obj->position.y = 10;
 	obj->SetScale({ 10,10,10 });
 	obj->rotation.y =4.6;
+	stop = false;
 }
 
 void Spawn::Update()
