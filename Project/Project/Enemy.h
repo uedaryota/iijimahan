@@ -67,6 +67,8 @@ public:
 	float GetSpeed();
 	void SetHp(float x);
 	void SetSpeed(float x);
+	float GetPower();
+	void SetPower(float x);
 	CircleCollision* col;
 	
 private:

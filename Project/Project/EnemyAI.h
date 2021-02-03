@@ -13,9 +13,7 @@ public:
 	void SetPos(XMFLOAT3 position);
 	void SetTarget(Tower tower);
 
-	float GetPower();
 
-	void SetPower(float x);
 	XMFLOAT3 position;
 	XMFLOAT3 velocity;
 	EnemyAI GetAI(EnemyAI ai);

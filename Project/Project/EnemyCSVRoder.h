@@ -23,6 +23,12 @@ struct DATA
 	double Wave1;
 	double Wave2;
 	double Wave3;
+	double Wave2Attack;
+	double Wave2Hp;
+	double Wave2Speed;
+	double Wave3Attack;
+	double Wave3Hp;
+	double Wave3Speed;
 };
 
 using namespace std;
@@ -77,6 +83,12 @@ vector<DATA>LoadData(const char*filePath)
 		data.Wave1 = strtof(datas[11].c_str(), NULL);
 		data.Wave2 = strtof(datas[12].c_str(), NULL);
 		data.Wave3 = strtof(datas[13].c_str(), NULL);
+		data.Wave2Attack = strtof(datas[14].c_str(), NULL);
+		data.Wave2Hp = strtof(datas[15].c_str(), NULL);
+		data.Wave2Speed = strtof(datas[16].c_str(), NULL);
+		data.Wave3Attack = strtof(datas[17].c_str(), NULL);
+		data.Wave3Hp = strtof(datas[18].c_str(), NULL);
+		data.Wave3Speed = strtof(datas[19].c_str(), NULL);
 		if (tag == "Enemy")
 		{
 			data.Tag = EnemyTag;

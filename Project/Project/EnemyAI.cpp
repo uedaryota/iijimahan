@@ -30,15 +30,7 @@ void EnemyAI::SetTarget(Tower tow)
 
 
 
-float EnemyAI::GetPower()
-{
-	return Power;
-}
 
-void EnemyAI::SetPower(float x)
-{
-	Power = x;
-}
 EnemyAI EnemyAI::GetAI(EnemyAI ai)
 {
 	return ai;

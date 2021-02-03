@@ -46,6 +46,7 @@ public:
 	void SetTowerEnemy(Tower* tow);
 	void SetHp(float x);
 	void SetSpeed(float x);
+	void SetPower(float x);
 
 	Enemy* enemybox[999];
 	int boxcount = 0;

@@ -54,7 +54,12 @@ int EneNow = 0;
 int Wave1 = 0;
 int Wave2 = 0;
 int Wave3 = 0;
-
+int Wave2At = 0;
+int Wave2Hp = 0;
+int Wave2Sp = 0;
+int Wave3At = 0;
+int Wave3Hp = 0;
+int Wave3Sp = 0;
 
 
 void GamePlay::Update()
@@ -130,8 +135,9 @@ void GamePlay::Update()
 					manager->Add2(spawn->GetPosition());
 					manager->ReAncerSet(pointA, pointB);
 					manager->SetTowerEnemy(tower);
-					manager->SetHp(HpKari);
-					manager->SetSpeed(SpeedKari);
+					manager->SetPower(Wave2At);
+					manager->SetHp(Wave2Hp);
+					manager->SetSpeed(Wave2Sp);
 					timer = 0;
 					EneNow++;
 				}
@@ -155,8 +161,9 @@ void GamePlay::Update()
 					manager->Add2(spawn->GetPosition());
 					manager->ReAncerSet(pointA, pointB);
 					manager->SetTowerEnemy(tower);
-					manager->SetHp(HpKari);
-					manager->SetSpeed(SpeedKari);
+					manager->SetPower(Wave3At);
+					manager->SetHp(Wave3Hp);
+					manager->SetSpeed(Wave3Sp);
 					timer = 0;
 					EneNow++;
 				}
@@ -315,6 +322,12 @@ void GamePlay::Initialize()
 		Wave1 = date.Wave1;
 		Wave2 = date.Wave2;
 		Wave3 = date.Wave3;
+		Wave2At = date.Wave2Attack;
+		Wave2Hp = date.Wave2Hp;
+		Wave2Sp = date.Wave2Speed;
+		Wave3At = date.Wave3Attack;
+		Wave3Hp = date.Wave3Hp;
+		Wave3Sp = date.Wave3Speed;
 	}
 	//îwåi
 	backSphere = new ObjFile();

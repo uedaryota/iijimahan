@@ -143,8 +143,8 @@ void Enemy::Install(EnemyAI Ai)
 void Enemy::SetState()
 {
 	Hp = 5.0f;
-	Speed = GetSpeed();
-	Power = ai.GetPower();
+	Speed = 1.0f;
+	Power = 1.0f;
 }
 
 ///<summary>
@@ -375,7 +375,7 @@ void Enemy::SetTower(Tower* tow){mokuhyou = tow;}
 void Enemy::TowerAtack()
 {
 	//mokuhyou->SetHp(GetPower());
-	mokuhyou->Damage(GetPower());
+	mokuhyou->Damage(int(GetPower()));
 	Hp = 0;
 }
 
@@ -464,4 +464,14 @@ void Enemy::SetSpeed(float x)
 {
 	Speed = x/10;
 	vel = { Speed,0,-Speed };
+}
+
+float Enemy::GetPower()
+{
+	return Power;
+}
+
+void Enemy::SetPower(float x)
+{
+	Power = x;
 }
