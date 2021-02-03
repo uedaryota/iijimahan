@@ -25,6 +25,8 @@ public:
 private:
 	Text * text;
 	Sprite* nextback;
+	Sprite* ClickUI;
+	Sprite* ArrowkeyUI;
 	static const int TextNumber = 0;
 };
 

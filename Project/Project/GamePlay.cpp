@@ -261,7 +261,7 @@ GamePlay::GamePlay()
 }
 void GamePlay::Draw()
 {
-	
+
 	manager->Draw(DirectXDevice::cmdList);
 	spawn->Draw(DirectXDevice::cmdList);
 	stage->Draw();
@@ -273,6 +273,15 @@ void GamePlay::Draw()
 	cost->Draw();
 	button->Draw();
 	backSphere->Draw(DirectXDevice::cmdList);
+
+	Sprite::PreDraw(DirectXDevice::cmdList);
+	ClickUI->Draw();
+	ArrowkeyUI->Draw();
+	text->Print("NEXT  " + to_string(int(spawntime - timer / 60)), 30, 250, 3);
+	nextback->Draw();
+	text->DrawAll(DirectXDevice::cmdList);
+	Sprite::PostDraw();
+
 	if (clearFlag)
 	{
 		Sprite::PreDraw(DirectXDevice::cmdList);
@@ -289,7 +298,7 @@ void GamePlay::Draw()
 	}
 
 	Sprite::PreDraw(DirectXDevice::cmdList);
-	text->Print("Next  "+ to_string(int(spawntime - timer / 60)), 30, 250, 3);
+	text->Print("Next  " + to_string(int(spawntime - timer / 60)), 30, 250, 3);
 	nextback->Draw();
 	text->DrawAll(DirectXDevice::cmdList);
 	Sprite::PostDraw();
@@ -303,6 +312,8 @@ void GamePlay::Initialize()
 	Sprite::LoadTexture(3, L"img/GameClear.png");
 	Sprite::LoadTexture(4, L"img/GameOver.png");
 	Sprite::LoadTexture(6, L"img/costback.png");
+	Sprite::LoadTexture(8, L"img/ClickUI.png");
+	Sprite::LoadTexture(9, L"img/ArrowkeyUI.png");
 
 	//クリア画像読込,読込済みの3番
 	clear = Sprite::Create(3, { 0.0f, 0.0f });
@@ -315,7 +326,14 @@ void GamePlay::Initialize()
 	over->SetSize({ static_cast<float>(Camera::window_width),static_cast<float>(Camera::window_height) });
 //	over->SetPosition(XMFLOAT2{ static_cast<float>(Camera::window_width) / 2, static_cast<float>(Camera::window_height) / 2 });
 //	over->SetSize(XMFLOAT2{ 1 * (static_cast<float>(Camera::window_width) / static_cast<float>(Camera::window_height)),1 });
-	nextback = Sprite::Create(6, {0.0f,250.0f});
+	nextback = Sprite::Create(6, {0.0f,10.0f});
+
+	ClickUI = Sprite::Create(8, { -10.0f, -50.0f });
+	ClickUI->SetSize(XMFLOAT2(300, 300));
+
+	ArrowkeyUI = Sprite::Create(9, { 0.0f, 20.0f });
+	ArrowkeyUI->SetSize(XMFLOAT2(300, 300));
+
 	tower->Initialize(DirectXDevice::dev);
 	tower->SetPoisition({ 130,0,180 });
 	manager->Initialize();
@@ -410,7 +428,7 @@ void GamePlay::Initialize()
 	sound->PlayRoop();
 	//テキスト初期化
 	text = Text::GetInstance();
-	text->Initialize(TextNumber);
+	text->Initialize(0);
 	nextback = Sprite::Create(5, { 0.0f,250.0f });
 	nextback->SetSize(XMFLOAT2(350, 50));
 }
