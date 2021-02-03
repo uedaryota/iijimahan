@@ -264,6 +264,28 @@ void EnemyManeger::SetPower(float x)
 		}
 	}
 }
+
+
+void EnemyManeger::BossHp(float x)
+{
+	enemybox[boxcount-1]->SetHp(x);
+
+}
+
+void EnemyManeger::BossSpeed(float x)
+{
+	enemybox[boxcount-1]->SetSpeed(x);
+}
+
+void EnemyManeger::BossCreate()
+{
+	enemybox[boxcount-1]->ChangeBoss();
+}
+
+void EnemyManeger::BossPower(float x)
+{
+	enemybox[boxcount-1]->SetPower(x);
+}
 float EnemyManeger::CountDeath()
 {
 	DeathCount = 0;

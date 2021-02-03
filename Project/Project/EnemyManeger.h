@@ -47,6 +47,10 @@ public:
 	void SetHp(float x);
 	void SetSpeed(float x);
 	void SetPower(float x);
+	void BossPower(float x);
+	void BossHp(float x);
+	void BossSpeed(float x);
+	void BossCreate();
 
 	Enemy* enemybox[999];
 	int boxcount = 0;

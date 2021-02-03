@@ -32,6 +32,12 @@ void Enemy::Initialize()
 	obj2->Initialize();
 	obj2->LoadObj("UFO_Red");
 	obj2->position.y = 0;
+	Bossobj->Initialize();
+	Bossobj->LoadObj("UFO_Red");
+	Bossobj->position.y = 0;
+	Bossobj2->Initialize();
+	Bossobj2->LoadObj("UFO");
+	Bossobj2->position.y = 0;
 }
 
 ///<summary>
@@ -39,42 +45,84 @@ void Enemy::Initialize()
 ///</summary>
 void Enemy::Update()
 {
-	if (!Deadflag)
-	{
-		if (Endflag)
+	if (!Boss) {
+		if (!Deadflag)
 		{
-			endscale = obj->scale;
-			time++;
-			if (time <= 10)
+			if (Endflag)
 			{
-				endscale.x += 0.5f;
-				endscale.y += 0.5f;
-				endscale.z += 0.5f;
-			}
-			if (time > 10)
-			{
-				endscale.x -= 0.5f;
-				endscale.y -= 0.5f;
-				endscale.z -= 0.5f;
-			}
-			if (endscale.x <= 0)
-			{
-				endscale = XMFLOAT3(0, 0, 0);
-				Deadflag = true;
-			}
+				endscale = obj->scale;
+				time++;
+				if (time <= 10)
+				{
+					endscale.x += 0.5f;
+					endscale.y += 0.5f;
+					endscale.z += 0.5f;
+				}
+				if (time > 10)
+				{
+					endscale.x -= 0.5f;
+					endscale.y -= 0.5f;
+					endscale.z -= 0.5f;
+				}
+				if (endscale.x <= 0)
+				{
+					endscale = XMFLOAT3(0, 0, 0);
+					Deadflag = true;
+				}
 
-			obj->SetScale(endscale);
-			obj->SetScale(endscale);
+				obj->SetScale(endscale);
+				obj->SetScale(endscale);
+			}
+			//pol->Update();
+			obj->Update();
+
+			obj2->Update();
+			obj2->SetPos(obj->position);
+			col->position = obj->position;
+			PositionUpdate(Ancer1, Ancer2, mokuhyou->GetPosition());
+			GetState();
+			GetAlive();
 		}
-		//pol->Update();
-		obj->Update();
+	}
+	else
+	{
+		if (!Deadflag)
+		{
+			if (Endflag)
+			{
+				endscale = Bossobj->scale;
+				time++;
+				if (time <= 10)
+				{
+					endscale.x += 0.5f;
+					endscale.y += 0.5f;
+					endscale.z += 0.5f;
+				}
+				if (time > 10)
+				{
+					endscale.x -= 0.5f;
+					endscale.y -= 0.5f;
+					endscale.z -= 0.5f;
+				}
+				if (endscale.x <= 0)
+				{
+					endscale = XMFLOAT3(0, 0, 0);
+					Deadflag = true;
+				}
 
-		obj2->Update();
-		obj2->SetPos(obj->position);
-		col->position = obj->position;
-		PositionUpdate(Ancer1, Ancer2, mokuhyou->GetPosition());
-		GetState();
-		GetAlive();
+				Bossobj->SetScale(endscale);
+				Bossobj->SetScale(endscale);
+			}
+			//pol->Update();
+			Bossobj->Update();
+
+			Bossobj2->Update();
+			Bossobj2->SetPos(Bossobj->position);
+			col->position = Bossobj->position;
+			BossUpdate(Ancer1, Ancer2, mokuhyou->GetPosition());
+			GetState();
+			GetAlive();
+		}
 	}
 }
 
@@ -86,25 +134,47 @@ void Enemy::Draw(ID3D12GraphicsCommandList * cmdList)
 {
 	if (!Deadflag)
 	{
-
-		if (Damege)
-		{
-			time++;
-			if (time <= endtime)
+		if (!Boss) {
+			if (Damege)
 			{
-				obj2->Draw(DirectXDevice::cmdList);
+				time++;
+				if (time <= endtime)
+				{
+					obj2->Draw(DirectXDevice::cmdList);
+				}
+				else
+				{
+					time = 0;
+					obj->Draw(DirectXDevice::cmdList);
+					Damege = false;
+				}
 			}
 			else
 			{
-				time = 0;
+				//pol->Draw(DirectXDevice::cmdList, DirectXDevice::dev);
 				obj->Draw(DirectXDevice::cmdList);
-				Damege = false;
 			}
 		}
-		else
-		{
-			//pol->Draw(DirectXDevice::cmdList, DirectXDevice::dev);
-			obj->Draw(DirectXDevice::cmdList);
+		else {
+			if (Damege)
+			{
+				time++;
+				if (time <= endtime)
+				{
+					Bossobj2->Draw(DirectXDevice::cmdList);
+				}
+				else
+				{
+					time = 0;
+					Bossobj->Draw(DirectXDevice::cmdList);
+					Damege = false;
+				}
+			}
+			else
+			{
+				//pol->Draw(DirectXDevice::cmdList, DirectXDevice::dev);
+				Bossobj->Draw(DirectXDevice::cmdList);
+			}
 		}
 	}
 }
@@ -117,6 +187,8 @@ void Enemy::SetPos(XMFLOAT3 position)
 	//pol->position = position;
 	obj->position = position;
 	obj2->position = position;
+	Bossobj->position = position;
+	Bossobj2->position = position;
 }
 
 ///<summary>
@@ -127,6 +199,8 @@ void Enemy::SetScale(XMFLOAT3 scale)
 	//pol->scale = scale;
 	obj->scale = scale;
 	obj2->scale = scale;
+	Bossobj->scale = scale;
+	Bossobj2->scale = scale;
 }
 
 ///<summary>
@@ -311,6 +385,164 @@ void Enemy::PositionUpdate(XMFLOAT3 pointA, XMFLOAT3 pointB, XMFLOAT3 tower)//エ
 	obj->position;
 }
 
+void Enemy::BossUpdate(XMFLOAT3 pointA, XMFLOAT3 pointB, XMFLOAT3 tower)
+{
+	if (Hp <= 0)
+	{
+		state = Destory;
+		if (Dead)
+		{
+			return;
+		}
+		time = 0;
+		Dead = true;
+	}
+
+	switch (state)
+	{
+	case Destory:
+#pragma region
+		Endflag = true;
+		break;
+#pragma endregion
+	case Stay:
+#pragma region
+		break;
+#pragma endregion
+	case move1://第1移動
+#pragma region
+		if (Bossobj->position.x - pointA.x > 0.5f) {
+			Bossobj->position.x = Bossobj->position.x + vel.z;
+		}
+		else if (Bossobj->position.x - pointA.x < -0.5f)
+		{
+			Bossobj->position.x = Bossobj->position.x + vel.x;
+		}
+		else
+		{
+			NextX = true;
+		}
+		if (NextX) {
+			if (Bossobj->position.z - pointA.z > 0.5f)
+			{
+				Bossobj->position.z = Bossobj->position.z + vel.z;
+			}
+			else if (Bossobj->position.z - pointA.z < -0.5)
+			{
+				Bossobj->position.z = Bossobj->position.z + vel.x;
+			}
+			else
+			{
+				NextZ = true;
+			}
+		}
+		if (NextX == true, NextZ == true)
+		{
+			state = move2;
+			NextX = false;
+			NextZ = false;
+		}
+		break;
+#pragma endregion
+	case move2://第2移動
+#pragma region
+		if (Bossobj->position.x - pointB.x > 0.5f) {
+			Bossobj->position.x = Bossobj->position.x + vel.z;
+		}
+		else if (Bossobj->position.x - pointB.x < -0.5f)
+		{
+			Bossobj->position.x = Bossobj->position.x + vel.x;
+		}
+		else
+		{
+			NextX = true;
+		}
+		if (NextX) {
+			if (Bossobj->position.z - pointB.z > 0.5f)
+			{
+				Bossobj->position.z = Bossobj->position.z + vel.z;
+			}
+			else if (Bossobj->position.z - pointB.z < -0.5)
+			{
+				Bossobj->position.z = Bossobj->position.z + vel.x;
+			}
+			else
+			{
+				NextZ = true;
+			}
+		}
+		if (NextX == true, NextZ == true)
+		{
+			state = move3;
+			NextX = false;
+			NextZ = false;
+		}
+		break;
+#pragma endregion
+	case move3://第3移動
+#pragma region
+		if (Bossobj->position.x - tower.x > 0.5f) {
+			Bossobj->position.x = Bossobj->position.x + vel.z;
+		}
+		else if (Bossobj->position.x - tower.x < -0.5f)
+		{
+			Bossobj->position.x = Bossobj->position.x + vel.x;
+		}
+		else
+		{
+			NextX = true;
+		}
+		if (NextX) {
+			if (Bossobj->position.z - tower.z > 0.5f)
+			{
+				Bossobj->position.z = Bossobj->position.z + vel.z;
+			}
+			else if (Bossobj->position.z - tower.z < -0.5)
+			{
+				Bossobj->position.z = Bossobj->position.z + vel.x;
+			}
+			else
+			{
+				NextZ = true;
+			}
+		}
+		if (NextX == true, NextZ == true)
+		{
+			state = atack1;
+			NextX = false;
+			NextZ = false;
+		}
+		break;
+#pragma endregion
+	case atack1://目標物に対しての攻撃
+#pragma region
+
+		if (Cnt < 30.0f)
+		{
+			Cnt++;
+			Bossobj->position.y = Bossobj->position.y + vel.z;
+		}
+		else if (Cnt > 60.0f)
+		{
+			Cnt = 0;
+			TowerAtack();
+		}
+		else if (Cnt <= 60.0f &Cnt >= 30.0f)
+		{
+			Cnt++;
+			Bossobj->position.y = Bossobj->position.y - vel.z;
+		}
+		break;
+#pragma endregion
+	case special1://エネミーごとの特殊行動を行わせる。
+#pragma region
+		Avoid();
+		break;
+#pragma endregion
+	}
+	Bossobj->position;
+}
+
 ///<summary>
 ///状態変化、行動
 ///</summary>
@@ -376,7 +608,10 @@ void Enemy::TowerAtack()
 {
 	//mokuhyou->SetHp(GetPower());
 	mokuhyou->Damage(int(GetPower()));
-	Hp = 0;
+	if (!Boss)
+	{
+		Hp = 0;
+	}
 }
 
 ///<summary>
@@ -439,7 +674,13 @@ void Enemy::ActionRiset()
 
 XMFLOAT3 Enemy::GetPosition()
 {
-	return obj->position;
+	if (!Boss) {
+		return obj->position;
+	}
+	else
+	{
+		return Bossobj->position;
+	}
 }
 void Enemy::SpeedEne()
 {
@@ -474,4 +715,14 @@ float Enemy::GetPower()
 void Enemy::SetPower(float x)
 {
 	Power = x;
+}
+
+void Enemy::LastOne(bool one)
+{
+	Boss = one;
+}
+
+void Enemy::ChangeBoss()
+{
+	Boss = true;
 }
