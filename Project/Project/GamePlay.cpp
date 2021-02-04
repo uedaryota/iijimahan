@@ -274,6 +274,7 @@ void GamePlay::Draw()
 	button->Draw();
 	backSphere->Draw(DirectXDevice::cmdList);
 
+	cost->Draw();
 	Sprite::PreDraw(DirectXDevice::cmdList);
 	ClickUI->Draw();
 	ArrowkeyUI->Draw();
@@ -296,12 +297,6 @@ void GamePlay::Draw()
 		//sprite2->Draw();
 		Sprite::PostDraw();
 	}
-
-	Sprite::PreDraw(DirectXDevice::cmdList);
-	text->Print("Next  " + to_string(int(spawntime - timer / 60)), 30, 250, 3);
-	nextback->Draw();
-	text->DrawAll(DirectXDevice::cmdList);
-	Sprite::PostDraw();
 }
 void GamePlay::Initialize()
 {
