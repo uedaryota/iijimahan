@@ -27,6 +27,7 @@ public:
 	void Install(EnemyAI Ai);
 	void SetState();
 	void PositionUpdate(XMFLOAT3 pointA, XMFLOAT3 pointB, XMFLOAT3 tower);
+	void BossUpdate(XMFLOAT3 pointA, XMFLOAT3 pointB, XMFLOAT3 tower);
 	EnemyAI ai;
 	float Hp;
 	float Speed=1;
@@ -70,6 +71,9 @@ public:
 	float GetPower();
 	void SetPower(float x);
 	CircleCollision* col;
+	bool Boss = false;
+	void LastOne(bool one);
+	void ChangeBoss();
 	
 private:
 	//«Ši–‚És“®•Ï‰»‚·‚é‚½‚ß‚Ì•Ï”‚Å‚·
@@ -77,6 +81,8 @@ private:
 	bool Kosinuke = false;//˜”²‚¯ó‘Ô‚Å‚·B
 	ObjFile* obj = new ObjFile();
 	ObjFile* obj2 = new ObjFile();
+	ObjFile* Bossobj = new ObjFile();
+	ObjFile* Bossobj2 = new ObjFile();
 	Texture* tex = new Texture();
 	
 };

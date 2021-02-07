@@ -54,12 +54,19 @@ int EneNow = 0;
 int Wave1 = 0;
 int Wave2 = 0;
 int Wave3 = 0;
+int Wave4 = 0;
 int Wave2At = 0;
 int Wave2Hp = 0;
 int Wave2Sp = 0;
 int Wave3At = 0;
 int Wave3Hp = 0;
 int Wave3Sp = 0;
+int Wave4At = 0;
+int Wave4Hp = 0;
+int Wave4Sp = 0;
+int BossAt = 0;
+int BossHp = 0;
+int BossSp = 0;
 
 
 void GamePlay::Update()
@@ -101,7 +108,7 @@ void GamePlay::Update()
 		switch (NowWAVE)
 		{
 		case wave1:
-			if (EneNow < Wave1 - 1)
+			if (EneNow < Wave1)
 			{
 				timer++;
 				if (timer / 60 > spawntime)
@@ -126,7 +133,7 @@ void GamePlay::Update()
 			}
 			break;
 		case wave2:
-			if (EneNow < Wave1 + Wave2 - 1)
+			if (EneNow < Wave1 + Wave2)
 			{
 				timer++;
 				if (timer / 60 > spawntime)
@@ -152,7 +159,7 @@ void GamePlay::Update()
 			}
 			break;
 		case wave3:
-			if (EneNow < Wave1 + Wave2 + Wave3)
+			if (EneNow < Wave1 + Wave2 + Wave3+1)
 			{
 				timer++;
 				if (timer / 60 > spawntime)
@@ -164,6 +171,48 @@ void GamePlay::Update()
 					manager->SetPower(Wave3At);
 					manager->SetHp(Wave3Hp);
 					manager->SetSpeed(Wave3Sp);
+					timer = 0;
+					EneNow++;
+				}
+			}
+			else
+			{
+				if (EneNow == manager->CountDeath() - 1)
+				{
+					NowWAVE = wave4;
+				}
+			}
+			break;
+		case wave4:
+			if (EneNow < Wave1 + Wave2 + Wave3 + Wave4+1)
+			{
+				timer++;
+				if (timer / 60 > spawntime)
+				{
+					//エネミー生成
+					manager->Add2(spawn->GetPosition());
+					manager->ReAncerSet(pointA, pointB);
+					manager->SetTowerEnemy(tower);
+					manager->SetPower(Wave4At);
+					manager->SetHp(Wave4Hp);
+					manager->SetSpeed(Wave4Sp);
+					timer = 0;
+					EneNow++;
+				}
+			}
+			else if (EneNow < Wave1 + Wave2 + Wave3 + Wave4 +2)
+			{
+				timer++;
+				if (timer / 60 > spawntime)
+				{
+					//エネミー生成
+					manager->Add2(spawn->GetPosition());
+					manager->BossCreate();
+					manager->ReAncerSet(pointA, pointB);
+					manager->SetTowerEnemy(tower);
+					manager->BossHp(BossHp);
+					manager->BossPower(BossAt);
+					manager->BossSpeed(BossSp);
 					timer = 0;
 					EneNow++;
 				}
@@ -224,15 +273,6 @@ void GamePlay::Draw()
 	cost->Draw();
 	button->Draw();
 	backSphere->Draw(DirectXDevice::cmdList);
-
-	Sprite::PreDraw(DirectXDevice::cmdList);
-	ClickUI->Draw();
-	ArrowkeyUI->Draw();
-	text->Print("NEXT  " + to_string(int(spawntime - timer / 60)), 30, 250, 3);
-	nextback->Draw();
-	text->DrawAll(DirectXDevice::cmdList);
-	Sprite::PostDraw();
-
 	if (clearFlag)
 	{
 		Sprite::PreDraw(DirectXDevice::cmdList);
@@ -248,6 +288,11 @@ void GamePlay::Draw()
 		Sprite::PostDraw();
 	}
 
+	Sprite::PreDraw(DirectXDevice::cmdList);
+	text->Print("Next  "+ to_string(int(spawntime - timer / 60)), 30, 250, 3);
+	nextback->Draw();
+	text->DrawAll(DirectXDevice::cmdList);
+	Sprite::PostDraw();
 }
 void GamePlay::Initialize()
 {
@@ -258,8 +303,6 @@ void GamePlay::Initialize()
 	Sprite::LoadTexture(3, L"img/GameClear.png");
 	Sprite::LoadTexture(4, L"img/GameOver.png");
 	Sprite::LoadTexture(6, L"img/costback.png");
-	Sprite::LoadTexture(8, L"img/ClickUI.png");
-	Sprite::LoadTexture(9, L"img/ArrowkeyUI.png");
 
 	//クリア画像読込,読込済みの3番
 	clear = Sprite::Create(3, { 0.0f, 0.0f });
@@ -272,14 +315,7 @@ void GamePlay::Initialize()
 	over->SetSize({ static_cast<float>(Camera::window_width),static_cast<float>(Camera::window_height) });
 //	over->SetPosition(XMFLOAT2{ static_cast<float>(Camera::window_width) / 2, static_cast<float>(Camera::window_height) / 2 });
 //	over->SetSize(XMFLOAT2{ 1 * (static_cast<float>(Camera::window_width) / static_cast<float>(Camera::window_height)),1 });
-	nextback = Sprite::Create(6, {0.0f,10.0f});
-
-	ClickUI = Sprite::Create(8, { -10.0f, -50.0f });
-	ClickUI->SetSize(XMFLOAT2(300, 300));
-
-	ArrowkeyUI = Sprite::Create(9, { 0.0f, 20.0f });
-	ArrowkeyUI->SetSize(XMFLOAT2(300, 300));
-
+	nextback = Sprite::Create(6, {0.0f,250.0f});
 	tower->Initialize(DirectXDevice::dev);
 	tower->SetPoisition({ 130,0,180 });
 	manager->Initialize();
@@ -343,12 +379,19 @@ void GamePlay::Initialize()
 		Wave1 = date.Wave1;
 		Wave2 = date.Wave2;
 		Wave3 = date.Wave3;
+		Wave4 = date.Wave4;
 		Wave2At = date.Wave2Attack;
 		Wave2Hp = date.Wave2Hp;
 		Wave2Sp = date.Wave2Speed;
 		Wave3At = date.Wave3Attack;
 		Wave3Hp = date.Wave3Hp;
 		Wave3Sp = date.Wave3Speed;
+		Wave4At = date.Wave4Attack;
+		Wave4Hp = date.Wave4Hp;
+		Wave4Sp = date.Wave4Speed;
+		BossAt = date.BossAttack;
+		BossHp = date.BossHp;
+		BossSp = date.BossSpeed;
 	}
 	//背景
 	backSphere = new ObjFile();
@@ -367,7 +410,7 @@ void GamePlay::Initialize()
 	sound->PlayRoop();
 	//テキスト初期化
 	text = Text::GetInstance();
-	text->Initialize(0);
+	text->Initialize(TextNumber);
 	nextback = Sprite::Create(5, { 0.0f,250.0f });
 	nextback->SetSize(XMFLOAT2(350, 50));
 }

@@ -5,7 +5,7 @@
 
 enum WAVE
 {
-	wave1, wave2, wave3, wave0
+	wave1, wave2, wave3, wave4,wave0
 };
 class GamePlay:public GameScene
 {
@@ -22,6 +22,7 @@ public:
 	bool clearFlag = false;
 	bool overFlag = false;
 	Sound* sound = new Sound();
+	bool Boss = false;
 private:
 	Text * text;
 	Sprite* nextback;
