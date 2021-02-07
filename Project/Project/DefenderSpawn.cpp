@@ -30,13 +30,17 @@ void DefenderSpawn::Draw()
 
 void DefenderSpawn::Initialize()
 {
-	obj=new ObjFile();
+	//obj = new ObjFile();
+	
 	col = new CircleCollision();
 	col->Initialize();
 	col->scale = 10;
 	col->color = { 1,0,0,1 };
 	costFlag = false;
-	battery = new Battery();
+	if (battery == nullptr)
+	{
+		battery = new Battery();
+	}
 	battery->Initialize();
 	
 }

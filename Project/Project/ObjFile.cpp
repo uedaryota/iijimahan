@@ -57,8 +57,9 @@ void ObjFile::Initialize()
 {
 	
 	this->dev = DirectXDevice::dev;
-	CreatePipeline();
 	CreateMainHeap();
+
+	CreatePipeline();
 }
 
 void ObjFile::Update()
@@ -123,6 +124,38 @@ void ObjFile::Draw(ID3D12GraphicsCommandList * cmdList)
 	}
 
 	
+}
+
+void ObjFile::Draw()
+{
+	DirectXDevice::cmdList->SetPipelineState(pipelinestate);
+	DirectXDevice::cmdList->SetGraphicsRootSignature(rootsignature);
+	DirectXDevice::cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	DirectXDevice::cmdList->IASetVertexBuffers(0, 1, &vbView);
+	DirectXDevice::cmdList->IASetIndexBuffer(&ibView);
+	DirectXDevice::cmdList->SetDescriptorHeaps(1, &mainDescHeap);
+	//	cmdList->SetGraphicsRootDescriptorTable(0, GsrvHandle);
+	DirectXDevice::cmdList->SetGraphicsRootDescriptorTable(1, GcbvHandle0);
+	//light->Draw(DirectXDevice::cmdList, 3);
+
+	DirectXDevice::cmdList->SetDescriptorHeaps(1, &materialDescHeap);
+	//cmdList->SetGraphicsRootDescriptorTable(2, GmaterialHandles[0]);
+	//cmdList->DrawInstanced((UINT)vertices.size(), 1, 0, 0);
+
+	//ƒ‰ƒCƒg‚Ì•`‰æ
+
+
+	UINT start = 0;
+	for (int a = 0; a < usematerials.size() * 2; a += 2)
+	{
+		DirectXDevice::cmdList->SetGraphicsRootDescriptorTable(0, GmaterialHandles[a + 1]);
+		DirectXDevice::cmdList->SetGraphicsRootDescriptorTable(2, GmaterialHandles[a]);
+
+		DirectXDevice::cmdList->DrawInstanced((UINT)usematerials[a / 2].indicesCount, 1, start, 0);
+		start += usematerials[a / 2].indicesCount;
+	}
+
+
 }
 
 void ObjFile::CreatePipeline()

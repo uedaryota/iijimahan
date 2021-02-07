@@ -79,6 +79,8 @@ public:
 	void Initialize();
 	void Update();
 	void Draw(ID3D12GraphicsCommandList * cmdList);
+	void Draw();
+
 	void CreatePipeline();
 	void CreateMainHeap();
 	void CreateMaterialHeap();
