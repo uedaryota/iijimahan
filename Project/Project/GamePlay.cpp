@@ -261,7 +261,7 @@ GamePlay::GamePlay()
 }
 void GamePlay::Draw()
 {
-	
+
 	manager->Draw(DirectXDevice::cmdList);
 	spawn->Draw(DirectXDevice::cmdList);
 	stage->Draw();
@@ -289,7 +289,7 @@ void GamePlay::Draw()
 	}
 
 	Sprite::PreDraw(DirectXDevice::cmdList);
-	text->Print("Next  "+ to_string(int(spawntime - timer / 60)), 30, 250, 3);
+	text->Print("Next  " + to_string(int(spawntime - timer / 60)), 30, 250, 3);
 	nextback->Draw();
 	text->DrawAll(DirectXDevice::cmdList);
 	Sprite::PostDraw();
