@@ -18,19 +18,10 @@ void Spawn::Initialize(ID3D12Device* dev)
 	obj->position.y = 10;
 	obj->SetScale({ 10,10,10 });
 	obj->rotation.y =4.6;
-	stop = false;
 }
 
 void Spawn::Update()
-{
-
-	obj->Update();
-	if (stop)
-	{
-		return;
-	}	
-	
-	
+{	
 	for (int i = 0; i < amount; i++)
 	{
 		time++;
@@ -41,6 +32,7 @@ void Spawn::Update()
 			time = 0;
 		}
 	}
+	obj->Update();
 }
 
 void Spawn::Draw(ID3D12GraphicsCommandList * cmdList)
@@ -59,18 +51,6 @@ XMFLOAT3 Spawn::GetPosition()
 void Spawn::SetPoisition(XMFLOAT3 position)
 {
 	obj->position = position;
-}
-
-void Spawn::Stop()
-{
-	if (stop) 
-	{
-		stop = false;
-	}
-	else
-	{
-		stop = true;
-	}
 }
 
 void Spawn::SetSpawn(int x, int y)
