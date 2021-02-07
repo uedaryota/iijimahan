@@ -223,7 +223,16 @@ void GamePlay::Draw()
 	}
 	cost->Draw();
 	button->Draw();
-	backSphere->Draw();
+	backSphere->Draw(DirectXDevice::cmdList);
+
+	Sprite::PreDraw(DirectXDevice::cmdList);
+	ClickUI->Draw();
+	ArrowkeyUI->Draw();
+	text->Print("NEXT  " + to_string(int(spawntime - timer / 60)), 30, 250, 3);
+	nextback->Draw();
+	text->DrawAll(DirectXDevice::cmdList);
+	Sprite::PostDraw();
+
 	if (clearFlag)
 	{
 		Sprite::PreDraw(DirectXDevice::cmdList);
@@ -239,32 +248,38 @@ void GamePlay::Draw()
 		Sprite::PostDraw();
 	}
 
-	Sprite::PreDraw(DirectXDevice::cmdList);
-	text->Print("NEXT  " + to_string(int(spawntime - timer / 60)), 30, 250, 3);
-	nextback->Draw();
-	text->DrawAll(DirectXDevice::cmdList);
-	Sprite::PostDraw();
 }
 void GamePlay::Initialize()
 {
 	overFlag = false;
 	clearFlag = false;
 	endFlag = false;
-
+	
 	Sprite::LoadTexture(3, L"img/GameClear.png");
 	Sprite::LoadTexture(4, L"img/GameOver.png");
 	Sprite::LoadTexture(6, L"img/costback.png");
+	Sprite::LoadTexture(8, L"img/ClickUI.png");
+	Sprite::LoadTexture(9, L"img/ArrowkeyUI.png");
 
 	//クリア画像読込,読込済みの3番
 	clear = Sprite::Create(3, { 0.0f, 0.0f });
 	clear->SetSize({ static_cast<float>(Camera::window_width),static_cast<float>(Camera::window_height) });
+//	clear->SetPosition(XMFLOAT2{ static_cast<float>(Camera::window_width) / 2, static_cast<float>(Camera::window_height) / 2 });
+//	clear->SetSize(XMFLOAT2{ 1 * (static_cast<float>(Camera::window_width) / static_cast<float>(Camera::window_height)),1 });
 	//ゲームオーバー画像読込,込済みの4番
 	over = Sprite::Create(4, { 0.0f, 0.0f });
 
 	over->SetSize({ static_cast<float>(Camera::window_width),static_cast<float>(Camera::window_height) });
-	//	over->SetPosition(XMFLOAT2{ static_cast<float>(Camera::window_width) / 2, static_cast<float>(Camera::window_height) / 2 });
-	//	over->SetSize(XMFLOAT2{ 1 * (static_cast<float>(Camera::window_width) / static_cast<float>(Camera::window_height)),1 });
-	nextback = Sprite::Create(6, { 0.0f,250.0f });
+//	over->SetPosition(XMFLOAT2{ static_cast<float>(Camera::window_width) / 2, static_cast<float>(Camera::window_height) / 2 });
+//	over->SetSize(XMFLOAT2{ 1 * (static_cast<float>(Camera::window_width) / static_cast<float>(Camera::window_height)),1 });
+	nextback = Sprite::Create(6, {0.0f,10.0f});
+
+	ClickUI = Sprite::Create(8, { -10.0f, -50.0f });
+	ClickUI->SetSize(XMFLOAT2(300, 300));
+
+	ArrowkeyUI = Sprite::Create(9, { 0.0f, 20.0f });
+	ArrowkeyUI->SetSize(XMFLOAT2(300, 300));
+
 	tower->Initialize(DirectXDevice::dev);
 	tower->SetPoisition({ 130,0,180 });
 	manager->Initialize();
@@ -278,8 +293,7 @@ void GamePlay::Initialize()
 	manager->Add2(spawn->GetPosition());
 	timer = 0;
 	manager->SetTowerEnemy(tower);
-
-	defList.clear();
+	
 	DefenderSpawn* d1 = new DefenderSpawn();
 	d1->Initialize();
 	d1->SetPos({ -40, 0, -90 });
@@ -325,7 +339,7 @@ void GamePlay::Initialize()
 		pointB = date.SecondPos;
 		HpKari = date.HP;
 		SpeedKari = date.SPEED;
-		SpawnPoint = date.SpawnSpot;
+		SpawnPoint = date.SpawnSpot;	
 		Wave1 = date.Wave1;
 		Wave2 = date.Wave2;
 		Wave3 = date.Wave3;
@@ -342,7 +356,7 @@ void GamePlay::Initialize()
 	backSphere->LoadObj("BackSphere");
 	backSphere->scale = { 1000, 1000, 1000 };
 	manager->SetSpeed(SpeedKari);
-	NowWAVE = wave1;
+	NowWAVE=wave1;
 
 	cost = new Cost();
 	cost->Initialize();
@@ -353,123 +367,9 @@ void GamePlay::Initialize()
 	sound->PlayRoop();
 	//テキスト初期化
 	text = Text::GetInstance();
-	text->Initialize(TextNumber);
+	text->Initialize(0);
 	nextback = Sprite::Create(5, { 0.0f,250.0f });
 	nextback->SetSize(XMFLOAT2(350, 50));
-}
-
-void GamePlay::Initialize2()
-{
-	endFlag = false;
-	overFlag = false;
-	clearFlag = false;
-	Sprite::LoadTexture(3, L"img/GameClear.png");
-	Sprite::LoadTexture(4, L"img/GameOver.png");
-	Sprite::LoadTexture(6, L"img/costback.png");
-
-	//クリア画像読込,読込済みの3番
-	clear = Sprite::Create(3, { 0.0f, 0.0f });
-	clear->SetSize({ static_cast<float>(Camera::window_width),static_cast<float>(Camera::window_height) });
-	//ゲームオーバー画像読込,込済みの4番
-	over = Sprite::Create(4, { 0.0f, 0.0f });
-
-	over->SetSize({ static_cast<float>(Camera::window_width),static_cast<float>(Camera::window_height) });
-	////	over->SetPosition(XMFLOAT2{ static_cast<float>(Camera::window_width) / 2, static_cast<float>(Camera::window_height) / 2 });
-	////	over->SetSize(XMFLOAT2{ 1 * (static_cast<float>(Camera::window_width) / static_cast<float>(Camera::window_height)),1 });
-	nextback = Sprite::Create(6, { 0.0f,250.0f });
-	//tower = new Tower();
-	tower->Initialize2();
-	tower->SetPoisition({ 130,0,180 });
-	manager->Initialize();
-	sound->Initialize();
-	stage->Initialize();
-	spawn = new Spawn();
-	spawn->Initialize(DirectXDevice::dev);
-	//Set = &SetAd;
-	spawn->SetSpawn(10, 10);
-	spawn->SetPoisition(SpawnPoint);
-	manager->Add2(spawn->GetPosition());
-	timer = 0;
-	manager->SetTowerEnemy(tower);
-
-	defList.clear();
-	DefenderSpawn* d1 = new DefenderSpawn();
-	d1->Initialize();
-	d1->SetPos({ -40, 0, -90 });
-	defList.push_back(d1);
-
-	DefenderSpawn* d2 = new DefenderSpawn();
-	d2->Initialize();
-	d2->SetPos({ -70, 0, -190 });
-	defList.push_back(d2);
-
-	DefenderSpawn* d3 = new DefenderSpawn();
-	d3->Initialize();
-	d3->SetPos({ 50, 0, -110 });
-	defList.push_back(d3);
-
-	DefenderSpawn* d4 = new DefenderSpawn();
-	d4->Initialize();
-	d4->SetPos({ -20, 0, 30 });
-	defList.push_back(d4);
-
-	DefenderSpawn* d5 = new DefenderSpawn();
-	d5->Initialize();
-	d5->SetPos({ 70, 0, 60 });
-	defList.push_back(d5);
-
-	DefenderSpawn* d6 = new DefenderSpawn();
-	d6->Initialize();
-	d6->SetPos({ 170, 0, 110 });
-	defList.push_back(d6);
-
-	DefenderSpawn* d7 = new DefenderSpawn();
-	d7->Initialize();
-	d7->SetPos({ 170, 0, 25 });
-	defList.push_back(d7);
-
-	//sound->LoadFile(L".\\Resources\\TDBGM2.mp3");
-	//sound->LoadFile(L".\\Resources\\TDBGM3.mp3");
-	//input->Initialize();
-	//vector<DATA>DateTable = LoadData("Data/Enemy.csv");
-	//for (auto date : DateTable)
-	//{
-	//	pointA = date.FirstPos;
-	//	pointB = date.SecondPos;
-	//	HpKari = date.HP;
-	//	SpeedKari = date.SPEED;
-	//	SpawnPoint = date.SpawnSpot;
-	//	Wave1 = date.Wave1;
-	//	Wave2 = date.Wave2;
-	//	Wave3 = date.Wave3;
-	//	Wave2At = date.Wave2Attack;
-	//	Wave2Hp = date.Wave2Hp;
-	//	Wave2Sp = date.Wave2Speed;
-	//	Wave3At = date.Wave3Attack;
-	//	Wave3Hp = date.Wave3Hp;
-	//	Wave3Sp = date.Wave3Speed;
-	//}
-	////背景
-	//backSphere = new ObjFile();
-	//backSphere->Initialize();
-	//backSphere->LoadObj("BackSphere");
-	//backSphere->scale = { 1000, 1000, 1000 };
-	//manager->SetSpeed(SpeedKari);
-	//NowWAVE = wave1;
-
-	//cost = new Cost();
-	//cost->Initialize();
-
-	//button = new Button();
-	//button->Initialize();
-
-	//sound->PlayRoop();
-	////テキスト初期化
-	//text = Text::GetInstance();
-	//text->Initialize(TextNumber);
-	//nextback = Sprite::Create(5, { 0.0f,250.0f });
-	//nextback->SetSize(XMFLOAT2(350, 50));
-
 }
 
 void GamePlay::CollisionUpdate()
