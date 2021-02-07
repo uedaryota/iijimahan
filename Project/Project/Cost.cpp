@@ -53,7 +53,6 @@ void Cost::Draw()
 	{
 		text->Print("COST" + to_string(cost) + " / " + to_string(maxcost), 10, 0, 3);
 	}
-	text->DrawAll(DirectXDevice::cmdList);
 	redtext->DrawAll(DirectXDevice::cmdList);
 	Sprite::PostDraw();
 }
