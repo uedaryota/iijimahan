@@ -157,6 +157,11 @@ public: // メンバ関数
 	void SetIsFlipY(bool isFlipY);
 
 	/// <summary>
+	/// 色の設定
+	/// </summary>
+	void SetColor(XMFLOAT4 color);
+
+	/// <summary>
 	/// テクスチャ範囲設定
 	/// </summary>
 	/// <param name="texBase">テクスチャ左上座標</param>

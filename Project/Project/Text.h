@@ -4,6 +4,8 @@
 #include <Windows.h>
 #include <string>
 
+using namespace DirectX;
+
 /// <summary>
 /// デバッグ用文字表示
 /// </summary>
@@ -37,6 +39,8 @@ public:// メンバ関数
 
 	void DrawAll(ID3D12GraphicsCommandList * cmdList);
 
+	inline void SetColor(XMFLOAT4 color) { this->color = color; }
+
 private:
 	Text();
 	Text(const Text&) = delete;
@@ -52,6 +56,8 @@ private:
 	float posX = 0.0f;
 	float posY = 0.0f;
 	float size = 1.0f;
+
+	XMFLOAT4 color = XMFLOAT4(1, 1, 1, 1);
 
 	char buffer[bufferSize];
 };

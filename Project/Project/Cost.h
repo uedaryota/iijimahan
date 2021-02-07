@@ -60,5 +60,7 @@ public:
 	int costUpTime = 30;//コスト増加間隔
 	int time = 0;//時間測定用
 	int cost = 0;//ガジェット設置用コスト
+	bool costflag;
+	bool costtrig;
 };
 

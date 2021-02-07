@@ -12,8 +12,12 @@ public:
 
 private:
 
-	int ButtonCount = 7;
+	int ButtonCount = 6;
 
 	ObjFile* buttons[7];
+	ObjFile* black_buttons[7];
+
+public:
+	bool costflag;
 };
 
