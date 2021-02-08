@@ -102,8 +102,8 @@ private:
 
 	static ID3D12PipelineState* pipelinestate;
 	static ID3D12RootSignature* rootsignature;
-	ID3D12DescriptorHeap* mainDescHeap;
-	ID3D12DescriptorHeap* materialDescHeap;
+	ID3D12DescriptorHeap* mainDescHeap = nullptr;
+	ID3D12DescriptorHeap* materialDescHeap = nullptr;
 
 //	ID3D12DescriptorHeap* subDescHeap;
 	std::vector<Vertex>vertices;

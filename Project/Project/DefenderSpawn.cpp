@@ -12,9 +12,9 @@ DefenderSpawn::~DefenderSpawn()
 
 void DefenderSpawn::Update()
 {
-	obj->SetPos(position);
+	//obj->SetPos(position);
 	obj->Update();
-	obj2->SetPos(position);
+	//obj2->SetPos(position);
 	obj2->Update();
 	col->Update();
 	if (battery != nullptr)
@@ -88,9 +88,14 @@ void DefenderSpawn::SetPos(XMFLOAT3 pos)
 {
 	position = pos;
 	obj->SetPos(position);
-	obj->position.y += 10;
-	obj2->SetPos(position);
-	obj2->position.y += 10;
+	obj->position.x += 3;
+	obj->position.z += 20;
+
+	//obj->position.y += 10;
+	obj2->SetPos(obj->position);
+	//obj2->position.y += 10;
+	obj2->position.x -= 39;
+	obj2->position.z += 16;
 
 	col->position = position;
 	battery->SetPos(position);

@@ -20,8 +20,8 @@ public:
 	XMFLOAT3 scale{};
 	//“®‚¢‚Ä‚¢‚é‚©
 	bool liveFlag;
-	ObjFile* obj;
-	CircleCollision* col;
+	ObjFile* obj = new ObjFile();;
+	CircleCollision* col = new CircleCollision();
 	
 	XMFLOAT3* targetPos = nullptr;
 	float speed=3;

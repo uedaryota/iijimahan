@@ -222,6 +222,7 @@ void GamePlay::Update()
 				if (EneNow == manager->CountDeath() - 1)
 				{
 					NowWAVE = wave0;
+					clearFlag = true;
 				}
 			}
 			break;
@@ -342,7 +343,7 @@ void GamePlay::Initialize()
 	manager->Initialize();
 	sound->Initialize();
 	stage->Initialize();
-	spawn = new Spawn();
+	//spawn = new Spawn();
 	spawn->Initialize(DirectXDevice::dev);
 	//Set = &SetAd;
 	spawn->SetSpawn(10, 10);
@@ -359,32 +360,32 @@ void GamePlay::Initialize()
 
 		DefenderSpawn* d2 = new DefenderSpawn();
 		d2->Initialize();
-		d2->SetPos({ -70, 0, -190 });
+		d2->SetPos({ -70, 0, -185 });
 		defList.push_back(d2);
 
 		DefenderSpawn* d3 = new DefenderSpawn();
 		d3->Initialize();
-		d3->SetPos({ 50, 0, -110 });
+		d3->SetPos({ 54, 0, -105 });
 		defList.push_back(d3);
 
 		DefenderSpawn* d4 = new DefenderSpawn();
 		d4->Initialize();
-		d4->SetPos({ -20, 0, 30 });
+		d4->SetPos({ -17, 0, 30 });
 		defList.push_back(d4);
 
 		DefenderSpawn* d5 = new DefenderSpawn();
 		d5->Initialize();
-		d5->SetPos({ 70, 0, 60 });
+		d5->SetPos({ 73, 0, 63 });
 		defList.push_back(d5);
 
 		DefenderSpawn* d6 = new DefenderSpawn();
 		d6->Initialize();
-		d6->SetPos({ 170, 0, 110 });
+		d6->SetPos({ 165, 0, 110 });
 		defList.push_back(d6);
 
 		DefenderSpawn* d7 = new DefenderSpawn();
 		d7->Initialize();
-		d7->SetPos({ 170, 0, 25 });
+		d7->SetPos({ 168, 0, 25 });
 		defList.push_back(d7);
 
 	}
@@ -443,6 +444,145 @@ void GamePlay::Initialize()
 	text->Initialize(0);
 	nextback = Sprite::Create(5, { 0.0f,250.0f });
 	nextback->SetSize(XMFLOAT2(350, 50));
+}
+
+void GamePlay::Initialize2()
+{
+	overFlag = false;
+	clearFlag = false;
+	endFlag = false;
+
+	Sprite::LoadTexture(3, L"img/GameClear.png");
+	Sprite::LoadTexture(4, L"img/GameOver.png");
+	Sprite::LoadTexture(6, L"img/costback.png");
+	Sprite::LoadTexture(8, L"img/ClickUI.png");
+	Sprite::LoadTexture(9, L"img/ArrowkeyUI.png");
+
+	//クリア画像読込,読込済みの3番
+	clear = Sprite::Create(3, { 0.0f, 0.0f });
+	clear->SetSize({ static_cast<float>(Camera::window_width),static_cast<float>(Camera::window_height) });
+	//	clear->SetPosition(XMFLOAT2{ static_cast<float>(Camera::window_width) / 2, static_cast<float>(Camera::window_height) / 2 });
+	//	clear->SetSize(XMFLOAT2{ 1 * (static_cast<float>(Camera::window_width) / static_cast<float>(Camera::window_height)),1 });
+		//ゲームオーバー画像読込,込済みの4番
+	over = Sprite::Create(4, { 0.0f, 0.0f });
+
+	over->SetSize({ static_cast<float>(Camera::window_width),static_cast<float>(Camera::window_height) });
+		over->SetPosition(XMFLOAT2{ static_cast<float>(Camera::window_width) / 2, static_cast<float>(Camera::window_height) / 2 });
+		over->SetSize(XMFLOAT2{ 1 * (static_cast<float>(Camera::window_width) / static_cast<float>(Camera::window_height)),1 });
+	nextback = Sprite::Create(6, { 0.0f,10.0f });
+
+	ClickUI = Sprite::Create(8, { -10.0f, -50.0f });
+	ClickUI->SetSize(XMFLOAT2(300, 300));
+
+	ArrowkeyUI = Sprite::Create(9, { 0.0f, 20.0f });
+	ArrowkeyUI->SetSize(XMFLOAT2(300, 300));
+
+	tower->Initialize2();
+	tower->SetPoisition({ 130,0,180 });
+//	manager->Initialize();
+//	sound->Initialize();
+//	stage->Initialize();
+//	spawn = new Spawn();
+//	spawn->Initialize(DirectXDevice::dev);
+//	//Set = &SetAd;
+//	spawn->SetSpawn(10, 10);
+//	spawn->SetPoisition(SpawnPoint);
+//	manager->Add2(spawn->GetPosition());
+//	timer = 0;
+//	manager->SetTowerEnemy(tower);
+//	if (defList.size() == 0)
+//	{
+//		DefenderSpawn* d1 = new DefenderSpawn();
+//		d1->Initialize();
+//		d1->SetPos({ -40, 0, -90 });
+//		defList.push_back(d1);
+//
+//		DefenderSpawn* d2 = new DefenderSpawn();
+//		d2->Initialize();
+//		d2->SetPos({ -70, 0, -190 });
+//		defList.push_back(d2);
+//
+//		DefenderSpawn* d3 = new DefenderSpawn();
+//		d3->Initialize();
+//		d3->SetPos({ 50, 0, -110 });
+//		defList.push_back(d3);
+//
+//		DefenderSpawn* d4 = new DefenderSpawn();
+//		d4->Initialize();
+//		d4->SetPos({ -20, 0, 30 });
+//		defList.push_back(d4);
+//
+//		DefenderSpawn* d5 = new DefenderSpawn();
+//		d5->Initialize();
+//		d5->SetPos({ 70, 0, 60 });
+//		defList.push_back(d5);
+//
+//		DefenderSpawn* d6 = new DefenderSpawn();
+//		d6->Initialize();
+//		d6->SetPos({ 170, 0, 110 });
+//		defList.push_back(d6);
+//
+//		DefenderSpawn* d7 = new DefenderSpawn();
+//		d7->Initialize();
+//		d7->SetPos({ 170, 0, 25 });
+//		defList.push_back(d7);
+//
+//	}
+//	else
+//	{
+//		for (auto d : defList)
+//		{
+//			d->Initialize();
+//		}
+//	}
+//	sound->LoadFile(L".\\Resources\\TDBGM2.mp3");
+//	sound->LoadFile(L".\\Resources\\TDBGM3.mp3");
+//	input->Initialize();
+//	vector<DATA>DateTable = LoadData("Data/Enemy.csv");
+//	for (auto date : DateTable)
+//	{
+//		pointA = date.FirstPos;
+//		pointB = date.SecondPos;
+//		HpKari = date.HP;
+//		SpeedKari = date.SPEED;
+//		SpawnPoint = date.SpawnSpot;
+//		Wave1 = date.Wave1;
+//		Wave2 = date.Wave2;
+//		Wave3 = date.Wave3;
+//		Wave4 = date.Wave4;
+//		Wave2At = date.Wave2Attack;
+//		Wave2Hp = date.Wave2Hp;
+//		Wave2Sp = date.Wave2Speed;
+//		Wave3At = date.Wave3Attack;
+//		Wave3Hp = date.Wave3Hp;
+//		Wave3Sp = date.Wave3Speed;
+//		Wave4At = date.Wave4Attack;
+//		Wave4Hp = date.Wave4Hp;
+//		Wave4Sp = date.Wave4Speed;
+//		BossAt = date.BossAttack;
+//		BossHp = date.BossHp;
+//		BossSp = date.BossSpeed;
+//	}
+//	//背景
+////	backSphere = new ObjFile();
+//	backSphere->Initialize();
+//	backSphere->LoadObj("BackSphere");
+//	backSphere->scale = { 1000, 1000, 1000 };
+//	manager->SetSpeed(SpeedKari);
+//	NowWAVE = wave1;
+//
+//
+//	cost->Initialize();
+//
+//	/*button = new Button();
+//	button->Initialize();*/
+//
+//	sound->PlayRoop();
+//	//テキスト初期化
+//	text = Text::GetInstance();
+//	text->Initialize(0);
+//	nextback = Sprite::Create(5, { 0.0f,250.0f });
+//	nextback->SetSize(XMFLOAT2(350, 50));
 }
 
 void GamePlay::CollisionUpdate()

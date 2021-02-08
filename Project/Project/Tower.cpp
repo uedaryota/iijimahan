@@ -55,12 +55,12 @@ void Tower::Initialize2()
 
 	text = Text::GetInstance();
 	text->Initialize(0);
-	obj = new ObjFile();
+
 	obj->Initialize();
 	obj->LoadObj("Tower");
 	obj->position.y = 10;
 	obj->SetScale({ 30,30,30 });
-	//particle = new ParticleManager();
+
 	particle->Initialize();
 	sound->Initialize();
 	sound->LoadFile(L".\\Resources\\explode.mp3");

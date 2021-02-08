@@ -506,8 +506,8 @@ void CircleCollision::SetVert()
 		vertBuff->Unmap(0, nullptr);
 		vbView = {};
 		vbView.BufferLocation = vertBuff->GetGPUVirtualAddress();
-		vbView.SizeInBytes = sizeof(vertices);
-		vbView.StrideInBytes = sizeof(vertices[0]);
+		vbView.SizeInBytes = sizeof(Vertex) * sizeof(vertices);
+		vbView.StrideInBytes = sizeof(Vertex);
 
 
 

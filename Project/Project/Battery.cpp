@@ -93,7 +93,7 @@ void Battery::Initialize()
 	clickcol->color = { 1,0,0,0.5 };
 	//cloickcol->color={}
 	SetScale({ 10,10,10 });
-	int bulletCount = 5;
+	int bulletCount = 3;
 	if (bulletList.size() == 0)
 	{
 		for (int a = 0; a < bulletCount; a++)
