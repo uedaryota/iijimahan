@@ -83,9 +83,9 @@ void DirectXDevice::Initialize()
 	//objdata.LoadObj("triangle");
 	objdata->LoadObj("Enemy_Base");
 	gameplay = new GamePlay();
-//	gameplay->Initialize();
+	gameplay->Initialize();
 	title = new Title();
-//	title->Initialize();
+	title->Initialize();
 
 }
 	
@@ -132,7 +132,7 @@ void DirectXDevice::Update()
 	{
 		if (titlescene)
 		{
-			title->Initialize();
+			//title->Initialize();
 			titlescene = false;
 			gameplayscene = true;
 			if (!gameplay->sound->Nullcheck())
@@ -148,7 +148,7 @@ void DirectXDevice::Update()
 	{
 		if (gameplayscene)
 		{
-			gameplay->Initialize();
+			
 			//gameplay->Initialize();
 
 			gameplayscene = false;

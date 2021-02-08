@@ -206,7 +206,7 @@ void ObjDate::LoadObj(const std::string name)
 	// 頂点バッファビューの作成
 	send.vbView.BufferLocation = send.vertBuff->GetGPUVirtualAddress();
 	send.vbView.SizeInBytes = sizeVB;
-	send.vbView.StrideInBytes = sizeof(send.vertices[0]);
+	send.vbView.StrideInBytes = sizeof(ObjFile::Vertex);
 
 	// インデックスバッファビューの作成
 	

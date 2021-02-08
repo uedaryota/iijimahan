@@ -12,6 +12,10 @@ DefenderSpawn::~DefenderSpawn()
 
 void DefenderSpawn::Update()
 {
+	obj->SetPos(position);
+	obj->Update();
+	obj2->SetPos(position);
+	obj2->Update();
 	col->Update();
 	if (battery != nullptr)
 	{
@@ -21,26 +25,40 @@ void DefenderSpawn::Update()
 
 void DefenderSpawn::Draw()
 {
-	col->Draw();
+
+//	col->Draw();
 	if (battery != nullptr)
 	{
 		battery->Draw();
+	}
+
+
+	if (possibleSet)
+	{
+		obj->Draw();
+	}
+	else
+	{
+		obj2->Draw();
 	}
 }
 
 void DefenderSpawn::Initialize()
 {
-	//obj = new ObjFile();
-	
-	col = new CircleCollision();
+	obj->Initialize();
+	obj->LoadObj("Button");
+	obj->SetScale(XMFLOAT3(8, 8, 8));
+
+	obj2->Initialize();
+	obj2->LoadObj("Button_Black");
+	obj2->SetScale(XMFLOAT3(8, 8, 8));
+
+	//col = new CircleCollision();
 	col->Initialize();
 	col->scale = 10;
 	col->color = { 1,0,0,1 };
 	costFlag = false;
-	if (battery == nullptr)
-	{
-		battery = new Battery();
-	}
+	possibleSet = false;
 	battery->Initialize();
 	
 }
@@ -69,6 +87,11 @@ void DefenderSpawn::StopCreate()
 void DefenderSpawn::SetPos(XMFLOAT3 pos)
 {
 	position = pos;
+	obj->SetPos(position);
+	obj->position.y += 10;
+	obj2->SetPos(position);
+	obj2->position.y += 10;
+
 	col->position = position;
 	battery->SetPos(position);
 	//col->position.y += col->scale / 2;

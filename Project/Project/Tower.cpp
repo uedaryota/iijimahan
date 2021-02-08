@@ -28,15 +28,11 @@ void Tower::Initialize(ID3D12Device* dev)
 	text = Text::GetInstance();
 	text->Initialize(0);
 
-	obj = new ObjFile();
 	obj->Initialize();
 	obj->LoadObj("Tower");
 	obj->position.y = 10;
 	obj->SetScale({ 30,30,30 });
-	if (particle == nullptr)
-	{
-		particle = new ParticleManager();
-	}
+	
 	particle->Initialize();
 	sound->Initialize();
 	sound->LoadFile(L".\\Resources\\explode.mp3");

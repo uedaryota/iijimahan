@@ -9,7 +9,10 @@
 #include"ObjDate.h"
 
 Light* ObjFile::light = nullptr;
+ID3D12Device* ObjFile::dev;
 
+ID3D12PipelineState* ObjFile::pipelinestate = nullptr;
+ID3D12RootSignature* ObjFile::rootsignature = nullptr;
 ObjFile::ObjFile()
 {
 	
@@ -55,11 +58,17 @@ ObjFile::~ObjFile()
 
 void ObjFile::Initialize()
 {
-	
-	this->dev = DirectXDevice::dev;
-	CreateMainHeap();
 
-	CreatePipeline();
+	if (dev == nullptr)
+	{
+		this->dev = DirectXDevice::dev;
+	}
+	CreateMainHeap();
+	if (pipelinestate == nullptr&&rootsignature == nullptr)
+	{
+		CreatePipeline();
+	}
+	
 }
 
 void ObjFile::Update()
@@ -136,13 +145,13 @@ void ObjFile::Draw()
 	DirectXDevice::cmdList->SetDescriptorHeaps(1, &mainDescHeap);
 	//	cmdList->SetGraphicsRootDescriptorTable(0, GsrvHandle);
 	DirectXDevice::cmdList->SetGraphicsRootDescriptorTable(1, GcbvHandle0);
-	//light->Draw(DirectXDevice::cmdList, 3);
 
 	DirectXDevice::cmdList->SetDescriptorHeaps(1, &materialDescHeap);
 	//cmdList->SetGraphicsRootDescriptorTable(2, GmaterialHandles[0]);
 	//cmdList->DrawInstanced((UINT)vertices.size(), 1, 0, 0);
 
 	//ライトの描画
+    light->Draw(DirectXDevice::cmdList, 3);
 
 
 	UINT start = 0;
@@ -445,53 +454,56 @@ void ObjFile::SetScale(XMFLOAT3 scale)
 
 void ObjFile::LoadObj(std::string name)
 {
+	if (constBuffB0 == nullptr)
+	{
+		matWorld.r[0].m128_f32[0] = 2.0f / Camera::window_width;
+		matWorld.r[1].m128_f32[1] = -2.0f / Camera::window_height;
+		matWorld.r[3].m128_f32[0] = -1.0f;
+		matWorld.r[3].m128_f32[1] = 1.0f;
 
-	matWorld.r[0].m128_f32[0] = 2.0f / Camera::window_width;
-	matWorld.r[1].m128_f32[1] = -2.0f / Camera::window_height;
-	matWorld.r[3].m128_f32[0] = -1.0f;
-	matWorld.r[3].m128_f32[1] = 1.0f;
-
-	matScale = XMMatrixScaling(scale.x, scale.y, scale.z);
-	matRot = XMMatrixIdentity();
-	matRot *= XMMatrixRotationX(rotation.x);
-	matRot *= XMMatrixRotationY(rotation.y);
-	matRot *= XMMatrixRotationZ(rotation.z);
-	matTrans = XMMatrixTranslation(position.x, position.y, position.z);
-	matWorld = XMMatrixIdentity();
-	matWorld.r[0].m128_f32[0] = 2.0f / Camera::window_width;
-	matWorld.r[1].m128_f32[1] = -2.0f / Camera::window_height;
-	matWorld.r[3].m128_f32[0] = -1.0f;
-	matWorld.r[3].m128_f32[1] = 1.0f;
-	matWorld *= matScale;
-	matWorld *= matRot;
-	matWorld *= matTrans;
+		matScale = XMMatrixScaling(scale.x, scale.y, scale.z);
+		matRot = XMMatrixIdentity();
+		matRot *= XMMatrixRotationX(rotation.x);
+		matRot *= XMMatrixRotationY(rotation.y);
+		matRot *= XMMatrixRotationZ(rotation.z);
+		matTrans = XMMatrixTranslation(position.x, position.y, position.z);
+		matWorld = XMMatrixIdentity();
+		matWorld.r[0].m128_f32[0] = 2.0f / Camera::window_width;
+		matWorld.r[1].m128_f32[1] = -2.0f / Camera::window_height;
+		matWorld.r[3].m128_f32[0] = -1.0f;
+		matWorld.r[3].m128_f32[1] = 1.0f;
+		matWorld *= matScale;
+		matWorld *= matRot;
+		matWorld *= matTrans;
 
 
-	HRESULT result = dev->CreateCommittedResource(
-		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-		D3D12_HEAP_FLAG_NONE,
-		&CD3DX12_RESOURCE_DESC::Buffer((sizeof(ConstBufferDataB0) + 0xff)&~0xff),
-		D3D12_RESOURCE_STATE_GENERIC_READ,
-		nullptr,
-		IID_PPV_ARGS(&constBuffB0)
-	);
+		HRESULT result = dev->CreateCommittedResource(
+			&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+			D3D12_HEAP_FLAG_NONE,
+			&CD3DX12_RESOURCE_DESC::Buffer((sizeof(ConstBufferDataB0) + 0xff)&~0xff),
+			D3D12_RESOURCE_STATE_GENERIC_READ,
+			nullptr,
+			IID_PPV_ARGS(&constBuffB0)
+		);
 
-	//定数バッファビュー生成
+		//定数バッファビュー生成
 
-	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc0 = {};
-	cbvDesc0.BufferLocation = constBuffB0->GetGPUVirtualAddress();
-	cbvDesc0.SizeInBytes = constBuffB0->GetDesc().Width;
-	dev->CreateConstantBufferView(&cbvDesc0, CcbvHandle0);
+		D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc0 = {};
+		cbvDesc0.BufferLocation = constBuffB0->GetGPUVirtualAddress();
+		cbvDesc0.SizeInBytes = constBuffB0->GetDesc().Width;
+		dev->CreateConstantBufferView(&cbvDesc0, CcbvHandle0);
 
-	constMap0 = nullptr;
-	result = constBuffB0->Map(0, nullptr, (void**)&constMap0);
+		constMap0 = nullptr;
+		result = constBuffB0->Map(0, nullptr, (void**)&constMap0);
 
-	constMap0->world = matWorld;
-	constMap0->viewproj = Camera::ReturnCameraState()->matView * Camera::ReturnCameraState()->matProjection;
+		constMap0->world = matWorld;
+		constMap0->viewproj = Camera::ReturnCameraState()->matView * Camera::ReturnCameraState()->matProjection;
 
-	constBuffB0->Unmap(0, nullptr);
+		constBuffB0->Unmap(0, nullptr);
 
-	SetObjData(name);
+		SetObjData(name);
+	}
+	
 
 }
 //void ObjFile::LoadObj(std::string name)

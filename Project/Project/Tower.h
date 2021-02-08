@@ -35,7 +35,7 @@ private:
 	Sprite* sprite = nullptr;
 	Sprite* sprite2 = nullptr;
 	Text* text = nullptr;
-	ParticleManager* particle = nullptr;
+	ParticleManager* particle = new ParticleManager();
 	Sound* sound = new Sound();
 };
 

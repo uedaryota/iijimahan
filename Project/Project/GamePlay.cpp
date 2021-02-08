@@ -39,13 +39,13 @@ EnemyManeger* manager = new EnemyManeger();
 Input* input = new Input();
 //vector<Battery*> batL;
 vector<DefenderSpawn*> defList;
-ObjFile* backSphere;
+ObjFile* backSphere = new ObjFile();
 Sprite* over;
 Sprite* clear;
 Collision* collider = new Collision();
-Spawn* spawn;
+Spawn* spawn = new Spawn();
 Cost* cost = new Cost();
-Button* button;
+//Button* button;
 float timer = 0;
 float spawntime = 10;
 int EneMax = 99;
@@ -237,11 +237,19 @@ void GamePlay::Update()
 		}
 		if (cost->cost >= 20)
 		{
-			button->costflag = true;
+			for (auto d : defList)
+			{
+				d->possibleSet = true;
+			}
+			//button->costflag = true;
 		}
 		else
 		{
-			button->costflag = false;
+			for (auto d : defList)
+			{
+				d->possibleSet = false;
+			}
+			//button->costflag = false;
 		}
 
 		cost->Update();
@@ -249,7 +257,7 @@ void GamePlay::Update()
 		//backSphere->SetPos({ 500,500,500 });
 		
 		CostUpdate();
-		button->Update();
+		//button->Update();
 		CollisionUpdate();
 		EndFlagCheck();
 	}
@@ -271,7 +279,7 @@ void GamePlay::Draw()
 		defList[a]->Draw();
 	}
 	cost->Draw();
-	button->Draw();
+	//button->Draw();
 	backSphere->Draw(DirectXDevice::cmdList);
 
 	cost->Draw();
@@ -342,42 +350,51 @@ void GamePlay::Initialize()
 	manager->Add2(spawn->GetPosition());
 	timer = 0;
 	manager->SetTowerEnemy(tower);
-	
-	DefenderSpawn* d1 = new DefenderSpawn();
-	d1->Initialize();
-	d1->SetPos({ -40, 0, -90 });
-	defList.push_back(d1);
+	if (defList.size() == 0)
+	{
+		DefenderSpawn* d1 = new DefenderSpawn();
+		d1->Initialize();
+		d1->SetPos({ -40, 0, -90 });
+		defList.push_back(d1);
 
-	DefenderSpawn* d2 = new DefenderSpawn();
-	d2->Initialize();
-	d2->SetPos({ -70, 0, -190 });
-	defList.push_back(d2);
+		DefenderSpawn* d2 = new DefenderSpawn();
+		d2->Initialize();
+		d2->SetPos({ -70, 0, -190 });
+		defList.push_back(d2);
 
-	DefenderSpawn* d3 = new DefenderSpawn();
-	d3->Initialize();
-	d3->SetPos({ 50, 0, -110 });
-	defList.push_back(d3);
+		DefenderSpawn* d3 = new DefenderSpawn();
+		d3->Initialize();
+		d3->SetPos({ 50, 0, -110 });
+		defList.push_back(d3);
 
-	DefenderSpawn* d4 = new DefenderSpawn();
-	d4->Initialize();
-	d4->SetPos({ -20, 0, 30 });
-	defList.push_back(d4);
+		DefenderSpawn* d4 = new DefenderSpawn();
+		d4->Initialize();
+		d4->SetPos({ -20, 0, 30 });
+		defList.push_back(d4);
 
-	DefenderSpawn* d5 = new DefenderSpawn();
-	d5->Initialize();
-	d5->SetPos({ 70, 0, 60 });
-	defList.push_back(d5);
+		DefenderSpawn* d5 = new DefenderSpawn();
+		d5->Initialize();
+		d5->SetPos({ 70, 0, 60 });
+		defList.push_back(d5);
 
-	DefenderSpawn* d6 = new DefenderSpawn();
-	d6->Initialize();
-	d6->SetPos({ 170, 0, 110 });
-	defList.push_back(d6);
+		DefenderSpawn* d6 = new DefenderSpawn();
+		d6->Initialize();
+		d6->SetPos({ 170, 0, 110 });
+		defList.push_back(d6);
 
-	DefenderSpawn* d7 = new DefenderSpawn();
-	d7->Initialize();
-	d7->SetPos({ 170, 0, 25 });
-	defList.push_back(d7);
+		DefenderSpawn* d7 = new DefenderSpawn();
+		d7->Initialize();
+		d7->SetPos({ 170, 0, 25 });
+		defList.push_back(d7);
 
+	}
+	else
+	{
+		for (auto d : defList)
+		{
+			d->Initialize();
+		}
+	}
 	sound->LoadFile(L".\\Resources\\TDBGM2.mp3");
 	sound->LoadFile(L".\\Resources\\TDBGM3.mp3");
 	input->Initialize();
@@ -407,18 +424,18 @@ void GamePlay::Initialize()
 		BossSp = date.BossSpeed;
 	}
 	//背景
-	backSphere = new ObjFile();
+//	backSphere = new ObjFile();
 	backSphere->Initialize();
 	backSphere->LoadObj("BackSphere");
 	backSphere->scale = { 1000, 1000, 1000 };
 	manager->SetSpeed(SpeedKari);
 	NowWAVE=wave1;
 
-	cost = new Cost();
+	
 	cost->Initialize();
 
-	button = new Button();
-	button->Initialize();
+	/*button = new Button();
+	button->Initialize();*/
 
 	sound->PlayRoop();
 	//テキスト初期化

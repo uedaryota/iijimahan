@@ -14,14 +14,15 @@ public:
 
 private:
 	void CameraMove();
-	Input* input;
+	Input* input = new Input();
 	//ステージ本体
-	Floor* floor;
+	Floor* floor = new Floor();
 	//背景に続く床
-	Floor* floor2;
+	Floor* floor2 = new Floor();
 
 	int rockcount = 24;
 
 	ObjFile* rocks[24];
+	bool initializeFlag = false;
 };
 

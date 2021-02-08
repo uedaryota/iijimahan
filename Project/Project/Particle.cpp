@@ -224,74 +224,68 @@ void Particle::CreateMainHeap()
 {
 
 	HRESULT result;
-	if (texBuff == nullptr);
+	if (mainDescHeap == nullptr);
 	{
-
-	}
-	TexMetadata metadate = {};
-	ScratchImage scratchImg = {};
-	result = LoadFromWICFile(
-		L"img/Particle3.png",
-		WIC_FLAGS_NONE,
-		&metadate,
-		scratchImg
-	);
-
-	const Image* img = scratchImg.GetImage(0, 0, 0);
-
-
-	D3D12_HEAP_PROPERTIES texheapprop = {};
-	texheapprop.Type = D3D12_HEAP_TYPE_CUSTOM;
-	texheapprop.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_WRITE_BACK;
-	texheapprop.MemoryPoolPreference = D3D12_MEMORY_POOL_L0;
-	texheapprop.CreationNodeMask = 0;
-	texheapprop.VisibleNodeMask = 0;
-
-	D3D12_RESOURCE_DESC texresdes = {};
-
-	texresdes.Format = metadate.format;
-	texresdes.Width = img->width;
-	texresdes.Height = img->height;
-	texresdes.DepthOrArraySize = metadate.arraySize;
-	texresdes.SampleDesc.Count = 1;
-	texresdes.SampleDesc.Quality = 0;
-	texresdes.MipLevels = metadate.mipLevels;
-	texresdes.Dimension = static_cast<D3D12_RESOURCE_DIMENSION>(metadate.dimension);
-	texresdes.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
-	texresdes.Flags = D3D12_RESOURCE_FLAG_NONE;
-
-	if (texBuff == nullptr)
-	{
-		result = DirectXDevice::dev->CreateCommittedResource(
-			&texheapprop,
-			D3D12_HEAP_FLAG_NONE,
-			&texresdes,
-			D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
-			nullptr,
-			IID_PPV_ARGS(&texBuff));
-
-		result = texBuff->WriteToSubresource(
-			0,
-			nullptr,
-			img->pixels,
-			img->rowPitch,
-			img->slicePitch
+		TexMetadata metadate = {};
+		ScratchImage scratchImg = {};
+		result = LoadFromWICFile(
+			L"img/Particle3.png",
+			WIC_FLAGS_NONE,
+			&metadate,
+			scratchImg
 		);
-	}
+
+		const Image* img = scratchImg.GetImage(0, 0, 0);
+
+
+		D3D12_HEAP_PROPERTIES texheapprop = {};
+		texheapprop.Type = D3D12_HEAP_TYPE_CUSTOM;
+		texheapprop.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_WRITE_BACK;
+		texheapprop.MemoryPoolPreference = D3D12_MEMORY_POOL_L0;
+		texheapprop.CreationNodeMask = 0;
+		texheapprop.VisibleNodeMask = 0;
+
+		D3D12_RESOURCE_DESC texresdes = {};
+
+		texresdes.Format = metadate.format;
+		texresdes.Width = img->width;
+		texresdes.Height = img->height;
+		texresdes.DepthOrArraySize = metadate.arraySize;
+		texresdes.SampleDesc.Count = 1;
+		texresdes.SampleDesc.Quality = 0;
+		texresdes.MipLevels = metadate.mipLevels;
+		texresdes.Dimension = static_cast<D3D12_RESOURCE_DIMENSION>(metadate.dimension);
+		texresdes.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
+		texresdes.Flags = D3D12_RESOURCE_FLAG_NONE;
+
+		if (texBuff == nullptr)
+		{
+			result = DirectXDevice::dev->CreateCommittedResource(
+				&texheapprop,
+				D3D12_HEAP_FLAG_NONE,
+				&texresdes,
+				D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+				nullptr,
+				IID_PPV_ARGS(&texBuff));
+
+			result = texBuff->WriteToSubresource(
+				0,
+				nullptr,
+				img->pixels,
+				img->rowPitch,
+				img->slicePitch
+			);
+		}
 
 
 
 
-	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
-	srvDesc.Format = metadate.format;//resdesc‚Æ‡‚í‚¹‚é
-	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-	srvDesc.Texture2D.MipLevels = 1;
+		D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+		srvDesc.Format = metadate.format;//resdesc‚Æ‡‚í‚¹‚é
+		srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+		srvDesc.Texture2D.MipLevels = 1;
 
-
-
-	if (mainDescHeap == nullptr)
-	{
 		D3D12_DESCRIPTOR_HEAP_DESC descHeapDesc = {};
 
 		descHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
@@ -300,71 +294,60 @@ void Particle::CreateMainHeap()
 		descHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 
 		result = DirectXDevice::dev->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(&mainDescHeap));
+
+
+		D3D12_CPU_DESCRIPTOR_HANDLE HeapHandle = mainDescHeap->GetCPUDescriptorHandleForHeapStart();
+
+		DirectXDevice::dev->CreateShaderResourceView(
+			texBuff,
+			&srvDesc,
+			HeapHandle);
+
+		HeapHandle.ptr += DirectXDevice::dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+
+
+		matView = XMMatrixLookAtLH(
+			XMLoadFloat3(&Camera::MainCameraPos()), XMLoadFloat3(&Camera::Target()), XMLoadFloat3(&Camera::Up())
+		);
+
+		if (constBuff == nullptr)
+		{
+			result = DirectXDevice::dev->CreateCommittedResource(
+				&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+				D3D12_HEAP_FLAG_NONE,
+				&CD3DX12_RESOURCE_DESC::Buffer((sizeof(MatrocesDate) + 0xff)&~0xff),
+				D3D12_RESOURCE_STATE_GENERIC_READ,
+				nullptr,
+				IID_PPV_ARGS(&constBuff)
+			);
+
+			D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc = {};
+			cbvDesc.BufferLocation = constBuff->GetGPUVirtualAddress();
+			cbvDesc.SizeInBytes = constBuff->GetDesc().Width;
+			DirectXDevice::dev->CreateConstantBufferView(&cbvDesc, HeapHandle);
+			result = constBuff->Map(0, nullptr, (void**)&constMap);
+
+			//
+			matScale = XMMatrixScaling(scale.x, scale.y, scale.z);
+			matRot = XMMatrixIdentity();
+			matRot *= XMMatrixRotationX(rotation.x);
+			matRot *= XMMatrixRotationY(rotation.y);
+			matRot *= XMMatrixRotationZ(rotation.z);
+			matTrans = XMMatrixTranslation(position.x, position.y, position.z);
+			matWorld = XMMatrixIdentity();
+			matWorld *= matScale;
+			matWorld *= matRot;
+			matWorld *= matTrans;
+
+			color = { 1,1,1,1 };
+			constMap->world = matWorld;
+			constMap->viewproj = Camera::ReturnCameraState()->matView * Camera::ReturnCameraState()->matProjection;
+			constMap->color = color;
+
+			constBuff->Unmap(0, nullptr);
+		}
 	}
 	
-	else
-	{
-		mainDescHeap->Release();
-		D3D12_DESCRIPTOR_HEAP_DESC descHeapDesc = {};
-
-		descHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-		descHeapDesc.NodeMask = 0;
-		descHeapDesc.NumDescriptors = 2;
-		descHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-
-		result = DirectXDevice::dev->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(&mainDescHeap));
-	}
-
-	D3D12_CPU_DESCRIPTOR_HANDLE HeapHandle = mainDescHeap->GetCPUDescriptorHandleForHeapStart();
-
-	DirectXDevice::dev->CreateShaderResourceView(
-		texBuff,
-		&srvDesc,
-		HeapHandle);
-
-	HeapHandle.ptr += DirectXDevice::dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-
-
-	matView = XMMatrixLookAtLH(
-		XMLoadFloat3(&Camera::MainCameraPos()), XMLoadFloat3(&Camera::Target()), XMLoadFloat3(&Camera::Up())
-	);
-
-	if (constBuff == nullptr)
-	{
-		result = DirectXDevice::dev->CreateCommittedResource(
-			&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-			D3D12_HEAP_FLAG_NONE,
-			&CD3DX12_RESOURCE_DESC::Buffer((sizeof(MatrocesDate) + 0xff)&~0xff),
-			D3D12_RESOURCE_STATE_GENERIC_READ,
-			nullptr,
-			IID_PPV_ARGS(&constBuff)
-		);
-
-		D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc = {};
-		cbvDesc.BufferLocation = constBuff->GetGPUVirtualAddress();
-		cbvDesc.SizeInBytes = constBuff->GetDesc().Width;
-		DirectXDevice::dev->CreateConstantBufferView(&cbvDesc, HeapHandle);
-		result = constBuff->Map(0, nullptr, (void**)&constMap);
-
-		//
-		matScale = XMMatrixScaling(scale.x, scale.y, scale.z);
-		matRot = XMMatrixIdentity();
-		matRot *= XMMatrixRotationX(rotation.x);
-		matRot *= XMMatrixRotationY(rotation.y);
-		matRot *= XMMatrixRotationZ(rotation.z);
-		matTrans = XMMatrixTranslation(position.x, position.y, position.z);
-		matWorld = XMMatrixIdentity();
-		matWorld *= matScale;
-		matWorld *= matRot;
-		matWorld *= matTrans;
-
-		color = { 1,1,1,1 };
-		constMap->world = matWorld;
-		constMap->viewproj = Camera::ReturnCameraState()->matView * Camera::ReturnCameraState()->matProjection;
-		constMap->color = color;
-
-		constBuff->Unmap(0, nullptr);
-	}
 	
 }
 

@@ -2,6 +2,7 @@
 
 void Cost::Initialize()
 {
+	costUpTime = 30;
 	time = 0;
 	cost = 0;
 

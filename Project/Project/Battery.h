@@ -18,9 +18,10 @@ public:
 	void SetScale(XMFLOAT3 scale);
 	void Shot();
 	void Break();
-	ObjFile* obj=nullptr;
-	CircleCollision* col = nullptr;
-	CircleCollision* clickcol = nullptr;
+	ObjFile* obj = new ObjFile();
+	Input*	input = new Input();
+	CircleCollision* col = new CircleCollision();
+	CircleCollision* clickcol = new CircleCollision();
 	std::vector<Bullet*>bulletList;
 	XMFLOAT3 position;
 	XMFLOAT3 scale{};
@@ -28,7 +29,6 @@ public:
 	XMFLOAT3* targetPos = nullptr;
 	int interval = 60;
 	int damage = 1;
-	Input* input;
 	bool liveFlag;
 	bool MoveFlag;
 	

@@ -16,16 +16,19 @@ Input::~Input()
 
 void Input::Initialize()
 {
-	HRESULT result;
-	result = DirectInput8Create(GetModuleHandle(nullptr), DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&dinput, nullptr);
+	if (devkeyboard == nullptr)
+	{
+		HRESULT result;
+		result = DirectInput8Create(GetModuleHandle(nullptr), DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&dinput, nullptr);
 
-	devkeyboard = nullptr;
-	result = dinput->CreateDevice(GUID_SysKeyboard, &devkeyboard, NULL);
-	result = dinput->CreateDevice(GUID_SysMouse, &devmouse, NULL);
+		result = dinput->CreateDevice(GUID_SysKeyboard, &devkeyboard, NULL);
+		result = dinput->CreateDevice(GUID_SysMouse, &devmouse, NULL);
+
+		result = devkeyboard->SetDataFormat(&c_dfDIKeyboard); // 標準形式
+		result = devmouse->SetDataFormat(&c_dfDIMouse); // 標準形式
+		result = devmouse->SetCooperativeLevel(FindWindow(DirectXDevice::w.lpszClassName, nullptr), DISCL_BACKGROUND | DISCL_NONEXCLUSIVE);
+	}
 	
-	result = devkeyboard->SetDataFormat(&c_dfDIKeyboard); // 標準形式
-	result = devmouse->SetDataFormat(&c_dfDIMouse); // 標準形式
-	result = devmouse->SetCooperativeLevel(FindWindow(DirectXDevice::w.lpszClassName, nullptr), DISCL_BACKGROUND | DISCL_NONEXCLUSIVE);
 }
 
 void Input::Update()

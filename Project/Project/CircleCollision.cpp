@@ -3,7 +3,7 @@
 #include"DirectXDevice.h"
 CircleCollision::CircleCollision()
 {
-	Initialize();
+	//Initialize();
 }
 
 CircleCollision::~CircleCollision()

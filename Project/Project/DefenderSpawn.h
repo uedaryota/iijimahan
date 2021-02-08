@@ -17,11 +17,17 @@ public:
 	void CostFlagTrue();
 	void CostFlagFalse();
 	int ReturnUseCost();
-	ObjFile* obj = nullptr;
-	Battery* battery = nullptr;
-	CircleCollision* col = nullptr;
+	ObjFile* obj = new ObjFile();
+	ObjFile* obj2 = new ObjFile();
+
+	Battery* battery = new Battery();
+	CircleCollision* col = new CircleCollision();
+	
+
 	XMFLOAT3 position;
-	bool costFlag = false;;
+	bool costFlag = false;
+	bool possibleSet = false;
 	const int usecost = 20;
+private:
 };
 

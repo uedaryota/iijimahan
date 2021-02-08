@@ -45,7 +45,7 @@ public:
 
 	//D3D12_INDEX_BUFFER_VIEW ibView;
 
-	ID3D12DescriptorHeap* mainDescHeap=nullptr;
+	ID3D12DescriptorHeap* mainDescHeap = nullptr;
 	XMFLOAT3 position = { 0,0,0 };
 	XMFLOAT3 velocity = { 0,0,0 };
 	float speed = 1;

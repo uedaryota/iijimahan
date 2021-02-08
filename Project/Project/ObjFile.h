@@ -98,10 +98,10 @@ public:
 
 private:
 
-	ID3D12Device* dev;
+	static  ID3D12Device* dev;
 
-	ID3D12PipelineState* pipelinestate;
-	ID3D12RootSignature* rootsignature;
+	static ID3D12PipelineState* pipelinestate;
+	static ID3D12RootSignature* rootsignature;
 	ID3D12DescriptorHeap* mainDescHeap;
 	ID3D12DescriptorHeap* materialDescHeap;
 
@@ -132,7 +132,7 @@ private:
 	//Objデータ定数マップ
 	vector<ConstBufferDataB1*> materialMaps;
 
-	ComPtr<ID3D12Resource> constBuffB0;
+	ComPtr<ID3D12Resource> constBuffB0 = nullptr;
 	
 	// 定数バッファ
 	vector<ComPtr<ID3D12Resource>> constBuffB1; // 定数バッファ
