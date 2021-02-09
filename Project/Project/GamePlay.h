@@ -14,6 +14,7 @@ public:
 	void Draw() override;
 	void Update() override;
 	void Initialize() override;
+	void Initialize2();
 	void CollisionUpdate();
 	WAVE NowWAVE = wave1;
 	void CostUpdate();

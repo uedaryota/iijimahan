@@ -12,22 +12,23 @@ Stage2D::~Stage2D()
 
 void Stage2D::Initialize()
 {
-
-	input = new Input();
 	input->Initialize();
-	floor = new Floor();
+
 	floor->Initialize(DirectXDevice::dev);
 	floor->SetScale({ 200, 200, 200 });
 
-	floor2 = new Floor();
 	floor2->Initialize(DirectXDevice::dev);	
 	floor2->ResetTex(L"img/TDmap_Back.png", DirectXDevice::dev);
 	floor2->position.y -= 0.1;
 	floor2->SetScale({ 700, 700, 700 });
 
+
 	for (int i = 0; i <= rockcount * 2 / 3 - 1; i++)
 	{
-		rocks[i] = new ObjFile();
+		if (!initializeFlag)
+		{
+			rocks[i] = new ObjFile();
+		}
 		rocks[i]->Initialize();
 		rocks[i]->LoadObj("Rock");
 		if (i % 2 == 0)
@@ -48,7 +49,10 @@ void Stage2D::Initialize()
 	}
 	for (int i = 16; i <= rockcount - 1; i++)
 	{
-		rocks[i] = new ObjFile();
+		if (!initializeFlag)
+		{
+			rocks[i] = new ObjFile();
+		}
 		rocks[i]->Initialize();
 		rocks[i]->LoadObj("Rock_02");
 		if (i % 2 == 0)
@@ -67,7 +71,7 @@ void Stage2D::Initialize()
 			rocks[i]->SetRotate(XMFLOAT3(0, 60, 0));
 		}
 	}
-
+	initializeFlag = true;
 	rocks[0]->SetPos(XMFLOAT3(330, 0, -250));
 	rocks[1]->SetPos(XMFLOAT3(-310, 0, 230));
 	rocks[2]->SetPos(XMFLOAT3(-230, 0, 330));

@@ -35,11 +35,15 @@ void ParticleManager::Draw()
 
 void ParticleManager::Initialize()
 {
-	for (int a = 0; a < particleCountMax; a++)
+	if (particleList.size() != particleCountMax)
 	{
-		Particle* p = new Particle();
-		particleList.push_back(p);
+		for (int a = 0; a < particleCountMax; a++)
+		{
+			Particle* p = new Particle();
+			particleList.push_back(p);
+		}
 	}
+
 	for (auto a : particleList)
 	{
 		a->Initialize();

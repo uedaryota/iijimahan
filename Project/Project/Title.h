@@ -5,7 +5,7 @@
 #include"Camera.h"
 #include"Sound.h"
 #include "Text.h"
-
+#include"Input.h"
 class Title:public GameScene
 {
 public:
@@ -14,11 +14,11 @@ public:
 	void Update() override;
 	void Initialize() override;
 
-	ObjFile* obj;
+	ObjFile* obj = new ObjFile();
 	Sprite* sprite;
 	Sprite* sprite2;
 	Sound* sound = new Sound();
-
+	Input* input2 = new Input();
 private:
 	Text* text;
 };

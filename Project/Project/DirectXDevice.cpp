@@ -148,8 +148,8 @@ void DirectXDevice::Update()
 	{
 		if (gameplayscene)
 		{
+			
 			gameplay->Initialize();
-			//gameplay->Initialize();
 
 			gameplayscene = false;
 			titlescene = true;
@@ -168,8 +168,10 @@ void DirectXDevice::Update()
 	}*/
 	else if (title->endFlag && gameplay->endFlag)
 	{
-		title->Initialize();
-		gameplay->Initialize();
+		//title->Initialize();
+		title->endFlag = false;
+		gameplay->endFlag = false;
+		//gameplay->Initialize();
 		//endscene->Initialize();
 	}
 

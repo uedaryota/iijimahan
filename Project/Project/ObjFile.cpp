@@ -9,7 +9,10 @@
 #include"ObjDate.h"
 
 Light* ObjFile::light = nullptr;
+ID3D12Device* ObjFile::dev;
 
+ID3D12PipelineState* ObjFile::pipelinestate = nullptr;
+ID3D12RootSignature* ObjFile::rootsignature = nullptr;
 ObjFile::ObjFile()
 {
 	
@@ -55,10 +58,17 @@ ObjFile::~ObjFile()
 
 void ObjFile::Initialize()
 {
-	
-	this->dev = DirectXDevice::dev;
-	CreatePipeline();
+
+	if (dev == nullptr)
+	{
+		this->dev = DirectXDevice::dev;
+	}
 	CreateMainHeap();
+	if (pipelinestate == nullptr&&rootsignature == nullptr)
+	{
+		CreatePipeline();
+	}
+	
 }
 
 void ObjFile::Update()
@@ -123,6 +133,38 @@ void ObjFile::Draw(ID3D12GraphicsCommandList * cmdList)
 	}
 
 	
+}
+
+void ObjFile::Draw()
+{
+	DirectXDevice::cmdList->SetPipelineState(pipelinestate);
+	DirectXDevice::cmdList->SetGraphicsRootSignature(rootsignature);
+	DirectXDevice::cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	DirectXDevice::cmdList->IASetVertexBuffers(0, 1, &vbView);
+	DirectXDevice::cmdList->IASetIndexBuffer(&ibView);
+	DirectXDevice::cmdList->SetDescriptorHeaps(1, &mainDescHeap);
+	//	cmdList->SetGraphicsRootDescriptorTable(0, GsrvHandle);
+	DirectXDevice::cmdList->SetGraphicsRootDescriptorTable(1, GcbvHandle0);
+
+	DirectXDevice::cmdList->SetDescriptorHeaps(1, &materialDescHeap);
+	//cmdList->SetGraphicsRootDescriptorTable(2, GmaterialHandles[0]);
+	//cmdList->DrawInstanced((UINT)vertices.size(), 1, 0, 0);
+
+	//ライトの描画
+    light->Draw(DirectXDevice::cmdList, 3);
+
+
+	UINT start = 0;
+	for (int a = 0; a < usematerials.size() * 2; a += 2)
+	{
+		DirectXDevice::cmdList->SetGraphicsRootDescriptorTable(0, GmaterialHandles[a + 1]);
+		DirectXDevice::cmdList->SetGraphicsRootDescriptorTable(2, GmaterialHandles[a]);
+
+		DirectXDevice::cmdList->DrawInstanced((UINT)usematerials[a / 2].indicesCount, 1, start, 0);
+		start += usematerials[a / 2].indicesCount;
+	}
+
+
 }
 
 void ObjFile::CreatePipeline()
@@ -332,27 +374,31 @@ void ObjFile::CreatePipeline()
 
 void ObjFile::CreateMainHeap()
 {
-	HRESULT result;
-	mainDescHeap = nullptr;
-	D3D12_DESCRIPTOR_HEAP_DESC descHeapDesc = {};
+	if (mainDescHeap == nullptr)
+	{
+		HRESULT result;
+		mainDescHeap = nullptr;
+		D3D12_DESCRIPTOR_HEAP_DESC descHeapDesc = {};
 
-	descHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-	descHeapDesc.NodeMask = 0;
-	descHeapDesc.NumDescriptors = 3;
-	descHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+		descHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+		descHeapDesc.NodeMask = 0;
+		descHeapDesc.NumDescriptors = 3;
+		descHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 
-	result = dev->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(&mainDescHeap));
+		result = dev->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(&mainDescHeap));
 
-	D3D12_CPU_DESCRIPTOR_HANDLE HeapHandle = mainDescHeap->GetCPUDescriptorHandleForHeapStart();
-	CsrvHandle = HeapHandle;
-	HeapHandle.ptr += dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	CcbvHandle0 = HeapHandle;
+		D3D12_CPU_DESCRIPTOR_HANDLE HeapHandle = mainDescHeap->GetCPUDescriptorHandleForHeapStart();
+		CsrvHandle = HeapHandle;
+		HeapHandle.ptr += dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+		CcbvHandle0 = HeapHandle;
 
 
-	D3D12_GPU_DESCRIPTOR_HANDLE handle = mainDescHeap->GetGPUDescriptorHandleForHeapStart();
-	GsrvHandle = handle;
-	handle.ptr += dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	GcbvHandle0 = handle;
+		D3D12_GPU_DESCRIPTOR_HANDLE handle = mainDescHeap->GetGPUDescriptorHandleForHeapStart();
+		GsrvHandle = handle;
+		handle.ptr += dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+		GcbvHandle0 = handle;
+	}
+
 
 }
 
@@ -412,53 +458,56 @@ void ObjFile::SetScale(XMFLOAT3 scale)
 
 void ObjFile::LoadObj(std::string name)
 {
+	if (constBuffB0 == nullptr)
+	{
+		matWorld.r[0].m128_f32[0] = 2.0f / Camera::window_width;
+		matWorld.r[1].m128_f32[1] = -2.0f / Camera::window_height;
+		matWorld.r[3].m128_f32[0] = -1.0f;
+		matWorld.r[3].m128_f32[1] = 1.0f;
 
-	matWorld.r[0].m128_f32[0] = 2.0f / Camera::window_width;
-	matWorld.r[1].m128_f32[1] = -2.0f / Camera::window_height;
-	matWorld.r[3].m128_f32[0] = -1.0f;
-	matWorld.r[3].m128_f32[1] = 1.0f;
-
-	matScale = XMMatrixScaling(scale.x, scale.y, scale.z);
-	matRot = XMMatrixIdentity();
-	matRot *= XMMatrixRotationX(rotation.x);
-	matRot *= XMMatrixRotationY(rotation.y);
-	matRot *= XMMatrixRotationZ(rotation.z);
-	matTrans = XMMatrixTranslation(position.x, position.y, position.z);
-	matWorld = XMMatrixIdentity();
-	matWorld.r[0].m128_f32[0] = 2.0f / Camera::window_width;
-	matWorld.r[1].m128_f32[1] = -2.0f / Camera::window_height;
-	matWorld.r[3].m128_f32[0] = -1.0f;
-	matWorld.r[3].m128_f32[1] = 1.0f;
-	matWorld *= matScale;
-	matWorld *= matRot;
-	matWorld *= matTrans;
+		matScale = XMMatrixScaling(scale.x, scale.y, scale.z);
+		matRot = XMMatrixIdentity();
+		matRot *= XMMatrixRotationX(rotation.x);
+		matRot *= XMMatrixRotationY(rotation.y);
+		matRot *= XMMatrixRotationZ(rotation.z);
+		matTrans = XMMatrixTranslation(position.x, position.y, position.z);
+		matWorld = XMMatrixIdentity();
+		matWorld.r[0].m128_f32[0] = 2.0f / Camera::window_width;
+		matWorld.r[1].m128_f32[1] = -2.0f / Camera::window_height;
+		matWorld.r[3].m128_f32[0] = -1.0f;
+		matWorld.r[3].m128_f32[1] = 1.0f;
+		matWorld *= matScale;
+		matWorld *= matRot;
+		matWorld *= matTrans;
 
 
-	HRESULT result = dev->CreateCommittedResource(
-		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-		D3D12_HEAP_FLAG_NONE,
-		&CD3DX12_RESOURCE_DESC::Buffer((sizeof(ConstBufferDataB0) + 0xff)&~0xff),
-		D3D12_RESOURCE_STATE_GENERIC_READ,
-		nullptr,
-		IID_PPV_ARGS(&constBuffB0)
-	);
+		HRESULT result = dev->CreateCommittedResource(
+			&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+			D3D12_HEAP_FLAG_NONE,
+			&CD3DX12_RESOURCE_DESC::Buffer((sizeof(ConstBufferDataB0) + 0xff)&~0xff),
+			D3D12_RESOURCE_STATE_GENERIC_READ,
+			nullptr,
+			IID_PPV_ARGS(&constBuffB0)
+		);
 
-	//定数バッファビュー生成
+		//定数バッファビュー生成
 
-	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc0 = {};
-	cbvDesc0.BufferLocation = constBuffB0->GetGPUVirtualAddress();
-	cbvDesc0.SizeInBytes = constBuffB0->GetDesc().Width;
-	dev->CreateConstantBufferView(&cbvDesc0, CcbvHandle0);
+		D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc0 = {};
+		cbvDesc0.BufferLocation = constBuffB0->GetGPUVirtualAddress();
+		cbvDesc0.SizeInBytes = constBuffB0->GetDesc().Width;
+		dev->CreateConstantBufferView(&cbvDesc0, CcbvHandle0);
 
-	constMap0 = nullptr;
-	result = constBuffB0->Map(0, nullptr, (void**)&constMap0);
+		constMap0 = nullptr;
+		result = constBuffB0->Map(0, nullptr, (void**)&constMap0);
 
-	constMap0->world = matWorld;
-	constMap0->viewproj = Camera::ReturnCameraState()->matView * Camera::ReturnCameraState()->matProjection;
+		constMap0->world = matWorld;
+		constMap0->viewproj = Camera::ReturnCameraState()->matView * Camera::ReturnCameraState()->matProjection;
 
-	constBuffB0->Unmap(0, nullptr);
+		constBuffB0->Unmap(0, nullptr);
 
-	SetObjData(name);
+		SetObjData(name);
+	}
+	
 
 }
 //void ObjFile::LoadObj(std::string name)

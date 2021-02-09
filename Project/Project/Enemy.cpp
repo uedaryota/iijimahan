@@ -18,7 +18,8 @@ Enemy::Enemy(const Enemy * ene)
 ///</summary>
 void Enemy::Initialize()
 {
-	col = new CircleCollision();
+	//col = new CircleCollision();
+	col->Initialize();
 	col->scale = 10;
 	//col->length = 10;
 	ai.Initialize();

@@ -65,6 +65,7 @@ void Battery::Update()
 
 void Battery::Draw()
 {
+	//MoveFlag = true;
 	if (MoveFlag)
 	{
 		obj->Draw(DirectXDevice::cmdList);
@@ -82,26 +83,30 @@ void Battery::Draw()
 
 void Battery::Initialize()
 {
-	obj = new ObjFile();
-	input = new Input();
 	input->Initialize();
 	obj->Initialize();
 	obj->LoadObj("Rhino");
-	col = new CircleCollision();
+	col->Initialize();
 	col->scale = 150;
-	clickcol = new CircleCollision();
+	clickcol->Initialize();
 	clickcol->scale = 10;
 	clickcol->color = { 1,0,0,0.5 };
 	//cloickcol->color={}
 	SetScale({ 10,10,10 });
-	int bulletCount = 5;
-	for (int a = 0; a < bulletCount; a++)
+	int bulletCount = 3;
+	if (bulletList.size() == 0)
 	{
-		Bullet* b = new Bullet();
+		for (int a = 0; a < bulletCount; a++)
+		{
+			Bullet* b = new Bullet();
+			bulletList.push_back(b);
+		}
+	}
+	for (auto b : bulletList)
+	{
 		b->Initialize();
 		b->SetPos(position);
 		b->Reset();
-		bulletList.push_back(b);
 	}
 	liveFlag = false;
 	MoveFlag = false;

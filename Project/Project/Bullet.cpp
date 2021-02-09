@@ -38,12 +38,13 @@ void Bullet::Draw()
 void Bullet::Initialize()
 {
 	
-	obj = new ObjFile();
+	
 	obj->Initialize();
 	obj->SetScale({ 10,10,10 });
 
 	obj->LoadObj("ball");
-	col = new CircleCollision();
+	//col = new CircleCollision();
+	col->Initialize();
 	col->scale = 10;
 }
 

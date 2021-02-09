@@ -3,13 +3,12 @@
 #include"Camera.h"
 ID3D12PipelineState* Particle::pipelinestate = nullptr;
 ID3D12RootSignature* Particle::rootsignature = nullptr;
-//ID3D12DescriptorHeap* Particle::mainDescHeap = nullptr;
 D3D12_VERTEX_BUFFER_VIEW Particle::vbView = {};
 D3D12_INDEX_BUFFER_VIEW Particle::ibView;
 XMMATRIX Particle::matView;
 
 
-//static const int size = 0.5f;
+static const int size = 0.5f;
 Particle::Vertex Particle::vertices[4] =
 {
 	{{-0.5f,-0.5f,0},{0.0f,1.0f}},
@@ -30,7 +29,7 @@ ID3D12Resource* Particle::texBuff = nullptr;
 
 Particle::Vertex* Particle::vertMap = nullptr;
 unsigned short* Particle::indexMap = nullptr;
-
+ 
 Particle::Particle()
 {
 }
@@ -223,12 +222,10 @@ void Particle::CreatePipeline()
 
 void Particle::CreateMainHeap()
 {
-	
-		HRESULT result;
-		//if (texBuff == nullptr);
-		//{
 
-		//}
+	HRESULT result;
+	if (mainDescHeap == nullptr);
+	{
 		TexMetadata metadate = {};
 		ScratchImage scratchImg = {};
 		result = LoadFromWICFile(
@@ -261,35 +258,34 @@ void Particle::CreateMainHeap()
 		texresdes.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
 		texresdes.Flags = D3D12_RESOURCE_FLAG_NONE;
 
+		if (texBuff == nullptr)
+		{
+			result = DirectXDevice::dev->CreateCommittedResource(
+				&texheapprop,
+				D3D12_HEAP_FLAG_NONE,
+				&texresdes,
+				D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+				nullptr,
+				IID_PPV_ARGS(&texBuff));
 
-		texBuff = nullptr;
+			result = texBuff->WriteToSubresource(
+				0,
+				nullptr,
+				img->pixels,
+				img->rowPitch,
+				img->slicePitch
+			);
+		}
 
 
 
-		result = DirectXDevice::dev->CreateCommittedResource(
-			&texheapprop,
-			D3D12_HEAP_FLAG_NONE,
-			&texresdes,
-			D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
-			nullptr,
-			IID_PPV_ARGS(&texBuff));
 
-		result = texBuff->WriteToSubresource(
-			0,
-			nullptr,
-			img->pixels,
-			img->rowPitch,
-			img->slicePitch
-		);
 		D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
 		srvDesc.Format = metadate.format;//resdescと合わせる
 		srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 		srvDesc.Texture2D.MipLevels = 1;
 
-
-
-		mainDescHeap = nullptr;
 		D3D12_DESCRIPTOR_HEAP_DESC descHeapDesc = {};
 
 		descHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
@@ -309,44 +305,50 @@ void Particle::CreateMainHeap()
 
 		HeapHandle.ptr += DirectXDevice::dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
+
+		matView = XMMatrixLookAtLH(
+			XMLoadFloat3(&Camera::MainCameraPos()), XMLoadFloat3(&Camera::Target()), XMLoadFloat3(&Camera::Up())
+		);
+
+		if (constBuff == nullptr)
+		{
+			result = DirectXDevice::dev->CreateCommittedResource(
+				&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+				D3D12_HEAP_FLAG_NONE,
+				&CD3DX12_RESOURCE_DESC::Buffer((sizeof(MatrocesDate) + 0xff)&~0xff),
+				D3D12_RESOURCE_STATE_GENERIC_READ,
+				nullptr,
+				IID_PPV_ARGS(&constBuff)
+			);
+
+			D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc = {};
+			cbvDesc.BufferLocation = constBuff->GetGPUVirtualAddress();
+			cbvDesc.SizeInBytes = constBuff->GetDesc().Width;
+			DirectXDevice::dev->CreateConstantBufferView(&cbvDesc, HeapHandle);
+			result = constBuff->Map(0, nullptr, (void**)&constMap);
+
+			//
+			matScale = XMMatrixScaling(scale.x, scale.y, scale.z);
+			matRot = XMMatrixIdentity();
+			matRot *= XMMatrixRotationX(rotation.x);
+			matRot *= XMMatrixRotationY(rotation.y);
+			matRot *= XMMatrixRotationZ(rotation.z);
+			matTrans = XMMatrixTranslation(position.x, position.y, position.z);
+			matWorld = XMMatrixIdentity();
+			matWorld *= matScale;
+			matWorld *= matRot;
+			matWorld *= matTrans;
+
+			color = { 1,1,1,1 };
+			constMap->world = matWorld;
+			constMap->viewproj = Camera::ReturnCameraState()->matView * Camera::ReturnCameraState()->matProjection;
+			constMap->color = color;
+
+			constBuff->Unmap(0, nullptr);
+		}
+	}
 	
-	matView = XMMatrixLookAtLH(
-		XMLoadFloat3(&Camera::MainCameraPos()), XMLoadFloat3(&Camera::Target()), XMLoadFloat3(&Camera::Up())
-	);
-
-	result = DirectXDevice::dev->CreateCommittedResource(
-		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-		D3D12_HEAP_FLAG_NONE,
-		&CD3DX12_RESOURCE_DESC::Buffer((sizeof(MatrocesDate) + 0xff)&~0xff),
-		D3D12_RESOURCE_STATE_GENERIC_READ,
-		nullptr,
-		IID_PPV_ARGS(&constBuff)
-	);
-
-	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc = {};
-	cbvDesc.BufferLocation = constBuff->GetGPUVirtualAddress();
-	cbvDesc.SizeInBytes = constBuff->GetDesc().Width;
-	DirectXDevice::dev->CreateConstantBufferView(&cbvDesc, HeapHandle);
-	result = constBuff->Map(0, nullptr, (void**)&constMap);
-
-	//
-	matScale = XMMatrixScaling(scale.x, scale.y, scale.z);
-	matRot = XMMatrixIdentity();
-	matRot *= XMMatrixRotationX(rotation.x);
-	matRot *= XMMatrixRotationY(rotation.y);
-	matRot *= XMMatrixRotationZ(rotation.z);
-	matTrans = XMMatrixTranslation(position.x, position.y, position.z);
-	matWorld = XMMatrixIdentity();
-	matWorld *= matScale;
-	matWorld *= matRot;
-	matWorld *= matTrans;
-
-	color = { 1,1,1,1 };
-	constMap->world = matWorld;
-	constMap->viewproj = matView * Camera::ReturnCameraState()->matProjection;
-	constMap->color = color;
-
-	constBuff->Unmap(0, nullptr);
+	
 }
 
 void Particle::SetTex(const wchar_t* texname)
@@ -386,8 +388,6 @@ void Particle::SetTex(const wchar_t* texname)
 	texresdes.Flags = D3D12_RESOURCE_FLAG_NONE;
 
 	texBuff = nullptr;
-
-
 
 	result = DirectXDevice::dev->CreateCommittedResource(
 		&texheapprop,
@@ -431,7 +431,7 @@ void Particle::SetVert()
 
 		D3D12_RESOURCE_DESC vertresdesc = {};
 		vertresdesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
-		vertresdesc.Width = sizeof(vertices); // 頂点情報が入る分のサイズ
+		vertresdesc.Width = sizeof(Vertex) * sizeof(vertices); // 頂点情報が入る分のサイズ
 		vertresdesc.Height = 1;
 		vertresdesc.DepthOrArraySize = 1;
 		vertresdesc.Format = DXGI_FORMAT_UNKNOWN;
@@ -457,8 +457,11 @@ void Particle::SetVert()
 		vertBuff->Unmap(0, nullptr);
 		vbView = {};
 		vbView.BufferLocation = vertBuff->GetGPUVirtualAddress();
-		vbView.SizeInBytes = sizeof(vertices);
-		vbView.StrideInBytes = sizeof(vertices[0]);
+		//vbView.SizeInBytes = 4 * sizeof(Vertex);
+		//vbView.StrideInBytes = sizeof(vertices[0]) * sizeof(Vertex);
+
+		vbView.SizeInBytes = static_cast<UINT>(sizeof(Vertex) * sizeof(vertices));
+		vbView.StrideInBytes = static_cast<UINT>(sizeof(Vertex));
 
 		indexBuff = nullptr;
 		vertresdesc.Width = sizeof(indices); // インデックス情報が入る分のサイズ
@@ -482,7 +485,7 @@ void Particle::SetVert()
 
 		ibView.BufferLocation = indexBuff->GetGPUVirtualAddress();
 		ibView.Format = DXGI_FORMAT_R16_UINT;
-		ibView.SizeInBytes = sizeof(indices);
+		ibView.SizeInBytes = static_cast<UINT>((sizeof(unsigned short) * sizeof(indices)));
 	}
 }
 
@@ -548,7 +551,7 @@ void Particle::Update()
 	HRESULT result = constBuff->Map(0, nullptr, (void**)&constMap);
 	
 	constMap->world = matWorld;
-	constMap->viewproj = matView * Camera::ReturnCameraState()->matProjection;
+	constMap->viewproj = Camera::ReturnCameraState()->matView * Camera::ReturnCameraState()->matProjection;
 	constMap->color = color;
 	constBuff->Unmap(0, nullptr);
 }

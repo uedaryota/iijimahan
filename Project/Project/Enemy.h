@@ -70,7 +70,7 @@ public:
 	void SetSpeed(float x);
 	float GetPower();
 	void SetPower(float x);
-	CircleCollision* col;
+	CircleCollision* col=new CircleCollision();
 	bool Boss = false;
 	void LastOne(bool one);
 	void ChangeBoss();
