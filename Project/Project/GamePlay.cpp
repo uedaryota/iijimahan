@@ -298,7 +298,7 @@ void GamePlay::Draw()
 	}
 
 	Sprite::PreDraw(DirectXDevice::cmdList);
-	text->Print("Next  " + to_string(int(spawntime - timer / 60)), 30, 250, 3);
+	text->Print(to_string(NowWAVE + 1)+ "Next  " + to_string(int(spawntime - timer / 60)), 30, 250, 3);
 	nextback->Draw();
 	text->DrawAll(DirectXDevice::cmdList);
 	Sprite::PostDraw();
